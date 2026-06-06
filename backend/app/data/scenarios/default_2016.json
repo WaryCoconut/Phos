@@ -1,0 +1,1831 @@
+{
+  "id": "default_2016",
+  "name": "Monde en 2016",
+  "description": "Le monde tel qu'il était en janvier 2016. La crise ukrainienne, la guerre civile syrienne, la montée de l'État islamique et les tensions en mer de Chine méridionale définissent une période de grande instabilité géopolitique.",
+  "start_year": 2016,
+  "start_month": 1,
+  "map_style": "modern",
+  "custom": false,
+  "alliances": {
+    "NATO": {
+      "id": "NATO",
+      "name": "OTAN",
+      "type": "military",
+      "members": ["USA", "CAN", "GBR", "FRA", "DEU", "ITA", "ESP", "POL", "NLD", "BEL", "NOR", "DNK", "TUR", "GRC", "PRT", "HUN", "CZE", "ROU", "BGR", "HRV", "SVK", "SVN", "ALB", "LTU", "LVA", "EST"],
+      "description": "Alliance militaire de défense collective de l'Atlantique Nord",
+      "color": "#1a73e8"
+    },
+    "EU": {
+      "id": "EU",
+      "name": "Union Européenne",
+      "type": "economic",
+      "members": ["DEU", "FRA", "ITA", "ESP", "POL", "NLD", "BEL", "GRC", "PRT", "SWE", "AUT", "DNK", "FIN", "IRL", "CZE", "ROU", "HUN", "BGR", "SVK", "HRV", "SVN", "LTU", "LVA", "EST", "LUX", "CYP", "MLT", "GBR"],
+      "description": "Union politique et économique européenne (le Royaume-Uni est encore membre en janvier 2016)",
+      "color": "#003399"
+    },
+    "SCO": {
+      "id": "SCO",
+      "name": "Organisation de Coopération de Shanghai",
+      "type": "political",
+      "members": ["CHN", "RUS", "KAZ", "KGZ", "TJK", "UZB", "PAK", "IND"],
+      "description": "Organisation de sécurité et coopération eurasienne",
+      "color": "#cc0000"
+    },
+    "BRICS": {
+      "id": "BRICS",
+      "name": "BRICS",
+      "type": "economic",
+      "members": ["BRA", "RUS", "IND", "CHN", "ZAF"],
+      "description": "Groupe des économies émergentes majeures",
+      "color": "#e67e00"
+    },
+    "ASEAN": {
+      "id": "ASEAN",
+      "name": "ASEAN",
+      "type": "political",
+      "members": ["IDN", "MYS", "PHL", "SGP", "THA", "VNM", "MMR", "KHM", "LAO", "BRN"],
+      "description": "Association des nations de l'Asie du Sud-Est",
+      "color": "#008080"
+    },
+    "GULF": {
+      "id": "GULF",
+      "name": "Conseil de Coopération du Golfe",
+      "type": "political",
+      "members": ["SAU", "ARE", "QAT", "KWT", "BHR", "OMN"],
+      "description": "Union des monarchies du Golfe Persique",
+      "color": "#c8a400"
+    }
+  },
+  "initial_events": [
+    {
+      "title": "Arabie Saoudite rompt ses relations avec l'Iran",
+      "description": "Suite à l'exécution du clerc chiite Nimr al-Nimr et l'attaque de son ambassade à Téhéran, l'Arabie Saoudite coupe ses relations diplomatiques avec l'Iran le 3 janvier 2016.",
+      "year": 2016,
+      "month": 1,
+      "affected_countries": ["SAU", "IRN"]
+    },
+    {
+      "title": "Conflit russo-ukrainien en cours",
+      "description": "Les accords de Minsk II n'ont pas mis fin aux combats dans le Donbass. La Russie contrôle la Crimée depuis 2014 et des combats intermittents continuent dans l'est de l'Ukraine.",
+      "year": 2016,
+      "month": 1,
+      "affected_countries": ["RUS", "UKR"]
+    },
+    {
+      "title": "Crise syrienne et migration",
+      "description": "La guerre civile syrienne entre dans sa 5ème année. L'État islamique contrôle de larges pans de territoire. L'Europe fait face à une crise migratoire sans précédent.",
+      "year": 2016,
+      "month": 1,
+      "affected_countries": ["SYR", "IRQ", "TUR", "DEU", "FRA", "GRC"]
+    },
+    {
+      "title": "Tensions en mer de Chine méridionale",
+      "description": "La Chine poursuit la militarisation d'îles artificielles en mer de Chine méridionale, provoquant des tensions avec les Philippines, le Vietnam et les États-Unis.",
+      "year": 2016,
+      "month": 1,
+      "affected_countries": ["CHN", "USA", "PHL", "VNM"]
+    },
+    {
+      "title": "Essai nucléaire nord-coréen",
+      "description": "La Corée du Nord annonce avoir testé une bombe à hydrogène le 6 janvier 2016, provoquant des condamnations internationales.",
+      "year": 2016,
+      "month": 1,
+      "affected_countries": ["PRK", "KOR", "USA", "CHN", "JPN"]
+    }
+  ],
+  "countries": {
+    "USA": {
+      "id": "USA",
+      "name": "États-Unis d'Amérique",
+      "flag": "🇺🇸",
+      "capital": "Washington D.C.",
+      "continent": "Amérique du Nord",
+      "population": 323127513,
+      "government_type": "république_fédérale",
+      "ideology": "démocratie_libérale",
+      "leader": "Barack Obama",
+      "alliances": ["NATO", "Five Eyes"],
+      "economy": {
+        "gdp": 18625,
+        "gdp_per_capita": 57638,
+        "gdp_growth": 1.6,
+        "inflation": 1.3,
+        "unemployment": 4.9,
+        "debt_pct_gdp": 104.0,
+        "currency": "USD",
+        "main_sectors": ["technologie", "finance", "santé", "défense", "agriculture"]
+      },
+      "military": {
+        "strength": 10,
+        "active_personnel": 1281900,
+        "nuclear_weapons": true,
+        "defense_budget_pct": 3.3
+      },
+      "relations": {
+        "GBR": 90, "CAN": 92, "AUS": 88, "FRA": 75, "DEU": 72, "JPN": 80, "KOR": 78,
+        "ISR": 82, "SAU": 55, "MEX": 60, "ITA": 70, "ESP": 68, "POL": 72, "TUR": 45,
+        "CHN": -20, "RUS": -55, "PRK": -95, "IRN": -60, "SYR": -70, "CUB": -30,
+        "IND": 55, "BRA": 50, "ARG": 40, "COL": 65, "EGY": 40, "NGA": 45, "ZAF": 50
+      },
+      "personality_traits": ["assertif", "internationaliste", "démocratique", "libre-échangiste", "policier_mondial"],
+      "description": "La plus grande puissance économique et militaire mondiale, chef de file de l'ordre libéral occidental.",
+      "color": "#1a4fa0"
+    },
+    "CHN": {
+      "id": "CHN",
+      "name": "République Populaire de Chine",
+      "flag": "🇨🇳",
+      "capital": "Pékin",
+      "continent": "Asie",
+      "population": 1382710000,
+      "government_type": "parti_unique",
+      "ideology": "communisme_de_marché",
+      "leader": "Xi Jinping",
+      "alliances": ["SCO", "BRICS"],
+      "economy": {
+        "gdp": 11199,
+        "gdp_per_capita": 8100,
+        "gdp_growth": 6.7,
+        "inflation": 2.0,
+        "unemployment": 4.0,
+        "debt_pct_gdp": 44.3,
+        "currency": "CNY",
+        "main_sectors": ["industrie", "exportations", "technologie", "immobilier", "finance"]
+      },
+      "military": {
+        "strength": 9,
+        "active_personnel": 2300000,
+        "nuclear_weapons": true,
+        "defense_budget_pct": 1.9
+      },
+      "relations": {
+        "RUS": 55, "PAK": 70, "PRK": 20, "KAZ": 60, "VNM": -30, "PHL": -40,
+        "JPN": -35, "USA": -20, "IND": -15, "TWN": -80, "KOR": 20, "IDN": 20,
+        "BRA": 40, "ZAF": 40, "NGA": 45, "EGY": 35, "SAU": 40, "IRN": 30,
+        "DEU": 30, "FRA": 30, "GBR": 25, "AUS": 5
+      },
+      "personality_traits": ["pragmatique", "souverainiste", "nationaliste", "expansionniste_doux", "non_ingérence"],
+      "description": "Deuxième économie mondiale en pleine ascension, puissance régionale cherchant à étendre son influence mondiale.",
+      "color": "#cc0000"
+    },
+    "RUS": {
+      "id": "RUS",
+      "name": "Fédération de Russie",
+      "flag": "🇷🇺",
+      "capital": "Moscou",
+      "continent": "Europe/Asie",
+      "population": 144342396,
+      "government_type": "présidentiel_autoritaire",
+      "ideology": "nationalisme_conservateur",
+      "leader": "Vladimir Poutine",
+      "alliances": ["SCO", "BRICS", "CSTO"],
+      "economy": {
+        "gdp": 1283,
+        "gdp_per_capita": 8900,
+        "gdp_growth": -0.2,
+        "inflation": 7.1,
+        "unemployment": 5.6,
+        "debt_pct_gdp": 17.7,
+        "currency": "RUB",
+        "main_sectors": ["énergie", "défense", "matières_premières", "agriculture", "industrie"]
+      },
+      "military": {
+        "strength": 9,
+        "active_personnel": 798527,
+        "nuclear_weapons": true,
+        "defense_budget_pct": 5.3
+      },
+      "relations": {
+        "CHN": 55, "BLR": 80, "ARM": 70, "KAZ": 65, "SYR": 75, "IRN": 40,
+        "USA": -55, "GBR": -50, "FRA": -30, "DEU": -35, "POL": -70, "UKR": -85,
+        "GEO": -60, "JPN": -30, "TUR": -10, "SAU": -25, "ISR": 10,
+        "IND": 55, "BRA": 30, "CUB": 60, "VNM": 40, "EGY": 45, "NGA": 25
+      },
+      "personality_traits": ["défensif", "nationaliste", "révisionniste", "pragmatique", "anti_OTAN"],
+      "description": "Ancienne superpuissance cherchant à restaurer son influence, engagée en Ukraine et en Syrie.",
+      "color": "#cc4400"
+    },
+    "DEU": {
+      "id": "DEU",
+      "name": "République Fédérale d'Allemagne",
+      "flag": "🇩🇪",
+      "capital": "Berlin",
+      "continent": "Europe",
+      "population": 82176684,
+      "government_type": "démocratie_parlementaire",
+      "ideology": "démocratie_libérale",
+      "leader": "Angela Merkel",
+      "alliances": ["NATO", "EU"],
+      "economy": {
+        "gdp": 3467,
+        "gdp_per_capita": 42200,
+        "gdp_growth": 1.7,
+        "inflation": 0.5,
+        "unemployment": 4.1,
+        "debt_pct_gdp": 68.0,
+        "currency": "EUR",
+        "main_sectors": ["automobile", "ingénierie", "chimie", "exportations", "finance"]
+      },
+      "military": {
+        "strength": 5,
+        "active_personnel": 177900,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.2
+      },
+      "relations": {
+        "FRA": 82, "POL": 65, "NLD": 80, "BEL": 78, "AUT": 80, "CHE": 75,
+        "USA": 72, "GBR": 70, "ITA": 72, "ESP": 70, "JPN": 65,
+        "RUS": -35, "CHN": 30, "TUR": 40, "UKR": 50, "ISR": 60
+      },
+      "personality_traits": ["multilatéraliste", "économiquement_dominant", "prudent_militairement", "pro_européen", "humaniste"],
+      "description": "Locomotive économique de l'Europe et leader de l'UE, confrontée à la crise des réfugiés.",
+      "color": "#333333"
+    },
+    "FRA": {
+      "id": "FRA",
+      "name": "République Française",
+      "flag": "🇫🇷",
+      "capital": "Paris",
+      "continent": "Europe",
+      "population": 66896109,
+      "government_type": "semi_présidentiel",
+      "ideology": "démocratie_libérale",
+      "leader": "François Hollande",
+      "alliances": ["NATO", "EU"],
+      "economy": {
+        "gdp": 2466,
+        "gdp_per_capita": 36860,
+        "gdp_growth": 1.1,
+        "inflation": 0.3,
+        "unemployment": 10.0,
+        "debt_pct_gdp": 96.2,
+        "currency": "EUR",
+        "main_sectors": ["aéronautique", "luxe", "agriculture", "tourisme", "défense", "finance"]
+      },
+      "military": {
+        "strength": 7,
+        "active_personnel": 205000,
+        "nuclear_weapons": true,
+        "defense_budget_pct": 1.8
+      },
+      "relations": {
+        "DEU": 82, "GBR": 75, "USA": 75, "ITA": 75, "ESP": 72, "BEL": 80,
+        "MAR": 65, "ALG": 50, "TUN": 55, "CIV": 60, "CAF": 45,
+        "RUS": -30, "CHN": 30, "ISR": 55, "SAU": 45, "LBN": 55, "SYR": -50,
+        "JPN": 60, "IND": 50
+      },
+      "personality_traits": ["indépendant", "interventionniste", "pro_européen", "laïc", "puissance_nucléaire"],
+      "description": "Puissance nucléaire et membre permanent du Conseil de Sécurité, très active militairement en Afrique et au Moyen-Orient.",
+      "color": "#002395"
+    },
+    "GBR": {
+      "id": "GBR",
+      "name": "Royaume-Uni",
+      "flag": "🇬🇧",
+      "capital": "Londres",
+      "continent": "Europe",
+      "population": 65648100,
+      "government_type": "monarchie_constitutionnelle",
+      "ideology": "démocratie_libérale",
+      "leader": "David Cameron",
+      "alliances": ["NATO", "EU", "Five Eyes"],
+      "economy": {
+        "gdp": 2618,
+        "gdp_per_capita": 39900,
+        "gdp_growth": 1.8,
+        "inflation": 0.7,
+        "unemployment": 5.1,
+        "debt_pct_gdp": 89.3,
+        "currency": "GBP",
+        "main_sectors": ["finance", "services", "aéronautique", "défense", "médias"]
+      },
+      "military": {
+        "strength": 7,
+        "active_personnel": 153690,
+        "nuclear_weapons": true,
+        "defense_budget_pct": 2.0
+      },
+      "relations": {
+        "USA": 90, "AUS": 85, "CAN": 87, "NZL": 85, "FRA": 75, "DEU": 70,
+        "IND": 60, "SAU": 55, "ISR": 65, "JPN": 65,
+        "RUS": -50, "CHN": 20, "ARG": -20, "IRL": 55
+      },
+      "personality_traits": ["atlantiste", "pragmatique", "puissance_nucléaire", "eurosceptique", "libre_échangiste"],
+      "description": "Puissance mondiale cherchant sa voie entre l'Europe et le monde anglophone. Le référendum Brexit est prévu en juin 2016.",
+      "color": "#012169"
+    },
+    "JPN": {
+      "id": "JPN",
+      "name": "Japon",
+      "flag": "🇯🇵",
+      "capital": "Tokyo",
+      "continent": "Asie",
+      "population": 126994511,
+      "government_type": "monarchie_constitutionnelle",
+      "ideology": "démocratie_libérale",
+      "leader": "Shinzo Abe",
+      "alliances": ["US-Japan Alliance"],
+      "economy": {
+        "gdp": 4940,
+        "gdp_per_capita": 38900,
+        "gdp_growth": 0.6,
+        "inflation": -0.1,
+        "unemployment": 3.1,
+        "debt_pct_gdp": 248.0,
+        "currency": "JPY",
+        "main_sectors": ["automobile", "électronique", "robotique", "finance", "assurance"]
+      },
+      "military": {
+        "strength": 6,
+        "active_personnel": 247160,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 0.9
+      },
+      "relations": {
+        "USA": 80, "KOR": 30, "AUS": 70, "IND": 65, "GBR": 65, "FRA": 60,
+        "CHN": -35, "RUS": -30, "PRK": -90,
+        "VNM": 50, "PHL": 55, "IDN": 50, "MYS": 50
+      },
+      "personality_traits": ["pacifiste_révisionniste", "technologique", "économiquement_puissant", "pro_américain", "anti_Chine"],
+      "description": "Troisième économie mondiale, cherchant à se réarmer face aux menaces chinoises et nord-coréennes sous Abe.",
+      "color": "#bc002d"
+    },
+    "IND": {
+      "id": "IND",
+      "name": "Inde",
+      "flag": "🇮🇳",
+      "capital": "New Delhi",
+      "continent": "Asie",
+      "population": 1324171354,
+      "government_type": "démocratie_fédérale",
+      "ideology": "nationalisme_hindou",
+      "leader": "Narendra Modi",
+      "alliances": ["SCO", "BRICS"],
+      "economy": {
+        "gdp": 2264,
+        "gdp_per_capita": 1709,
+        "gdp_growth": 7.1,
+        "inflation": 4.9,
+        "unemployment": 3.5,
+        "debt_pct_gdp": 68.5,
+        "currency": "INR",
+        "main_sectors": ["informatique", "agriculture", "textile", "pharmacie", "services"]
+      },
+      "military": {
+        "strength": 7,
+        "active_personnel": 1395100,
+        "nuclear_weapons": true,
+        "defense_budget_pct": 2.5
+      },
+      "relations": {
+        "RUS": 55, "FRA": 50, "ISR": 60, "USA": 55, "JPN": 65,
+        "CHN": -15, "PAK": -80, "BGD": 20,
+        "BRA": 45, "ZAF": 50, "IDN": 45, "MYS": 40
+      },
+      "personality_traits": ["non_aligné", "nationaliste", "émergent", "souverainiste", "prudent"],
+      "description": "Plus grande démocratie du monde, économie à croissance rapide naviguant entre grandes puissances.",
+      "color": "#ff9933"
+    },
+    "BRA": {
+      "id": "BRA",
+      "name": "République Fédérative du Brésil",
+      "flag": "🇧🇷",
+      "capital": "Brasília",
+      "continent": "Amérique du Sud",
+      "population": 207652865,
+      "government_type": "démocratie_fédérale",
+      "ideology": "progressiste",
+      "leader": "Dilma Rousseff",
+      "alliances": ["BRICS", "MERCOSUR", "UNASUR"],
+      "economy": {
+        "gdp": 1796,
+        "gdp_per_capita": 8649,
+        "gdp_growth": -3.8,
+        "inflation": 8.7,
+        "unemployment": 8.5,
+        "debt_pct_gdp": 69.5,
+        "currency": "BRL",
+        "main_sectors": ["agriculture", "industrie", "pétrole", "mines", "services"]
+      },
+      "military": {
+        "strength": 5,
+        "active_personnel": 334500,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.3
+      },
+      "relations": {
+        "ARG": 60, "VEN": 40, "COL": 45, "CHI": 55, "URY": 65, "PRY": 55,
+        "USA": 50, "CHN": 40, "RUS": 30, "FRA": 50, "GBR": 45, "DEU": 50,
+        "IND": 45, "ZAF": 50, "BOL": 50
+      },
+      "personality_traits": ["diplomate", "régionaliste", "émergent", "en_crise_interne", "multilatéraliste"],
+      "description": "Plus grande puissance d'Amérique du Sud, traversant une grave crise économique et politique (affaire Lava Jato).",
+      "color": "#009c3b"
+    },
+    "CAN": {
+      "id": "CAN",
+      "name": "Canada",
+      "flag": "🇨🇦",
+      "capital": "Ottawa",
+      "continent": "Amérique du Nord",
+      "population": 36286425,
+      "government_type": "monarchie_constitutionnelle",
+      "ideology": "démocratie_libérale",
+      "leader": "Justin Trudeau",
+      "alliances": ["NATO", "Five Eyes", "G7"],
+      "economy": {
+        "gdp": 1529,
+        "gdp_per_capita": 42158,
+        "gdp_growth": 1.4,
+        "inflation": 1.4,
+        "unemployment": 7.0,
+        "debt_pct_gdp": 98.0,
+        "currency": "CAD",
+        "main_sectors": ["énergie", "mines", "agriculture", "automobile", "services"]
+      },
+      "military": {
+        "strength": 4,
+        "active_personnel": 68000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.0
+      },
+      "relations": {
+        "USA": 92, "GBR": 87, "AUS": 82, "FRA": 75, "DEU": 70, "JPN": 65,
+        "RUS": -40, "CHN": 15
+      },
+      "personality_traits": ["multilatéraliste", "diplomate", "progressiste", "pro_américain", "peacekeeping"],
+      "description": "Démocratie libérale et partenaire privilégié des États-Unis, sous la direction du nouveau premier ministre Trudeau.",
+      "color": "#ff0000"
+    },
+    "AUS": {
+      "id": "AUS",
+      "name": "Australie",
+      "flag": "🇦🇺",
+      "capital": "Canberra",
+      "continent": "Océanie",
+      "population": 24127159,
+      "government_type": "monarchie_constitutionnelle",
+      "ideology": "démocratie_libérale",
+      "leader": "Malcolm Turnbull",
+      "alliances": ["Five Eyes", "US-Australia Alliance"],
+      "economy": {
+        "gdp": 1205,
+        "gdp_per_capita": 49927,
+        "gdp_growth": 2.5,
+        "inflation": 1.3,
+        "unemployment": 5.8,
+        "debt_pct_gdp": 43.3,
+        "currency": "AUD",
+        "main_sectors": ["mines", "agriculture", "services", "éducation", "tourisme"]
+      },
+      "military": {
+        "strength": 4,
+        "active_personnel": 58000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.9
+      },
+      "relations": {
+        "USA": 88, "GBR": 85, "CAN": 82, "NZL": 90, "JPN": 70, "IND": 60,
+        "CHN": 30, "RUS": -40, "IDN": 50
+      },
+      "personality_traits": ["atlantiste", "pragmatique", "libre_échangiste", "pro_américain", "indo_pacifique"],
+      "description": "Puissance régionale dans l'Indo-Pacifique, alliée des États-Unis et inquiète de la montée en puissance chinoise.",
+      "color": "#00843d"
+    },
+    "KOR": {
+      "id": "KOR",
+      "name": "République de Corée",
+      "flag": "🇰🇷",
+      "capital": "Séoul",
+      "continent": "Asie",
+      "population": 51245707,
+      "government_type": "démocratie_présidentielle",
+      "ideology": "démocratie_libérale",
+      "leader": "Park Geun-hye",
+      "alliances": ["US-Korea Alliance"],
+      "economy": {
+        "gdp": 1411,
+        "gdp_per_capita": 27538,
+        "gdp_growth": 2.8,
+        "inflation": 1.0,
+        "unemployment": 3.7,
+        "debt_pct_gdp": 38.3,
+        "currency": "KRW",
+        "main_sectors": ["électronique", "automobile", "construction_navale", "pétrochimie", "services"]
+      },
+      "military": {
+        "strength": 6,
+        "active_personnel": 630000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 2.4
+      },
+      "relations": {
+        "USA": 78, "JPN": 30, "AUS": 65, "DEU": 60, "FRA": 55,
+        "CHN": 20, "PRK": -90, "RUS": -25
+      },
+      "personality_traits": ["technologique", "défensif", "pro_américain", "anxieux_Nord_Corée", "exportateur"],
+      "description": "Économie technologique avancée constamment sous la menace nucléaire nord-coréenne.",
+      "color": "#003478"
+    },
+    "MEX": {
+      "id": "MEX",
+      "name": "Mexique",
+      "flag": "🇲🇽",
+      "capital": "Mexico",
+      "continent": "Amérique du Nord",
+      "population": 127540423,
+      "government_type": "démocratie_fédérale",
+      "ideology": "social_démocrate",
+      "leader": "Enrique Peña Nieto",
+      "alliances": ["NAFTA"],
+      "economy": {
+        "gdp": 1046,
+        "gdp_per_capita": 8208,
+        "gdp_growth": 2.3,
+        "inflation": 2.8,
+        "unemployment": 3.9,
+        "debt_pct_gdp": 57.7,
+        "currency": "MXN",
+        "main_sectors": ["pétrole", "automobile", "agriculture", "tourisme", "électronique"]
+      },
+      "military": {
+        "strength": 4,
+        "active_personnel": 277150,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 0.6
+      },
+      "relations": {
+        "USA": 60, "CAN": 65, "BRA": 50, "COL": 55, "ARG": 50, "CHI": 55,
+        "CHN": 30, "ESP": 65, "RUS": -10
+      },
+      "personality_traits": ["pragmatique", "dépendant_USA", "pro_libre_échange", "lutte_narcos", "régionaliste"],
+      "description": "Économie émergente fortement intégrée aux États-Unis, confrontée aux problèmes des cartels de drogue.",
+      "color": "#006847"
+    },
+    "IDN": {
+      "id": "IDN",
+      "name": "Indonésie",
+      "flag": "🇮🇩",
+      "capital": "Jakarta",
+      "continent": "Asie",
+      "population": 261115456,
+      "government_type": "démocratie_présidentielle",
+      "ideology": "nationalisme_modéré",
+      "leader": "Joko Widodo",
+      "alliances": ["ASEAN", "G20"],
+      "economy": {
+        "gdp": 932,
+        "gdp_per_capita": 3570,
+        "gdp_growth": 5.0,
+        "inflation": 3.5,
+        "unemployment": 6.0,
+        "debt_pct_gdp": 27.5,
+        "currency": "IDR",
+        "main_sectors": ["matières_premières", "agriculture", "industrie", "services", "mines"]
+      },
+      "military": {
+        "strength": 4,
+        "active_personnel": 395500,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 0.9
+      },
+      "relations": {
+        "AUS": 50, "JPN": 50, "USA": 55, "CHN": 20, "SGP": 65, "MYS": 60,
+        "IND": 45, "RUS": 25
+      },
+      "personality_traits": ["non_aligné", "pragmatique", "islamique_modéré", "émergent", "souverainiste"],
+      "description": "Plus grand archipel du monde et la plus grande économie d'Asie du Sud-Est.",
+      "color": "#ce1126"
+    },
+    "SAU": {
+      "id": "SAU",
+      "name": "Arabie Saoudite",
+      "flag": "🇸🇦",
+      "capital": "Riyad",
+      "continent": "Moyen-Orient",
+      "population": 32157974,
+      "government_type": "monarchie_absolue",
+      "ideology": "islamisme_sunnite_wahhabite",
+      "leader": "Roi Salmane bin Abdulaziz",
+      "alliances": ["GULF", "Ligue Arabe"],
+      "economy": {
+        "gdp": 646,
+        "gdp_per_capita": 20090,
+        "gdp_growth": 1.7,
+        "inflation": 3.5,
+        "unemployment": 5.6,
+        "debt_pct_gdp": 13.1,
+        "currency": "SAR",
+        "main_sectors": ["pétrole", "pétrochimie", "construction", "services"]
+      },
+      "military": {
+        "strength": 5,
+        "active_personnel": 225000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 13.5
+      },
+      "relations": {
+        "ARE": 80, "KWT": 75, "BHR": 80, "JOR": 65, "EGY": 60, "PAK": 60,
+        "USA": 55, "GBR": 55, "FRA": 45, "CHN": 40,
+        "IRN": -75, "YEM": -40, "QAT": 50, "ISR": -50, "SYR": -40, "RUS": -25
+      },
+      "personality_traits": ["monarchique", "conservateur_religieux", "anti_iranien", "pro_occidental_pragmatique", "pétro_diplomatie"],
+      "description": "Premier exportateur mondial de pétrole, en guerre proxy avec l'Iran pour la domination du Moyen-Orient.",
+      "color": "#006c35"
+    },
+    "TUR": {
+      "id": "TUR",
+      "name": "République de Turquie",
+      "flag": "🇹🇷",
+      "capital": "Ankara",
+      "continent": "Europe/Asie",
+      "population": 79814871,
+      "government_type": "démocratie_présidentielle",
+      "ideology": "islamisme_nationaliste",
+      "leader": "Recep Tayyip Erdoğan",
+      "alliances": ["NATO"],
+      "economy": {
+        "gdp": 863,
+        "gdp_per_capita": 10807,
+        "gdp_growth": 3.1,
+        "inflation": 7.7,
+        "unemployment": 10.4,
+        "debt_pct_gdp": 28.3,
+        "currency": "TRY",
+        "main_sectors": ["industrie", "tourisme", "agriculture", "textiles", "construction"]
+      },
+      "military": {
+        "strength": 5,
+        "active_personnel": 355200,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.6
+      },
+      "relations": {
+        "USA": 45, "DEU": 40, "FRA": 35, "GBR": 45, "AZE": 80, "TKM": 55,
+        "RUS": -10, "KUR": -60, "SYR": -60, "IRN": 20, "SAU": 40,
+        "ISR": -20, "ARG": 25, "EGY": -30, "CHN": 25
+      },
+      "personality_traits": ["nationaliste", "islamiste_modéré", "pivot_géographique", "autoritaire_croissant", "anti_kurde"],
+      "description": "Membre de l'OTAN aux ambitions régionales, de plus en plus autoritaire sous Erdoğan, impliquée dans la crise syrienne.",
+      "color": "#e30a17"
+    },
+    "ITA": {
+      "id": "ITA",
+      "name": "République Italienne",
+      "flag": "🇮🇹",
+      "capital": "Rome",
+      "continent": "Europe",
+      "population": 60627498,
+      "government_type": "démocratie_parlementaire",
+      "ideology": "démocratie_libérale",
+      "leader": "Matteo Renzi",
+      "alliances": ["NATO", "EU", "G7"],
+      "economy": {
+        "gdp": 1853,
+        "gdp_per_capita": 30590,
+        "gdp_growth": 0.9,
+        "inflation": 0.1,
+        "unemployment": 11.7,
+        "debt_pct_gdp": 132.7,
+        "currency": "EUR",
+        "main_sectors": ["tourisme", "mode", "agroalimentaire", "machine_outil", "automobile"]
+      },
+      "military": {
+        "strength": 4,
+        "active_personnel": 170000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.1
+      },
+      "relations": {
+        "FRA": 75, "DEU": 72, "ESP": 70, "USA": 70, "GBR": 68, "TUR": 50,
+        "LBY": 40, "RUS": -25, "CHN": 25
+      },
+      "personality_traits": ["pro_européen", "méditerranéen", "économiquement_fragile", "diplomatique", "culturellement_influent"],
+      "description": "Grande puissance européenne fragilisée par une dette massive et une instabilité politique chronique.",
+      "color": "#009246"
+    },
+    "ESP": {
+      "id": "ESP",
+      "name": "Royaume d'Espagne",
+      "flag": "🇪🇸",
+      "capital": "Madrid",
+      "continent": "Europe",
+      "population": 46443959,
+      "government_type": "monarchie_constitutionnelle",
+      "ideology": "démocratie_libérale",
+      "leader": "Mariano Rajoy",
+      "alliances": ["NATO", "EU"],
+      "economy": {
+        "gdp": 1238,
+        "gdp_per_capita": 26662,
+        "gdp_growth": 3.3,
+        "inflation": -0.5,
+        "unemployment": 19.6,
+        "debt_pct_gdp": 99.4,
+        "currency": "EUR",
+        "main_sectors": ["tourisme", "automobile", "agroalimentaire", "services", "construction"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 122850,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 0.9
+      },
+      "relations": {
+        "FRA": 72, "DEU": 68, "ITA": 70, "USA": 68, "MAR": 55, "ALG": 40,
+        "MEX": 65, "COL": 60, "ARG": 60, "CUB": 55, "RUS": -25, "CHN": 20
+      },
+      "personality_traits": ["pro_européen", "méditerranéen", "crise_catalane", "en_reprise_économique", "hispanophone"],
+      "description": "Espagne en reprise économique après la crise, confrontée au défi sécessionniste catalan.",
+      "color": "#aa151b"
+    },
+    "ARG": {
+      "id": "ARG",
+      "name": "République Argentine",
+      "flag": "🇦🇷",
+      "capital": "Buenos Aires",
+      "continent": "Amérique du Sud",
+      "population": 43847430,
+      "government_type": "démocratie_présidentielle",
+      "ideology": "libéralisme_économique",
+      "leader": "Mauricio Macri",
+      "alliances": ["MERCOSUR", "G20"],
+      "economy": {
+        "gdp": 545,
+        "gdp_per_capita": 12432,
+        "gdp_growth": -2.1,
+        "inflation": 27.0,
+        "unemployment": 8.5,
+        "debt_pct_gdp": 55.0,
+        "currency": "ARS",
+        "main_sectors": ["agriculture", "énergie", "industrie", "mines", "services"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 74000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 0.9
+      },
+      "relations": {
+        "BRA": 60, "URY": 65, "CHI": 55, "BOL": 50, "USA": 40, "GBR": -15,
+        "CHN": 40, "RUS": 25, "FRA": 50, "ESP": 60
+      },
+      "personality_traits": ["pragmatique", "pro_marché_nouveau", "régionaliste", "crise_économique", "anti_FMI_historique"],
+      "description": "Argentine sous le nouveau président Macri tentant de redresser une économie en crise par des réformes libérales.",
+      "color": "#74acdf"
+    },
+    "ZAF": {
+      "id": "ZAF",
+      "name": "République d'Afrique du Sud",
+      "flag": "🇿🇦",
+      "capital": "Pretoria",
+      "continent": "Afrique",
+      "population": 55909900,
+      "government_type": "démocratie_présidentielle",
+      "ideology": "social_démocrate",
+      "leader": "Jacob Zuma",
+      "alliances": ["BRICS", "UA"],
+      "economy": {
+        "gdp": 295,
+        "gdp_per_capita": 5275,
+        "gdp_growth": 0.3,
+        "inflation": 6.4,
+        "unemployment": 26.7,
+        "debt_pct_gdp": 50.7,
+        "currency": "ZAR",
+        "main_sectors": ["mines", "finance", "industrie", "agriculture", "tourisme"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 78050,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.1
+      },
+      "relations": {
+        "CHN": 40, "RUS": 30, "IND": 50, "BRA": 50, "ZWE": 55, "ZMB": 60,
+        "MOZ": 65, "BTS": 60, "USA": 45, "GBR": 50, "EU": 50
+      },
+      "personality_traits": ["non_aligné", "panafricaniste", "émergent_fragilisé", "corruption_endémique", "régional_leader"],
+      "description": "Puissance économique de l'Afrique subsaharienne, confrontée à des inégalités massives et une corruption sous Zuma.",
+      "color": "#007a4d"
+    },
+    "IRN": {
+      "id": "IRN",
+      "name": "République Islamique d'Iran",
+      "flag": "🇮🇷",
+      "capital": "Téhéran",
+      "continent": "Moyen-Orient",
+      "population": 80277428,
+      "government_type": "théocratie_républicaine",
+      "ideology": "islamisme_chiite",
+      "leader": "Hassan Rohani / Guide Ali Khamenei",
+      "alliances": [],
+      "economy": {
+        "gdp": 412,
+        "gdp_per_capita": 5132,
+        "gdp_growth": 4.4,
+        "inflation": 9.0,
+        "unemployment": 12.4,
+        "debt_pct_gdp": 12.4,
+        "currency": "IRR",
+        "main_sectors": ["pétrole", "pétrochimie", "agriculture", "mines", "industrie"]
+      },
+      "military": {
+        "strength": 6,
+        "active_personnel": 523000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 3.0
+      },
+      "relations": {
+        "RUS": 40, "CHN": 30, "SYR": 75, "IRQ": 50, "LBN": 60, "YEM_houthis": 65,
+        "SAU": -75, "ISR": -95, "USA": -65, "GBR": -50, "ARE": -40,
+        "TUR": 20, "PAK": 25, "IND": 30
+      },
+      "personality_traits": ["révolutionnaire_islamique", "anti_occidental", "anti_israélien", "chiite_expansionniste", "résistant_aux_sanctions"],
+      "description": "République islamique sortant des sanctions du JCPOA (accord nucléaire 2015), cherchant à étendre son influence régionale.",
+      "color": "#239f40"
+    },
+    "ISR": {
+      "id": "ISR",
+      "name": "État d'Israël",
+      "flag": "🇮🇱",
+      "capital": "Jérusalem",
+      "continent": "Moyen-Orient",
+      "population": 8547100,
+      "government_type": "démocratie_parlementaire",
+      "ideology": "sionisme_libéral",
+      "leader": "Benjamin Netanyahu",
+      "alliances": ["US-Israel Alliance"],
+      "economy": {
+        "gdp": 318,
+        "gdp_per_capita": 37200,
+        "gdp_growth": 4.0,
+        "inflation": -0.6,
+        "unemployment": 4.9,
+        "debt_pct_gdp": 63.8,
+        "currency": "ILS",
+        "main_sectors": ["hi-tech", "défense", "diamants", "pharma", "agriculture"]
+      },
+      "military": {
+        "strength": 7,
+        "active_personnel": 170000,
+        "nuclear_weapons": true,
+        "defense_budget_pct": 5.7
+      },
+      "relations": {
+        "USA": 82, "GBR": 65, "DEU": 60, "FRA": 55, "IND": 60, "AZE": 55,
+        "SAU": -50, "IRN": -95, "SYR": -80, "LBN": -70, "PSE": -70,
+        "JOR": 30, "EGY": 30, "RUS": 10, "CHN": 20
+      },
+      "personality_traits": ["sécuritaire", "technologique", "anti_Iran", "pro_américain", "souverainiste"],
+      "description": "État très sécuritarisé, puissance régionale et technologique, confronté au conflit israélo-palestinien et à la menace iranienne.",
+      "color": "#0038b8"
+    },
+    "PRK": {
+      "id": "PRK",
+      "name": "République Populaire Démocratique de Corée",
+      "flag": "🇰🇵",
+      "capital": "Pyongyang",
+      "continent": "Asie",
+      "population": 25368620,
+      "government_type": "totalitarisme",
+      "ideology": "Juche_stalinisme",
+      "leader": "Kim Jong-un",
+      "alliances": [],
+      "economy": {
+        "gdp": 17,
+        "gdp_per_capita": 665,
+        "gdp_growth": 1.0,
+        "inflation": 0.0,
+        "unemployment": 0.0,
+        "debt_pct_gdp": 0.0,
+        "currency": "KPW",
+        "main_sectors": ["armement", "mines", "agriculture", "industrie_lourde"]
+      },
+      "military": {
+        "strength": 7,
+        "active_personnel": 1190000,
+        "nuclear_weapons": true,
+        "defense_budget_pct": 22.0
+      },
+      "relations": {
+        "CHN": 20, "RUS": 20, "IRN": 30, "SYR": 25,
+        "USA": -95, "KOR": -90, "JPN": -90, "AUS": -80, "GBR": -70, "FRA": -70
+      },
+      "personality_traits": ["belliqueux", "nucléaire_obsessionnel", "isolationniste", "imprévisible", "anti_américain"],
+      "description": "Régime totalitaire poursuivant un programme nucléaire en dépit des sanctions. Vient d'effectuer un 4ème essai nucléaire en janvier 2016.",
+      "color": "#024fa1"
+    },
+    "UKR": {
+      "id": "UKR",
+      "name": "Ukraine",
+      "flag": "🇺🇦",
+      "capital": "Kyiv",
+      "continent": "Europe",
+      "population": 44624373,
+      "government_type": "démocratie_présidentielle",
+      "ideology": "libéralisme_nationaliste",
+      "leader": "Petro Porochenko",
+      "alliances": [],
+      "economy": {
+        "gdp": 93,
+        "gdp_per_capita": 2096,
+        "gdp_growth": 2.4,
+        "inflation": 13.9,
+        "unemployment": 9.1,
+        "debt_pct_gdp": 81.0,
+        "currency": "UAH",
+        "main_sectors": ["agriculture", "industrie", "métallurgie", "IT", "chimie"]
+      },
+      "military": {
+        "strength": 5,
+        "active_personnel": 204000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 3.9
+      },
+      "relations": {
+        "USA": 60, "DEU": 50, "FRA": 45, "GBR": 55, "POL": 65, "CAN": 60,
+        "RUS": -85, "BLR": 20
+      },
+      "personality_traits": ["pro_européen", "anti_russe", "en_guerre", "nationaliste", "réformateur"],
+      "description": "Ukraine en guerre depuis l'annexion de la Crimée par la Russie en 2014. Le Donbass est le théâtre de combats continus.",
+      "color": "#ffd700"
+    },
+    "POL": {
+      "id": "POL",
+      "name": "République de Pologne",
+      "flag": "🇵🇱",
+      "capital": "Varsovie",
+      "continent": "Europe",
+      "population": 37967209,
+      "government_type": "démocratie_parlementaire",
+      "ideology": "conservatisme_nationaliste",
+      "leader": "Beata Szydło",
+      "alliances": ["NATO", "EU"],
+      "economy": {
+        "gdp": 471,
+        "gdp_per_capita": 12414,
+        "gdp_growth": 3.1,
+        "inflation": -0.6,
+        "unemployment": 8.8,
+        "debt_pct_gdp": 54.4,
+        "currency": "PLN",
+        "main_sectors": ["industrie", "agriculture", "services", "IT", "construction"]
+      },
+      "military": {
+        "strength": 4,
+        "active_personnel": 99300,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 2.0
+      },
+      "relations": {
+        "USA": 72, "DEU": 65, "CZE": 65, "HUN": 50, "LTU": 70, "UKR": 65,
+        "RUS": -70, "BLR": -30
+      },
+      "personality_traits": ["atlantiste", "anti_russe", "souverainiste", "catholique_conservateur", "eurosceptique_croissant"],
+      "description": "Pologne sous le gouvernement nationaliste PiS, fer de lance de l'opposition à la Russie au sein de l'UE.",
+      "color": "#dc143c"
+    },
+    "NLD": {
+      "id": "NLD",
+      "name": "Pays-Bas",
+      "flag": "🇳🇱",
+      "capital": "Amsterdam",
+      "continent": "Europe",
+      "population": 17018408,
+      "government_type": "monarchie_constitutionnelle",
+      "ideology": "démocratie_libérale",
+      "leader": "Mark Rutte",
+      "alliances": ["NATO", "EU"],
+      "economy": {
+        "gdp": 777,
+        "gdp_per_capita": 45640,
+        "gdp_growth": 2.0,
+        "inflation": 0.3,
+        "unemployment": 6.9,
+        "debt_pct_gdp": 65.1,
+        "currency": "EUR",
+        "main_sectors": ["logistique", "agriculture", "finance", "énergie", "chimie"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 36950,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.1
+      },
+      "relations": {
+        "DEU": 80, "BEL": 78, "FRA": 72, "USA": 72, "GBR": 70, "JPN": 65,
+        "RUS": -45, "CHN": 20
+      },
+      "personality_traits": ["libre_échangiste", "multilatéraliste", "pragmatique", "commercial", "libéral"],
+      "description": "Petite puissance économique avec un poids diplomatique considérable grâce à Rotterdam et ses institutions financières.",
+      "color": "#ff6600"
+    },
+    "CHE": {
+      "id": "CHE",
+      "name": "Confédération Suisse",
+      "flag": "🇨🇭",
+      "capital": "Berne",
+      "continent": "Europe",
+      "population": 8372098,
+      "government_type": "démocratie_directe_fédérale",
+      "ideology": "neutralité",
+      "leader": "Johann Schneider-Ammann",
+      "alliances": [],
+      "economy": {
+        "gdp": 659,
+        "gdp_per_capita": 78730,
+        "gdp_growth": 1.3,
+        "inflation": -0.4,
+        "unemployment": 4.7,
+        "debt_pct_gdp": 34.4,
+        "currency": "CHF",
+        "main_sectors": ["finance", "pharma", "horlogerie", "tourisme", "technologie"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 21000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 0.7
+      },
+      "relations": {
+        "DEU": 75, "FRA": 72, "ITA": 70, "AUT": 72, "USA": 65, "GBR": 65,
+        "RUS": 20, "CHN": 30
+      },
+      "personality_traits": ["neutre", "diplomate", "financier", "humanitaire", "médiateur"],
+      "description": "La Suisse, bastion de la neutralité, abrite le CICR, l'ONU-Genève et les grandes banques mondiales.",
+      "color": "#ff0000"
+    },
+    "SWE": {
+      "id": "SWE",
+      "name": "Royaume de Suède",
+      "flag": "🇸🇪",
+      "capital": "Stockholm",
+      "continent": "Europe",
+      "population": 9903798,
+      "government_type": "monarchie_constitutionnelle",
+      "ideology": "social_démocratie",
+      "leader": "Stefan Löfven",
+      "alliances": ["EU"],
+      "economy": {
+        "gdp": 511,
+        "gdp_per_capita": 51610,
+        "gdp_growth": 3.3,
+        "inflation": 1.1,
+        "unemployment": 7.0,
+        "debt_pct_gdp": 43.5,
+        "currency": "SEK",
+        "main_sectors": ["industrie", "technologie", "services", "défense", "forêt"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 22000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.1
+      },
+      "relations": {
+        "FIN": 85, "NOR": 85, "DNK": 82, "DEU": 72, "USA": 65, "GBR": 65,
+        "RUS": -50
+      },
+      "personality_traits": ["humaniste", "pro_réfugiés", "neutre_militairement", "social_démocrate", "innovant"],
+      "description": "Suède à la politique étrangère humaniste, accueillant le plus grand nombre de réfugiés syriens en 2016.",
+      "color": "#006aa7"
+    },
+    "NOR": {
+      "id": "NOR",
+      "name": "Royaume de Norvège",
+      "flag": "🇳🇴",
+      "capital": "Oslo",
+      "continent": "Europe",
+      "population": 5213985,
+      "government_type": "monarchie_constitutionnelle",
+      "ideology": "social_démocratie",
+      "leader": "Erna Solberg",
+      "alliances": ["NATO"],
+      "economy": {
+        "gdp": 371,
+        "gdp_per_capita": 70812,
+        "gdp_growth": 1.0,
+        "inflation": 3.6,
+        "unemployment": 4.7,
+        "debt_pct_gdp": 32.8,
+        "currency": "NOK",
+        "main_sectors": ["pétrole", "gaz", "marine", "aquaculture", "finance"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 25800,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.5
+      },
+      "relations": {
+        "SWE": 85, "DNK": 82, "FIN": 78, "GBR": 72, "USA": 70, "DEU": 70,
+        "RUS": -45
+      },
+      "personality_traits": ["pétro_état", "humanitaire", "atlantiste", "souverainiste", "diplomate"],
+      "description": "Norvège riche en pétrole, très active en diplomatie et humanitaire, membre fondateur de l'OTAN.",
+      "color": "#ef2b2d"
+    },
+    "PAK": {
+      "id": "PAK",
+      "name": "République Islamique du Pakistan",
+      "flag": "🇵🇰",
+      "capital": "Islamabad",
+      "continent": "Asie",
+      "population": 192826502,
+      "government_type": "démocratie_parlementaire",
+      "ideology": "islamisme_nationaliste",
+      "leader": "Nawaz Sharif",
+      "alliances": ["SCO"],
+      "economy": {
+        "gdp": 283,
+        "gdp_per_capita": 1468,
+        "gdp_growth": 4.7,
+        "inflation": 2.9,
+        "unemployment": 6.0,
+        "debt_pct_gdp": 63.3,
+        "currency": "PKR",
+        "main_sectors": ["agriculture", "textiles", "services", "remittances", "industrie"]
+      },
+      "military": {
+        "strength": 6,
+        "active_personnel": 643800,
+        "nuclear_weapons": true,
+        "defense_budget_pct": 3.6
+      },
+      "relations": {
+        "CHN": 70, "SAU": 60, "ARE": 55, "TUR": 50,
+        "IND": -80, "AFG": -30, "USA": 25, "RUS": 10
+      },
+      "personality_traits": ["nucléaire", "pro_Chine", "anti_Inde", "instable_politiquement", "anti_taliban_ambigu"],
+      "description": "Puissance nucléaire en Asie du Sud, dans une relation complexe avec l'Inde et les États-Unis, et la menace talibane.",
+      "color": "#01411c"
+    },
+    "NGA": {
+      "id": "NGA",
+      "name": "République Fédérale du Nigeria",
+      "flag": "🇳🇬",
+      "capital": "Abuja",
+      "continent": "Afrique",
+      "population": 185989640,
+      "government_type": "démocratie_fédérale",
+      "ideology": "pragmatisme",
+      "leader": "Muhammadu Buhari",
+      "alliances": ["UA", "CEDEAO"],
+      "economy": {
+        "gdp": 405,
+        "gdp_per_capita": 2178,
+        "gdp_growth": -1.6,
+        "inflation": 15.7,
+        "unemployment": 13.4,
+        "debt_pct_gdp": 13.4,
+        "currency": "NGN",
+        "main_sectors": ["pétrole", "agriculture", "services", "télécoms", "banque"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 117000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 0.4
+      },
+      "relations": {
+        "GHA": 65, "BEN": 60, "NER": 55, "CMR": 55,
+        "USA": 45, "GBR": 50, "CHN": 45, "ZAF": 50, "FRA": 40
+      },
+      "personality_traits": ["régional_leader", "pétro_état_en_crise", "anti_Boko_Haram", "pragmatique", "africain"],
+      "description": "Plus grande économie d'Afrique en récession à cause de la chute des prix du pétrole, combattant Boko Haram.",
+      "color": "#008751"
+    },
+    "EGY": {
+      "id": "EGY",
+      "name": "République Arabe d'Égypte",
+      "flag": "🇪🇬",
+      "capital": "Le Caire",
+      "continent": "Afrique/Moyen-Orient",
+      "population": 95688681,
+      "government_type": "présidentiel_autoritaire",
+      "ideology": "nationalisme_militaire",
+      "leader": "Abdel Fattah al-Sissi",
+      "alliances": ["Ligue Arabe"],
+      "economy": {
+        "gdp": 332,
+        "gdp_per_capita": 3478,
+        "gdp_growth": 4.2,
+        "inflation": 10.2,
+        "unemployment": 12.7,
+        "debt_pct_gdp": 89.2,
+        "currency": "EGP",
+        "main_sectors": ["tourisme", "canal_de_Suez", "pétrole", "agriculture", "remittances"]
+      },
+      "military": {
+        "strength": 5,
+        "active_personnel": 438500,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.7
+      },
+      "relations": {
+        "SAU": 60, "ARE": 65, "USA": 40, "ISR": 30, "JOR": 55,
+        "RUS": 45, "CHN": 35, "TUR": -30, "LBY": -10, "QAT": -40, "IRN": -40
+      },
+      "personality_traits": ["militaro_autoritaire", "anti_frères_musulmans", "pro_saoudien", "nationaliste", "pivot_régional"],
+      "description": "Égypte sous al-Sissi après le coup d'état de 2013, cherchant la stabilité dans une région en feu.",
+      "color": "#ce1126"
+    },
+    "VNM": {
+      "id": "VNM",
+      "name": "République Socialiste du Vietnam",
+      "flag": "🇻🇳",
+      "capital": "Hanoï",
+      "continent": "Asie",
+      "population": 92700000,
+      "government_type": "parti_unique",
+      "ideology": "communisme_pragmatique",
+      "leader": "Nguyen Xuan Phuc",
+      "alliances": ["ASEAN"],
+      "economy": {
+        "gdp": 202,
+        "gdp_per_capita": 2174,
+        "gdp_growth": 6.2,
+        "inflation": 0.6,
+        "unemployment": 2.3,
+        "debt_pct_gdp": 62.1,
+        "currency": "VND",
+        "main_sectors": ["électronique", "textiles", "agriculture", "tourisme", "aquaculture"]
+      },
+      "military": {
+        "strength": 4,
+        "active_personnel": 482000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 2.4
+      },
+      "relations": {
+        "USA": 50, "JPN": 50, "AUS": 50, "IND": 50, "KOR": 50,
+        "CHN": -30, "RUS": 40
+      },
+      "personality_traits": ["pragmatique", "anti_Chine_historique", "en_développement_rapide", "ouverture_économique", "souverainiste"],
+      "description": "Vietnam se rapprochant des États-Unis tout en gérant des tensions persistantes avec la Chine en mer de Chine.",
+      "color": "#da251d"
+    },
+    "PHL": {
+      "id": "PHL",
+      "name": "République des Philippines",
+      "flag": "🇵🇭",
+      "capital": "Manille",
+      "continent": "Asie",
+      "population": 103320222,
+      "government_type": "démocratie_présidentielle",
+      "ideology": "démocratie_libérale",
+      "leader": "Benigno Aquino III",
+      "alliances": ["ASEAN", "US-Philippines Alliance"],
+      "economy": {
+        "gdp": 305,
+        "gdp_per_capita": 2951,
+        "gdp_growth": 6.9,
+        "inflation": 1.8,
+        "unemployment": 5.7,
+        "debt_pct_gdp": 44.3,
+        "currency": "PHP",
+        "main_sectors": ["remittances", "BPO", "agriculture", "mines", "tourisme"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 125000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.1
+      },
+      "relations": {
+        "USA": 70, "JPN": 55, "AUS": 55, "KOR": 50, "IDN": 55,
+        "CHN": -45, "VNM": 40
+      },
+      "personality_traits": ["pro_américain", "anti_Chine_mer", "démocratique", "en_développement", "diaspora_influente"],
+      "description": "Philippines contestant la Chine en mer de Chine méridionale devant le Tribunal international de La Haye.",
+      "color": "#0038a8"
+    },
+    "COL": {
+      "id": "COL",
+      "name": "République de Colombie",
+      "flag": "🇨🇴",
+      "capital": "Bogotá",
+      "continent": "Amérique du Sud",
+      "population": 48653419,
+      "government_type": "démocratie_présidentielle",
+      "ideology": "libéralisme_modéré",
+      "leader": "Juan Manuel Santos",
+      "alliances": ["UNASUR"],
+      "economy": {
+        "gdp": 282,
+        "gdp_per_capita": 5793,
+        "gdp_growth": 2.0,
+        "inflation": 7.5,
+        "unemployment": 9.8,
+        "debt_pct_gdp": 42.7,
+        "currency": "COP",
+        "main_sectors": ["pétrole", "café", "fleurs", "charbon", "services"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 295000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 3.4
+      },
+      "relations": {
+        "USA": 65, "MEX": 55, "PER": 55, "BRA": 45, "CHI": 50, "ESP": 60,
+        "VEN": -30, "ECU": 40, "RUS": -10
+      },
+      "personality_traits": ["pro_américain", "anti_FARC", "négociateur_paix", "pragmatique", "fragile_économiquement"],
+      "description": "Colombie en cours de négociations historiques de paix avec les FARC, soutenu par les États-Unis.",
+      "color": "#fcd116"
+    },
+    "VEN": {
+      "id": "VEN",
+      "name": "République Bolivarienne du Venezuela",
+      "flag": "🇻🇪",
+      "capital": "Caracas",
+      "continent": "Amérique du Sud",
+      "population": 31568179,
+      "government_type": "présidentiel_autoritaire",
+      "ideology": "socialisme_bolivarien",
+      "leader": "Nicolás Maduro",
+      "alliances": ["ALBA"],
+      "economy": {
+        "gdp": 252,
+        "gdp_per_capita": 7985,
+        "gdp_growth": -8.0,
+        "inflation": 180.0,
+        "unemployment": 17.0,
+        "debt_pct_gdp": 27.0,
+        "currency": "VEF",
+        "main_sectors": ["pétrole"]
+      },
+      "military": {
+        "strength": 2,
+        "active_personnel": 115000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.0
+      },
+      "relations": {
+        "CUB": 80, "BOL": 70, "NIC": 70, "RUS": 55, "CHN": 40, "IRN": 40,
+        "USA": -70, "COL": -30, "BRA": 40, "ARG": 50
+      },
+      "personality_traits": ["anti_américain", "socialiste", "pétro_dépendant", "en_effondrement", "autoritaire_croissant"],
+      "description": "Venezuela en grave crise économique et politique sous Maduro, avec une inflation hyperbolique et des pénuries alimentaires.",
+      "color": "#cf142b"
+    },
+    "IRQ": {
+      "id": "IRQ",
+      "name": "République d'Irak",
+      "flag": "🇮🇶",
+      "capital": "Bagdad",
+      "continent": "Moyen-Orient",
+      "population": 38274618,
+      "government_type": "démocratie_parlementaire_fragile",
+      "ideology": "chiisme_nationaliste",
+      "leader": "Haider al-Abadi",
+      "alliances": [],
+      "economy": {
+        "gdp": 166,
+        "gdp_per_capita": 4339,
+        "gdp_growth": 7.0,
+        "inflation": 1.4,
+        "unemployment": 16.0,
+        "debt_pct_gdp": 58.1,
+        "currency": "IQD",
+        "main_sectors": ["pétrole"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 165000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 5.8
+      },
+      "relations": {
+        "IRN": 50, "USA": 40, "RUS": 30, "KUR_IRQ": 30,
+        "SAU": -30, "TUR": 20
+      },
+      "personality_traits": ["fragile", "anti_ISIS", "pro_Iran", "reconstruction", "divisé_ethniquement"],
+      "description": "Irak en guerre contre l'État islamique (Daesh) qui contrôle Mossoul et de larges territoires au nord et à l'ouest.",
+      "color": "#ce1126"
+    },
+    "SYR": {
+      "id": "SYR",
+      "name": "République Arabe Syrienne",
+      "flag": "🇸🇾",
+      "capital": "Damas",
+      "continent": "Moyen-Orient",
+      "population": 18430453,
+      "government_type": "présidentiel_autoritaire",
+      "ideology": "Baasisme_alaouite",
+      "leader": "Bachar al-Assad",
+      "alliances": [],
+      "economy": {
+        "gdp": 24,
+        "gdp_per_capita": 1302,
+        "gdp_growth": -15.0,
+        "inflation": 38.0,
+        "unemployment": 55.0,
+        "debt_pct_gdp": 60.0,
+        "currency": "SYP",
+        "main_sectors": ["agriculture_résiduelle", "pétrole_résiduel"]
+      },
+      "military": {
+        "strength": 2,
+        "active_personnel": 125000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 5.0
+      },
+      "relations": {
+        "RUS": 75, "IRN": 75, "CHN": 30,
+        "USA": -70, "SAU": -65, "TUR": -65, "ISR": -80, "JOR": -20, "QAT": -40,
+        "LBN_hezb": 65
+      },
+      "personality_traits": ["survivaliste", "pro_russe", "pro_iranien", "autoritaire", "en_guerre_civile"],
+      "description": "Syrie déchirée par 5 ans de guerre civile entre Assad, les rebelles, l'État islamique et les Kurdes.",
+      "color": "#007a3d"
+    },
+    "ARE": {
+      "id": "ARE",
+      "name": "Émirats Arabes Unis",
+      "flag": "🇦🇪",
+      "capital": "Abou Dabi",
+      "continent": "Moyen-Orient",
+      "population": 9770529,
+      "government_type": "fédération_monarchies",
+      "ideology": "conservatisme_libéral_moderniste",
+      "leader": "Khalifa bin Zayed Al Nahyan",
+      "alliances": ["GULF"],
+      "economy": {
+        "gdp": 348,
+        "gdp_per_capita": 35570,
+        "gdp_growth": 3.0,
+        "inflation": 3.1,
+        "unemployment": 3.6,
+        "debt_pct_gdp": 18.8,
+        "currency": "AED",
+        "main_sectors": ["pétrole", "finance", "tourisme", "commerce", "immobilier"]
+      },
+      "military": {
+        "strength": 4,
+        "active_personnel": 63000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 5.7
+      },
+      "relations": {
+        "SAU": 80, "KWT": 75, "BHR": 78, "EGY": 65, "JOR": 60, "USA": 65, "GBR": 65, "FRA": 60,
+        "IRN": -40, "QAT": 55, "TUR": 30
+      },
+      "personality_traits": ["pragmatique", "pro_occidental", "anti_Iran", "moderniste_autoritaire", "hub_financier"],
+      "description": "Émirats Arabes Unis, hub financier et diplomatique du Golfe, engagé militairement au Yémen.",
+      "color": "#00732f"
+    },
+    "QAT": {
+      "id": "QAT",
+      "name": "État du Qatar",
+      "flag": "🇶🇦",
+      "capital": "Doha",
+      "continent": "Moyen-Orient",
+      "population": 2569804,
+      "government_type": "monarchie_absolue",
+      "ideology": "islamisme_sunnite_modéré",
+      "leader": "Tamim bin Hamad Al Thani",
+      "alliances": ["GULF"],
+      "economy": {
+        "gdp": 152,
+        "gdp_per_capita": 59290,
+        "gdp_growth": 3.5,
+        "inflation": 2.7,
+        "unemployment": 0.5,
+        "debt_pct_gdp": 42.4,
+        "currency": "QAR",
+        "main_sectors": ["gaz_naturel", "pétrole", "finance", "construction"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 11800,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.9
+      },
+      "relations": {
+        "TUR": 65, "GBR": 60, "USA": 55, "FRA": 55,
+        "SAU": 50, "IRN": 30,
+        "EGY": -40, "UAE": 55
+      },
+      "personality_traits": ["diplomatie_active", "pro_frères_musulmans", "media_Al_Jazeera", "riche_en_gaz", "indépendant"],
+      "description": "Qatar, plus riche pays du monde per capita, mène une diplomatie active via Al Jazeera et son soutien aux Frères Musulmans.",
+      "color": "#8d1b3d"
+    },
+    "CUB": {
+      "id": "CUB",
+      "name": "République de Cuba",
+      "flag": "🇨🇺",
+      "capital": "La Havane",
+      "continent": "Amérique du Nord",
+      "population": 11475982,
+      "government_type": "parti_unique",
+      "ideology": "communisme",
+      "leader": "Raúl Castro",
+      "alliances": ["ALBA"],
+      "economy": {
+        "gdp": 92,
+        "gdp_per_capita": 8010,
+        "gdp_growth": 4.0,
+        "inflation": 2.0,
+        "unemployment": 2.4,
+        "debt_pct_gdp": 30.0,
+        "currency": "CUP",
+        "main_sectors": ["tourisme", "nickel", "tabac", "sucre", "services_médicaux"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 49000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 3.1
+      },
+      "relations": {
+        "VEN": 80, "RUS": 60, "CHN": 55, "BOL": 65, "NIC": 70, "ECU": 60,
+        "USA": -30, "ESP": 55, "FRA": 45
+      },
+      "personality_traits": ["révolutionnaire", "anti_américain_historique", "ouverture_timide", "socialiste", "médical_exportateur"],
+      "description": "Cuba en cours de normalisation avec les États-Unis depuis 2014, mais l'embargo est maintenu. Raúl Castro dirige.",
+      "color": "#002a8f"
+    },
+    "KAZ": {
+      "id": "KAZ",
+      "name": "République du Kazakhstan",
+      "flag": "🇰🇿",
+      "capital": "Astana",
+      "continent": "Asie Centrale",
+      "population": 17855384,
+      "government_type": "présidentiel_autoritaire",
+      "ideology": "nationalisme_pragmatique",
+      "leader": "Noursoultan Nazarbaïev",
+      "alliances": ["SCO", "CSTO", "UEE"],
+      "economy": {
+        "gdp": 134,
+        "gdp_per_capita": 7506,
+        "gdp_growth": 1.1,
+        "inflation": 14.6,
+        "unemployment": 5.0,
+        "debt_pct_gdp": 21.5,
+        "currency": "KZT",
+        "main_sectors": ["pétrole", "gaz", "mines", "métallurgie", "agriculture"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 39000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 0.9
+      },
+      "relations": {
+        "RUS": 65, "CHN": 60, "KGZ": 60, "UZB": 55, "USA": 40, "TUR": 55
+      },
+      "personality_traits": ["équilibriste", "autoritaire_stable", "pétro_état", "multi_vecteur", "modernisateur"],
+      "description": "Kazakhstan équilibrant ses relations entre Russie, Chine et Occident, riche en ressources naturelles.",
+      "color": "#00afca"
+    },
+    "THA": {
+      "id": "THA",
+      "name": "Royaume de Thaïlande",
+      "flag": "🇹🇭",
+      "capital": "Bangkok",
+      "continent": "Asie",
+      "population": 68971331,
+      "government_type": "junte_militaire",
+      "ideology": "royalisme_conservateur",
+      "leader": "Prayuth Chan-ocha",
+      "alliances": ["ASEAN"],
+      "economy": {
+        "gdp": 407,
+        "gdp_per_capita": 5911,
+        "gdp_growth": 3.2,
+        "inflation": 0.2,
+        "unemployment": 0.9,
+        "debt_pct_gdp": 43.0,
+        "currency": "THB",
+        "main_sectors": ["tourisme", "électronique", "automobile", "agriculture", "pêche"]
+      },
+      "military": {
+        "strength": 4,
+        "active_personnel": 360850,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.5
+      },
+      "relations": {
+        "JPN": 60, "CHN": 55, "AUS": 55, "USA": 45, "IDN": 60, "MYS": 60,
+        "KHM": 40, "LAO": 55, "MMR": 50, "RUS": 30
+      },
+      "personality_traits": ["pragmatique", "pro_Chine_croissant", "militaro_conservateur", "monarchiste", "touristique"],
+      "description": "Thaïlande sous junte militaire depuis 2014, se rapprochant de la Chine après la critique occidentale du coup d'état.",
+      "color": "#a51931"
+    },
+    "MYS": {
+      "id": "MYS",
+      "name": "Malaisie",
+      "flag": "🇲🇾",
+      "capital": "Kuala Lumpur",
+      "continent": "Asie",
+      "population": 31187265,
+      "government_type": "monarchie_constitutionnelle_fédérale",
+      "ideology": "nationalisme_islamique_modéré",
+      "leader": "Najib Razak",
+      "alliances": ["ASEAN"],
+      "economy": {
+        "gdp": 296,
+        "gdp_per_capita": 9503,
+        "gdp_growth": 4.2,
+        "inflation": 2.1,
+        "unemployment": 3.5,
+        "debt_pct_gdp": 52.7,
+        "currency": "MYR",
+        "main_sectors": ["électronique", "pétrole", "huile_de_palme", "tourisme", "finance"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 109000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.4
+      },
+      "relations": {
+        "IDN": 65, "SGP": 60, "THA": 60, "BRN": 65, "JPN": 55, "CHN": 25,
+        "USA": 45, "AUS": 50
+      },
+      "personality_traits": ["pragmatique", "islamique_modéré", "scandale_1MDB", "équilibriste", "commercial"],
+      "description": "Malaisie affectée par le scandale de corruption 1MDB impliquant le PM Najib Razak.",
+      "color": "#cc0001"
+    },
+    "ETH": {
+      "id": "ETH",
+      "name": "République Fédérale Démocratique d'Éthiopie",
+      "flag": "🇪🇹",
+      "capital": "Addis-Abeba",
+      "continent": "Afrique",
+      "population": 104345888,
+      "government_type": "fédéral_autoritaire",
+      "ideology": "développementalisme",
+      "leader": "Hailemariam Desalegn",
+      "alliances": ["UA"],
+      "economy": {
+        "gdp": 72,
+        "gdp_per_capita": 689,
+        "gdp_growth": 8.0,
+        "inflation": 9.7,
+        "unemployment": 4.6,
+        "debt_pct_gdp": 54.8,
+        "currency": "ETB",
+        "main_sectors": ["agriculture", "café", "textiles", "construction", "services"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 138000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.0
+      },
+      "relations": {
+        "KEN": 55, "TZA": 50, "SOM": -30, "ERI": -60, "SDN": 30,
+        "USA": 50, "CHN": 55, "DEU": 45
+      },
+      "personality_traits": ["en_croissance_rapide", "régional_stable", "autoritaire", "anti_terroriste", "diplomate_africain"],
+      "description": "Éthiopie avec l'une des économies à plus forte croissance d'Afrique, mais réprimant les protestations internes.",
+      "color": "#078930"
+    },
+    "GRC": {
+      "id": "GRC",
+      "name": "République Hellénique",
+      "flag": "🇬🇷",
+      "capital": "Athènes",
+      "continent": "Europe",
+      "population": 10793526,
+      "government_type": "démocratie_parlementaire",
+      "ideology": "gauche_radicale",
+      "leader": "Alexis Tsipras",
+      "alliances": ["NATO", "EU"],
+      "economy": {
+        "gdp": 192,
+        "gdp_per_capita": 17800,
+        "gdp_growth": 0.0,
+        "inflation": 0.0,
+        "unemployment": 23.5,
+        "debt_pct_gdp": 181.0,
+        "currency": "EUR",
+        "main_sectors": ["tourisme", "marine", "agriculture", "services"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 142000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 2.4
+      },
+      "relations": {
+        "CYP": 85, "FRA": 65, "ITA": 65, "DEU": 40, "USA": 55,
+        "TUR": -30, "RUS": 30, "CHN": 35
+      },
+      "personality_traits": ["en_crise_économique", "fier", "pro_russe_partiel", "anti_austérité", "méditerranéen"],
+      "description": "Grèce sous austérité sévère après la crise de la dette, avec un chômage record et une crise humanitaire migratoire.",
+      "color": "#0d5eaf"
+    },
+    "CZE": {
+      "id": "CZE",
+      "name": "République Tchèque",
+      "flag": "🇨🇿",
+      "capital": "Prague",
+      "continent": "Europe",
+      "population": 10553843,
+      "government_type": "démocratie_parlementaire",
+      "ideology": "libéralisme_eurosceptique",
+      "leader": "Bohuslav Sobotka",
+      "alliances": ["NATO", "EU"],
+      "economy": {
+        "gdp": 192,
+        "gdp_per_capita": 18185,
+        "gdp_growth": 2.4,
+        "inflation": 0.7,
+        "unemployment": 4.0,
+        "debt_pct_gdp": 37.2,
+        "currency": "CZK",
+        "main_sectors": ["automobile", "ingénierie", "IT", "services", "tourisme"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 23800,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.0
+      },
+      "relations": {
+        "DEU": 65, "SVK": 75, "POL": 65, "AUT": 65, "USA": 60, "FRA": 55,
+        "RUS": -40
+      },
+      "personality_traits": ["pragmatique", "eurosceptique_modéré", "atlantiste", "anti_réfugiés", "industriel"],
+      "description": "République Tchèque, économie performante et opposition marquée aux quotas de réfugiés de l'UE.",
+      "color": "#d7141a"
+    },
+    "HUN": {
+      "id": "HUN",
+      "name": "Hongrie",
+      "flag": "🇭🇺",
+      "capital": "Budapest",
+      "continent": "Europe",
+      "population": 9830485,
+      "government_type": "démocratie_illibérale",
+      "ideology": "nationalisme_conservateur",
+      "leader": "Viktor Orbán",
+      "alliances": ["NATO", "EU"],
+      "economy": {
+        "gdp": 125,
+        "gdp_per_capita": 12721,
+        "gdp_growth": 2.0,
+        "inflation": 0.9,
+        "unemployment": 5.1,
+        "debt_pct_gdp": 74.7,
+        "currency": "HUF",
+        "main_sectors": ["automobile", "industrie", "agriculture", "tourisme", "IT"]
+      },
+      "military": {
+        "strength": 2,
+        "active_personnel": 29560,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 0.9
+      },
+      "relations": {
+        "POL": 50, "CZE": 55, "SVK": 60, "AUT": 55, "USA": 50, "DEU": 50,
+        "RUS": 30, "CHN": 35, "BRU": 55
+      },
+      "personality_traits": ["nationaliste", "anti_immigration", "eurosceptique", "pro_Russie_ambivalent", "illibéral"],
+      "description": "Hongrie d'Orbán, pionnier de la démocratie illibérale en Europe, construisant des clôtures contre les réfugiés.",
+      "color": "#ce2939"
+    },
+    "ROU": {
+      "id": "ROU",
+      "name": "Roumanie",
+      "flag": "🇷🇴",
+      "capital": "Bucarest",
+      "continent": "Europe",
+      "population": 19843000,
+      "government_type": "démocratie_semi_présidentielle",
+      "ideology": "libéralisme_pro_européen",
+      "leader": "Klaus Iohannis",
+      "alliances": ["NATO", "EU"],
+      "economy": {
+        "gdp": 188,
+        "gdp_per_capita": 9473,
+        "gdp_growth": 4.8,
+        "inflation": -1.5,
+        "unemployment": 6.7,
+        "debt_pct_gdp": 37.8,
+        "currency": "RON",
+        "main_sectors": ["industrie", "agriculture", "services", "IT", "tourisme"]
+      },
+      "military": {
+        "strength": 3,
+        "active_personnel": 69250,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 1.4
+      },
+      "relations": {
+        "USA": 65, "DEU": 60, "FRA": 55, "POL": 55, "MDA": 55, "UKR": 50,
+        "RUS": -55, "HUN": -20
+      },
+      "personality_traits": ["pro_atlantiste", "anti_russe", "pro_européen", "en_transition", "corruption_combat"],
+      "description": "Roumanie très pro-OTAN et pro-UE, inquiète des ambitions russes après l'Ukraine.",
+      "color": "#002B7F"
+    }
+  }
+}

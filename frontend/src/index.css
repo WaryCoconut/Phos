@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-pax-dark text-slate-100 font-sans;
+    overflow: hidden;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-pax-panel;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-pax-border rounded-full;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply bg-pax-panel border border-pax-border rounded-lg;
+  }
+
+  .btn-primary {
+    @apply bg-pax-accent hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-pax-panel hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-md text-sm font-medium border border-pax-border transition-colors;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors;
+  }
+
+  .stat-label {
+    @apply text-xs text-slate-400 uppercase tracking-wider;
+  }
+
+  .stat-value {
+    @apply text-lg font-semibold text-white;
+  }
+}
+
+/* Animations SSE streaming */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.cursor-blink::after {
+  content: '▋';
+  animation: blink 1s infinite;
+  margin-left: 1px;
+}
+
+/* Map styles */
+.rsm-geography {
+  outline: none;
+  transition: fill 0.15s ease;
+}
