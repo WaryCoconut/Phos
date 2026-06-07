@@ -5,19 +5,21 @@ import { useSettingsStore } from '@/store/settingsStore'
 const api = axios.create({ baseURL: '/api' })
 
 api.interceptors.request.use((config) => {
-  const { apiKey, apiBaseUrl, model } = useSettingsStore.getState().settings
+  const { apiKey, apiBaseUrl, model, provider } = useSettingsStore.getState().settings
   if (apiKey) config.headers['x-api-key'] = apiKey
   if (apiBaseUrl) config.headers['x-api-base-url'] = apiBaseUrl
   if (model) config.headers['x-api-model'] = model
+  config.headers['x-api-provider'] = provider ?? 'socle'
   return config
 })
 
 function apiHeaders(): Record<string, string> {
-  const { apiKey, apiBaseUrl, model } = useSettingsStore.getState().settings
+  const { apiKey, apiBaseUrl, model, provider } = useSettingsStore.getState().settings
   const h: Record<string, string> = { 'Content-Type': 'application/json' }
   if (apiKey) h['x-api-key'] = apiKey
   if (apiBaseUrl) h['x-api-base-url'] = apiBaseUrl
   if (model) h['x-api-model'] = model
+  h['x-api-provider'] = provider ?? 'socle'
   return h
 }
 

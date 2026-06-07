@@ -58,8 +58,7 @@ def _client(config: AiConfig) -> AsyncOpenAI:
 
 
 def _is_socle(config: AiConfig) -> bool:
-    url = config.base_url or ""
-    return "socle.ai" in url or "host.docker.internal" in url
+    return getattr(config, 'provider', 'socle') == 'socle'
 
 
 # ─── Agent resolution ────────────────────────────────────────────────────────
