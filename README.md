@@ -1,6 +1,9 @@
 # Phos
 
+OpenSource game inspired by the game Pax Historia
+
 AI-powered geopolitical narrative simulation. Play as a nation, make political decisions, engage in real-time diplomacy with other countries through AI agents, and consult your political advisor.
+
 
 > Compatible with **[socle.ai](https://socle.ai)** by default (OpenAI-compatible API). Works with any OpenAI-compatible endpoint.
 
