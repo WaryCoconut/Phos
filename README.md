@@ -8,7 +8,7 @@ AI-powered geopolitical narrative simulation. Play as a nation, make political d
   <img src="doc/benin1.jpeg" width="800" alt="World map view" />
   <br/>
   <img src="doc/benin2.jpeg" width="400" />
-  <img src="doc/haiti1.jpeg" width="400" />
+  <img src="doc/haiti1.jpg" width="400" />
 </div>
 
 > Compatible with **[socle.ai](https://socle.ai)** by default (OpenAI-compatible API) and **[ollama](https://ollama.com/)**
