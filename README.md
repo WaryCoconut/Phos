@@ -1,39 +1,39 @@
-# OpenPaxHistoria
+# Phos
 
-Simulation géopolitique narrative alimentée par IA. Incarnez un pays, prenez des décisions politiques, échangez diplomatiquement avec d'autres nations via des agents IA, et consultez votre conseiller politique.
+AI-powered geopolitical narrative simulation. Play as a nation, make political decisions, engage in real-time diplomacy with other countries through AI agents, and consult your political advisor.
 
-> Compatible par défaut avec l'API **[socle.ai](https://socle.ai)** (API OpenAI-compatible). Fonctionne avec n'importe quelle API compatible OpenAI.
+> Compatible with **[socle.ai](https://socle.ai)** by default (OpenAI-compatible API). Works with any OpenAI-compatible endpoint.
 
-## Fonctionnalités
+## Features
 
-- **Carte mondiale interactive** — visualisez les relations diplomatiques et la stabilité des pays
-- **Scénario 2016 inclus** — 45+ pays avec données réalistes (PIB, militaire, idéologie, relations)
-- **Diplomatie IA** — échangez en langage naturel avec n'importe quel pays, réponse en streaming
-- **Conseiller politique IA** — obtenez analyses et recommandations stratégiques
-- **Actions libres** — soumettez n'importe quelle action politique, l'IA en simule les conséquences
-- **Simulation de tours** — l'IA génère des événements mondiaux à chaque tour (1 mois)
-- **Scénarios personnalisés** — créez vos propres cartes et pays
+- **Interactive world map** — visualize diplomatic relations, stability, and ideology across countries
+- **Included 2016 scenario** — 45+ countries with realistic data (GDP, military, ideology, relations)
+- **AI diplomacy** — negotiate in natural language with any country, streamed in real time
+- **AI political advisor** — get strategic analyses and recommendations
+- **Free actions** — submit any political action, the AI simulates its consequences
+- **Turn simulation** — the AI generates world events each turn (1 month)
+- **Custom scenarios** — build your own maps and factions from scratch (LotR, Star Wars, Warhammer 40k, Napoleonic Wars…)
 
-## Lancement rapide (développement)
+## Quick start (development)
 
-### Prérequis
+### Prerequisites
 - Python 3.11+
 - Node.js 20+
-- Une clé API socle.ai (ou toute API compatible OpenAI)
+- An API key for socle.ai or any OpenAI-compatible provider
 
 ### 1. Backend (FastAPI)
 
 ```bash
 cd backend
 
-# Copier la configuration
+# Copy the config template
 cp .env.example .env
-# → Éditer .env : renseigner PAX_API_KEY et optionnellement PAX_MODEL
+# → Edit .env: set PAX_API_KEY and optionally PAX_MODEL
 
-# Installer les dépendances
+# Install dependencies
 pip install -r requirements.txt
 
-# Lancer le serveur
+# Start the server
 uvicorn app.main:app --reload --port 8000
 ```
 
@@ -46,40 +46,40 @@ npm install
 npm run dev
 ```
 
-Ouvrir **http://localhost:5173**
+Open **http://localhost:5173**
 
 ---
 
-## Lancement avec Docker
+## Docker
 
 ```bash
-# Copier et configurer .env
+# Copy and configure .env
 cp backend/.env.example backend/.env
-# → Renseigner PAX_API_KEY dans backend/.env
+# → Set PAX_API_KEY in backend/.env
 
 docker-compose up --build
 ```
 
-- Frontend : http://localhost:5173
-- Backend API : http://localhost:8000
-- Documentation API : http://localhost:8000/docs
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:8000
+- API docs: http://localhost:8000/docs
 
 ---
 
 ## Configuration
 
-Le fichier `backend/.env` (copié depuis `.env.example`) contient :
+`backend/.env` (copied from `.env.example`):
 
 ```env
-# API IA — compatible OpenAI (socle.ai par défaut)
+# AI API — OpenAI-compatible (socle.ai by default)
 PAX_API_BASE_URL=https://api.socle.ai/v1
-PAX_API_KEY=sk-votre-cle-api-ici
+PAX_API_KEY=sk-your-api-key-here
 PAX_MODEL=gpt-4o
 
-# Autres APIs compatibles OpenAI :
-# OpenAI officiel  : PAX_API_BASE_URL=https://api.openai.com/v1
-# Ollama local     : PAX_API_BASE_URL=http://localhost:11434/v1  PAX_API_KEY=ollama
-# Groq             : PAX_API_BASE_URL=https://api.groq.com/openai/v1
+# Other compatible providers:
+# OpenAI official : PAX_API_BASE_URL=https://api.openai.com/v1
+# Local Ollama    : PAX_API_BASE_URL=http://localhost:11434/v1  PAX_API_KEY=ollama
+# Groq            : PAX_API_BASE_URL=https://api.groq.com/openai/v1
 ```
 
 ---
@@ -87,20 +87,20 @@ PAX_MODEL=gpt-4o
 ## Architecture
 
 ```
-openPaxHistoria/
+phos/
 ├── backend/                    # Python + FastAPI
 │   ├── app/
-│   │   ├── main.py             # Application FastAPI + CORS
-│   │   ├── config.py           # Configuration (variables d'env)
-│   │   ├── models/             # Modèles Pydantic (country, game, scenario)
-│   │   ├── routers/            # Endpoints API (game, diplomacy, advisor, scenarios)
+│   │   ├── main.py             # FastAPI app + CORS
+│   │   ├── config.py           # Configuration (env vars)
+│   │   ├── models/             # Pydantic models (country, game, scenario)
+│   │   ├── routers/            # API endpoints (game, diplomacy, advisor, scenarios)
 │   │   ├── services/
-│   │   │   ├── ai_service.py   # Client IA compatible OpenAI (streaming SSE)
-│   │   │   ├── game_engine.py  # Moteur de jeu (sessions, tours, états)
+│   │   │   ├── ai_service.py   # OpenAI-compatible AI client (SSE streaming)
+│   │   │   ├── game_engine.py  # Game engine (sessions, turns, state)
 │   │   │   └── scenario_loader.py
 │   │   └── data/
 │   │       └── scenarios/
-│   │           └── default_2016.json  # Scénario Monde 2016 (45+ pays)
+│   │           └── default_2016.json  # World 2016 scenario (45+ countries)
 │   ├── Dockerfile
 │   └── requirements.txt
 │
@@ -108,44 +108,44 @@ openPaxHistoria/
 │   ├── src/
 │   │   ├── App.tsx             # Routing
 │   │   ├── pages/
-│   │   │   ├── Home.tsx        # Sélection scénario + pays
-│   │   │   └── Game.tsx        # Interface principale
+│   │   │   ├── Home.tsx        # Scenario + country selection
+│   │   │   └── Game.tsx        # Main game interface
 │   │   ├── components/
-│   │   │   ├── Map/WorldMap.tsx          # Carte SVG interactive (react-simple-maps)
+│   │   │   ├── Map/WorldMap.tsx               # Interactive SVG map (react-simple-maps)
 │   │   │   ├── Dashboard/CountryDashboard.tsx
-│   │   │   ├── Diplomacy/DiplomacyPanel.tsx  # Chat diplomatique (SSE)
-│   │   │   ├── Advisor/AdvisorPanel.tsx      # Conseiller IA (SSE)
+│   │   │   ├── Diplomacy/DiplomacyPanel.tsx   # Diplomatic chat (SSE)
+│   │   │   ├── Advisor/AdvisorPanel.tsx       # AI advisor (SSE)
 │   │   │   └── UI/EventsFeed.tsx
-│   │   ├── store/gameStore.ts  # État global (Zustand)
-│   │   ├── api/client.ts       # Appels API + streaming SSE
+│   │   ├── store/gameStore.ts  # Global state (Zustand)
+│   │   ├── api/client.ts       # API calls + SSE streaming
 │   │   └── types/index.ts
 │   └── Dockerfile
 │
 └── docker-compose.yml
 ```
 
-## API REST
+## REST API
 
-| Méthode | Endpoint | Description |
-|---------|----------|-------------|
-| `GET` | `/api/scenarios/` | Lister les scénarios |
-| `GET` | `/api/scenarios/{id}` | Détails d'un scénario |
-| `POST` | `/api/game/` | Créer une partie |
-| `GET` | `/api/game/{session_id}` | État du jeu |
-| `POST` | `/api/game/{session_id}/action` | Soumettre une action |
-| `POST` | `/api/game/{session_id}/end-turn` | Passer au tour suivant |
-| `POST` | `/api/diplomacy/{session_id}/message` | Message diplomatique (SSE) |
-| `POST` | `/api/advisor/{session_id}/ask` | Question au conseiller (SSE) |
-| `GET` | `/api/advisor/{session_id}/briefing` | Briefing de situation (SSE) |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/scenarios/` | List scenarios |
+| `GET` | `/api/scenarios/{id}` | Scenario details |
+| `POST` | `/api/game/` | Create a session |
+| `GET` | `/api/game/{session_id}` | Game state |
+| `POST` | `/api/game/{session_id}/action` | Submit an action |
+| `POST` | `/api/game/{session_id}/end-turn` | End turn |
+| `POST` | `/api/diplomacy/{session_id}/message` | Diplomatic message (SSE) |
+| `POST` | `/api/advisor/{session_id}/ask` | Ask the advisor (SSE) |
+| `GET` | `/api/advisor/{session_id}/briefing` | Situation briefing (SSE) |
 
-## Créer un scénario personnalisé
+## Custom scenarios
 
-Vous pouvez créer un scénario via l'API (`POST /api/scenarios/`) en suivant le même format que `backend/app/data/scenarios/default_2016.json`. Les scénarios personnalisés sont sauvegardés dans `backend/app/data/custom_scenarios/`.
+Create a scenario via the API (`POST /api/scenarios/`) following the same format as `backend/app/data/scenarios/default_2016.json`, or use the in-app scenario editor. Custom scenarios are saved in `backend/app/data/custom_scenarios/`.
 
-## Contribuer
+## Contributing
 
-Les contributions sont bienvenues ! Inspiré du jeu original [Pax Historia](https://wiki.paxhistoria.co/wiki/Main_Page).
+Contributions welcome! Inspired by the original [Pax Historia](https://wiki.paxhistoria.co/wiki/Main_Page) game.
 
-## Licence
+## License
 
 MIT

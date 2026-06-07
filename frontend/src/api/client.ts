@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { GameState, ScenarioSummary, ActionResult, SimEvent } from '@/types'
+import type { GameState, ScenarioSummary, ActionResult, SimEvent, DiplomaticEffect, RegionState, RegionMeta } from '@/types'
 import { useSettingsStore } from '@/store/settingsStore'
 
 const api = axios.create({ baseURL: '/api' })
@@ -64,6 +64,60 @@ export const gameApi = {
 
   removeQueuedAction: (sessionId: string, index: number) =>
     api.delete(`/game/${sessionId}/queue/${index}`).then((r) => r.data),
+}
+
+export const mapsApi = {
+  upload: async (file: File): Promise<{ map_id: string; feature_count: number; available_properties: string[] }> => {
+    const { apiKey, apiBaseUrl, model } = useSettingsStore.getState().settings
+    const headers: Record<string, string> = {}
+    if (apiKey) headers['x-api-key'] = apiKey
+    if (apiBaseUrl) headers['x-api-base-url'] = apiBaseUrl
+    if (model) headers['x-api-model'] = model
+    const form = new FormData()
+    form.append('file', file)
+    const res = await fetch('/api/maps/upload', { method: 'POST', headers, body: form })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: 'Upload échoué' }))
+      throw new Error(err.detail ?? 'Upload échoué')
+    }
+    return res.json()
+  },
+  getUrl: (mapId: string): string => `/api/maps/${mapId}`,
+}
+
+export const regionsApi = {
+  getMeta: (): Promise<Record<string, RegionMeta>> =>
+    api.get('/regions/meta').then((r) => r.data),
+
+  getCountryMeta: (countryId: string): Promise<RegionMeta[]> =>
+    api.get(`/regions/meta/${countryId}`).then((r) => r.data),
+
+  getState: (sessionId: string): Promise<RegionState> =>
+    api.get(`/regions/${sessionId}`).then((r) => r.data),
+
+  occupy: (sessionId: string, adm1Code: string, occupyingCountryId: string): Promise<RegionState> =>
+    api.post(`/regions/${sessionId}/occupy`, {
+      adm1_code: adm1Code,
+      occupying_country_id: occupyingCountryId,
+    }).then((r) => r.data),
+
+  liberate: (sessionId: string, adm1Code: string): Promise<RegionState> =>
+    api.delete(`/regions/${sessionId}/occupy/${adm1Code}`).then((r) => r.data),
+
+  declareIndependence: (
+    sessionId: string,
+    adm1Code: string,
+    newCountryName: string,
+    flag: string = '🏳️',
+  ): Promise<{ new_country_id: string; region_state: RegionState }> =>
+    api.post(`/regions/${sessionId}/independence`, {
+      adm1_code: adm1Code,
+      new_country_name: newCountryName,
+      new_country_flag: flag,
+    }).then((r) => r.data),
+
+  reunify: (sessionId: string, adm1Code: string): Promise<RegionState> =>
+    api.delete(`/regions/${sessionId}/independence/${adm1Code}`).then((r) => r.data),
 }
 
 export function streamSimulation(
@@ -146,14 +200,40 @@ export function streamDiplomacy(
   onChunk: (text: string) => void,
   onDone: () => void,
   onError?: (msg: string) => void,
+  onGameEffect?: (effect: DiplomaticEffect) => void,
 ): () => void {
   const ctrl = new AbortController()
-  readSSEStream(
-    `/api/diplomacy/${sessionId}/message`,
-    'POST',
-    { target_country_id: targetCountryId, message },
-    onChunk, onDone, ctrl.signal, onError,
-  ).catch(() => {})
+  ;(async () => {
+    try {
+      const res = await fetch(`/api/diplomacy/${sessionId}/message`, {
+        method: 'POST',
+        headers: apiHeaders(),
+        body: JSON.stringify({ target_country_id: targetCountryId, message }),
+        signal: ctrl.signal,
+      })
+      const reader = res.body!.getReader()
+      const decoder = new TextDecoder()
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        for (const line of decoder.decode(value).split('\n')) {
+          if (!line.startsWith('data: ')) continue
+          try {
+            const data = JSON.parse(line.slice(6))
+            if (data.chunk) onChunk(data.chunk)
+            if (data.error) { onError?.(data.error); onDone(); return }
+            if (data.done) {
+              if (data.game_effect) onGameEffect?.(data.game_effect as DiplomaticEffect)
+              onDone()
+              return
+            }
+          } catch { /* skip */ }
+        }
+      }
+    } catch (e) {
+      if (!(e instanceof DOMException && e.name === 'AbortError')) onError?.('Connexion interrompue')
+    }
+  })().catch(() => {})
   return () => ctrl.abort()
 }
 

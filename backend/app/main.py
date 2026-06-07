@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import game, diplomacy, advisor, scenarios
+from app.routers import game, diplomacy, advisor, scenarios, regions, maps
 
 app = FastAPI(
     title="OpenPaxHistoria",
@@ -21,6 +21,8 @@ app.include_router(game.router, prefix="/api")
 app.include_router(diplomacy.router, prefix="/api")
 app.include_router(advisor.router, prefix="/api")
 app.include_router(scenarios.router, prefix="/api")
+app.include_router(regions.router, prefix="/api")
+app.include_router(maps.router, prefix="/api")
 
 
 @app.get("/api/health")

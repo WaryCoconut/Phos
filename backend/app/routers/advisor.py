@@ -40,6 +40,7 @@ async def ask_advisor(
                 question=req.question,
                 recent_events=recent_events,
                 config=config,
+                session_id=session_id,
             ):
                 yield f"data: {json.dumps({'chunk': chunk})}\n\n"
             yield f"data: {json.dumps({'done': True})}\n\n"

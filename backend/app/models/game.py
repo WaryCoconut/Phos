@@ -74,6 +74,10 @@ class GameSession(BaseModel):
     month: int
     turn: int = 1
     country_states: Dict[str, dict] = {}
+    dynamic_countries: Dict[str, dict] = {}   # country_id -> country data (independent regions)
+    region_state: Dict[str, dict] = Field(
+        default_factory=lambda: {"occupied": {}, "independent": {}}
+    )
     diplomatic_history: List[DiplomaticMessage] = []
     action_history: List[ActionResult] = []
     world_events: List[WorldEvent] = []

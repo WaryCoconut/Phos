@@ -1,5 +1,5 @@
-import { Shield, TrendingUp, Users, Swords, AlertTriangle, Globe } from 'lucide-react'
-import type { Country } from '@/types'
+import { Shield, TrendingUp, Users, Swords, AlertTriangle, Globe, Wheat, Zap, Building2, Flag } from 'lucide-react'
+import type { Country, CountryNationalStats } from '@/types'
 
 interface Props {
   country: Country
@@ -33,11 +33,11 @@ function StatBlock({
 }
 
 function RelationBadge({ score }: { score: number }) {
-  if (score >= 60) return <span className="text-green-400 text-xs font-medium">Allié</span>
-  if (score >= 20) return <span className="text-green-600 text-xs font-medium">Ami</span>
-  if (score >= -20) return <span className="text-slate-400 text-xs font-medium">Neutre</span>
+  if (score >= 60) return <span className="text-green-400 text-xs font-medium">Ally</span>
+  if (score >= 20) return <span className="text-green-600 text-xs font-medium">Friend</span>
+  if (score >= -20) return <span className="text-slate-400 text-xs font-medium">Neutral</span>
   if (score >= -60) return <span className="text-orange-400 text-xs font-medium">Hostile</span>
-  return <span className="text-red-400 text-xs font-medium">Ennemi</span>
+  return <span className="text-red-400 text-xs font-medium">Enemy</span>
 }
 
 function StabilityBar({ value }: { value: number }) {
@@ -49,9 +49,99 @@ function StabilityBar({ value }: { value: number }) {
   )
 }
 
+function PercentBar({
+  label,
+  value,
+  max = 100,
+  color,
+  icon: Icon,
+}: {
+  label: string
+  value: number
+  max?: number
+  color: string
+  icon: React.ElementType
+}) {
+  const pct = Math.min(100, (value / max) * 100)
+  const displayValue = `${value.toFixed(0)}%`
+  const tooHigh = value > 100
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-xs">
+        <div className="flex items-center gap-1.5 text-slate-300">
+          <Icon className="w-3.5 h-3.5 text-slate-400" />
+          <span>{label}</span>
+        </div>
+        <span className={tooHigh ? 'text-green-300 font-semibold' : 'text-slate-200 font-medium'}>
+          {displayValue}
+        </span>
+      </div>
+      <div className="w-full bg-slate-700 rounded-full h-2">
+        <div
+          className={`h-2 rounded-full transition-all ${color}`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  )
+}
+
+function SectorsChart({ sectors }: { sectors: Record<string, number> }) {
+  const SECTOR_COLORS: Record<string, string> = {
+    agriculture: 'bg-green-500',
+    industrie: 'bg-blue-500',
+    services: 'bg-purple-500',
+    energie: 'bg-yellow-500',
+    finance: 'bg-cyan-500',
+  }
+  const SECTOR_LABELS: Record<string, string> = {
+    agriculture: 'Agriculture',
+    industrie: 'Industry',
+    services: 'Services',
+    energie: 'Energy',
+    finance: 'Finance',
+  }
+  const entries = Object.entries(sectors).filter(([, v]) => v > 0)
+  const total = entries.reduce((s, [, v]) => s + v, 0)
+
+  return (
+    <div className="space-y-2">
+      <div className="flex h-5 rounded-md overflow-hidden gap-px">
+        {entries.map(([key, val]) => (
+          <div
+            key={key}
+            className={`${SECTOR_COLORS[key] ?? 'bg-slate-500'} transition-all`}
+            style={{ width: `${(val / total) * 100}%` }}
+            title={`${SECTOR_LABELS[key] ?? key}: ${val.toFixed(0)}%`}
+          />
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-x-3 gap-y-1">
+        {entries.map(([key, val]) => (
+          <div key={key} className="flex items-center gap-1 text-xs text-slate-400">
+            <div className={`w-2 h-2 rounded-sm ${SECTOR_COLORS[key] ?? 'bg-slate-500'}`} />
+            <span>{SECTOR_LABELS[key] ?? key}</span>
+            <span className="text-slate-500">{val.toFixed(0)}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+const EQUIPMENT_META: { key: string; label: string; icon: string }[] = [
+  { key: 'chars_combat',   label: 'Battle tanks',          icon: '🛡️' },
+  { key: 'avions_chasse',  label: 'Fighter jets',          icon: '✈️' },
+  { key: 'navires_guerre', label: 'Warships',              icon: '⚓' },
+  { key: 'sous_marins',    label: 'Submarines',            icon: '🌊' },
+  { key: 'helicopteres',   label: 'Military helicopters',  icon: '🚁' },
+  { key: 'artillerie',     label: 'Artillery pieces',      icon: '💣' },
+]
+
 export default function CountryDashboard({ country, isPlayer = false, playerCountry }: Props) {
   const eco = country.economy
   const mil = country.military
+  const ns = country.national_stats
 
   const relationScore = playerCountry?.relations[country.id] ?? null
 
@@ -67,12 +157,12 @@ export default function CountryDashboard({ country, isPlayer = false, playerCoun
             {country.government_type?.replace(/_/g, ' ')} · {country.ideology?.replace(/_/g, ' ')}
           </div>
           {country.leader && (
-            <div className="text-xs text-pax-gold mt-1">Dirigeant : {country.leader}</div>
+            <div className="text-xs text-pax-gold mt-1">Leader: {country.leader}</div>
           )}
         </div>
         {isPlayer && (
           <span className="bg-pax-gold/20 text-pax-gold text-xs px-2 py-1 rounded-full font-medium shrink-0">
-            Votre pays
+            Your country
           </span>
         )}
         {!isPlayer && relationScore !== null && (
@@ -84,36 +174,54 @@ export default function CountryDashboard({ country, isPlayer = false, playerCoun
         )}
       </div>
 
-      {/* Stabilité */}
+      {/* Stability */}
       <div className="bg-slate-800/50 rounded-lg p-3">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-slate-400" />
-            <span className="stat-label">Stabilité nationale</span>
+            <span className="stat-label">National stability</span>
           </div>
           <span className="text-sm font-semibold text-white">{country.stability}/100</span>
         </div>
         <StabilityBar value={country.stability} />
       </div>
 
-      {/* Stats économiques */}
+      {/* Strategic indices */}
+      {ns && (
+        <div>
+          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+            <Flag className="w-3.5 h-3.5" /> Strategic indices
+          </h3>
+          <div className="bg-slate-800/50 rounded-lg p-3 space-y-3">
+            <PercentBar label="Sovereignty"           value={ns.sovereignty}            max={100} color="bg-purple-500"  icon={Flag} />
+            <PercentBar label="Food autonomy"         value={ns.food_autonomy}          max={120} color="bg-green-500"   icon={Wheat} />
+            <PercentBar label="Energy autonomy"       value={ns.energy_autonomy}        max={120} color="bg-yellow-500"  icon={Zap} />
+            <PercentBar label="Economic independence" value={ns.economic_independence}  max={100} color="bg-cyan-500"    icon={Building2} />
+            {(ns as CountryNationalStats & { security?: number }).security !== undefined && (
+              <PercentBar label="Internal security"   value={(ns as CountryNationalStats & { security?: number }).security!} max={100} color="bg-rose-500" icon={Shield} />
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Economy */}
       {eco && (
         <div>
           <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <TrendingUp className="w-3.5 h-3.5" /> Économie
+            <TrendingUp className="w-3.5 h-3.5" /> Economy
           </h3>
           <div className="grid grid-cols-2 gap-2">
             <StatBlock
               icon={TrendingUp}
-              label="PIB"
-              value={`${(eco.gdp * (country.economy_modifier ?? 1)).toFixed(0)} Md$`}
-              sub={`${eco.gdp_growth >= 0 ? '+' : ''}${eco.gdp_growth}% / an`}
+              label="GDP"
+              value={`${(eco.gdp * (country.economy_modifier ?? 1)).toFixed(0)} B$`}
+              sub={`${eco.gdp_growth >= 0 ? '+' : ''}${eco.gdp_growth}% / yr`}
               color={eco.gdp_growth >= 0 ? 'text-green-400' : 'text-red-400'}
             />
             <StatBlock
               icon={Users}
-              label="PIB/hab."
-              value={`${eco.gdp_per_capita.toLocaleString('fr-FR')} $`}
+              label="GDP/capita"
+              value={`${eco.gdp_per_capita.toLocaleString('en-US')} $`}
               sub={eco.currency}
             />
             <StatBlock
@@ -124,41 +232,85 @@ export default function CountryDashboard({ country, isPlayer = false, playerCoun
             />
             <StatBlock
               icon={Users}
-              label="Chômage"
+              label="Unemployment"
               value={`${eco.unemployment}%`}
               color={eco.unemployment > 10 ? 'text-red-400' : eco.unemployment > 6 ? 'text-yellow-400' : 'text-green-400'}
             />
+            <StatBlock
+              icon={TrendingUp}
+              label="Public debt"
+              value={`${eco.debt_pct_gdp.toFixed(1)}% GDP`}
+              color={eco.debt_pct_gdp > 100 ? 'text-red-400' : eco.debt_pct_gdp > 60 ? 'text-yellow-400' : 'text-green-400'}
+            />
+            {eco.budget_balance_pct_gdp !== undefined && (
+              <StatBlock
+                icon={TrendingUp}
+                label="Budget balance"
+                value={`${eco.budget_balance_pct_gdp > 0 ? '+' : ''}${eco.budget_balance_pct_gdp.toFixed(1)}% GDP`}
+                sub={eco.budget_balance_pct_gdp >= 0 ? 'Surplus' : 'Deficit'}
+                color={eco.budget_balance_pct_gdp >= 0 ? 'text-green-400' : eco.budget_balance_pct_gdp > -3 ? 'text-yellow-400' : 'text-red-400'}
+              />
+            )}
           </div>
-          {eco.main_sectors?.length > 0 && (
-            <div className="mt-2 text-xs text-slate-500">
-              <span className="text-slate-400">Secteurs : </span>
-              {eco.main_sectors.slice(0, 4).join(', ')}
+
+          {eco.sectors && Object.keys(eco.sectors).length > 0 && (
+            <div className="mt-3 bg-slate-800/50 rounded-lg p-3">
+              <div className="text-xs text-slate-400 font-medium mb-2">GDP breakdown</div>
+              <SectorsChart sectors={eco.sectors} />
             </div>
           )}
         </div>
       )}
 
-      {/* Stats militaires */}
+      {/* Military */}
       {mil && (
         <div>
           <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <Swords className="w-3.5 h-3.5" /> Militaire
+            <Swords className="w-3.5 h-3.5" /> Military
           </h3>
           <div className="grid grid-cols-2 gap-2">
             <StatBlock
               icon={Shield}
-              label="Puissance"
+              label="Power"
               value={`${mil.strength}/10`}
-              sub={`${mil.defense_budget_pct}% du PIB`}
+              sub={`${mil.defense_budget_pct}% of GDP`}
             />
             <StatBlock
               icon={Users}
-              label="Personnel actif"
-              value={mil.active_personnel.toLocaleString('fr-FR')}
-              sub={mil.nuclear_weapons ? '☢ Nucléaire' : 'Conventionnel'}
+              label="Active personnel"
+              value={mil.active_personnel.toLocaleString('en-US')}
+              sub={mil.nuclear_weapons ? '☢ Nuclear' : 'Conventional'}
               color={mil.nuclear_weapons ? 'text-yellow-400' : 'text-white'}
             />
           </div>
+
+          {mil.equipment && Object.keys(mil.equipment).length > 0 && (
+            <div className="mt-2 bg-slate-800/50 rounded-lg p-3">
+              <div className="text-xs text-slate-400 font-medium mb-2">Arsenal composition</div>
+              <div className="space-y-1.5">
+                {EQUIPMENT_META.filter(({ key }) => (mil.equipment![key] ?? 0) > 0).map(({ key, label, icon }) => (
+                  <div key={key} className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2 text-slate-300">
+                      <span>{icon}</span>
+                      <span>{label}</span>
+                    </div>
+                    <span className="text-slate-200 font-medium tabular-nums">
+                      {(mil.equipment![key] ?? 0).toLocaleString('en-US')}
+                    </span>
+                  </div>
+                ))}
+                {Object.entries(mil.equipment)
+                  .filter(([key]) => !EQUIPMENT_META.some(m => m.key === key))
+                  .filter(([, val]) => val > 0)
+                  .map(([key, val]) => (
+                    <div key={key} className="flex items-center justify-between text-xs">
+                      <span className="text-slate-300">{key.replace(/_/g, ' ')}</span>
+                      <span className="text-slate-200 font-medium tabular-nums">{val.toLocaleString('en-US')}</span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -169,7 +321,7 @@ export default function CountryDashboard({ country, isPlayer = false, playerCoun
           label="Population"
           value={
             country.population >= 1e9
-              ? `${(country.population / 1e9).toFixed(2)} Md`
+              ? `${(country.population / 1e9).toFixed(2)} B`
               : country.population >= 1e6
               ? `${(country.population / 1e6).toFixed(1)} M`
               : `${(country.population / 1e3).toFixed(0)} K`
@@ -193,11 +345,11 @@ export default function CountryDashboard({ country, isPlayer = false, playerCoun
         </div>
       )}
 
-      {/* Situation de guerre */}
+      {/* At war */}
       {country.at_war_with?.length > 0 && (
         <div className="bg-red-900/20 border border-red-800 rounded-lg p-3">
           <div className="flex items-center gap-2 text-red-400 text-xs font-semibold mb-1">
-            <AlertTriangle className="w-4 h-4" /> En guerre
+            <AlertTriangle className="w-4 h-4" /> At war
           </div>
           <div className="text-xs text-red-300">{country.at_war_with.join(', ')}</div>
         </div>

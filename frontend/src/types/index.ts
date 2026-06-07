@@ -1,3 +1,10 @@
+export interface CountryNationalStats {
+  sovereignty: number
+  food_autonomy: number
+  energy_autonomy: number
+  economic_independence: number
+}
+
 export interface CountryEconomy {
   gdp: number
   gdp_per_capita: number
@@ -5,8 +12,10 @@ export interface CountryEconomy {
   inflation: number
   unemployment: number
   debt_pct_gdp: number
+  budget_balance_pct_gdp?: number
   currency: string
   main_sectors: string[]
+  sectors?: Record<string, number>  // agriculture/industrie/services: %
 }
 
 export interface CountryMilitary {
@@ -14,6 +23,7 @@ export interface CountryMilitary {
   active_personnel: number
   nuclear_weapons: boolean
   defense_budget_pct: number
+  equipment?: Record<string, number>  // chars_combat/avions_chasse/…: count
 }
 
 export interface Country {
@@ -29,6 +39,7 @@ export interface Country {
   alliances: string[]
   economy?: CountryEconomy
   military?: CountryMilitary
+  national_stats?: CountryNationalStats
   relations: Record<string, number>
   personality_traits: string[]
   description: string
@@ -132,6 +143,35 @@ export interface SimEvent {
   poi_country_id?: string
 }
 
+export interface OccupiedRegion {
+  adm1_code: string
+  occupied_by: string
+  country_id: string
+  region_name: string
+}
+
+export interface IndependentRegion {
+  adm1_code: string
+  country_id: string
+  parent_id: string
+  region_name: string
+  since_year: number
+}
+
+export interface RegionState {
+  occupied: Record<string, OccupiedRegion>
+  independent: Record<string, IndependentRegion>
+}
+
+export interface RegionMeta {
+  adm1_code: string
+  country_id: string
+  name: string
+  name_fr: string
+  lat: number
+  lon: number
+}
+
 export interface GameState {
   session_id: string
   scenario_id: string
@@ -147,6 +187,10 @@ export interface GameState {
   diplomatic_history: DiplomaticMessage[]
   action_history: ActionResult[]
   pending_actions?: PendingAction[]
+  region_state?: RegionState
+  custom_map_id?: string
+  custom_map_feature_id_property?: string
+  initial_territories?: Record<string, string>
 }
 
 export interface ScenarioSummary {
@@ -158,4 +202,13 @@ export interface ScenarioSummary {
   custom: boolean
 }
 
-export type PanelView = 'dashboard' | 'diplomacy' | 'advisor' | 'events' | 'actions'
+export interface DiplomaticEffect {
+  agreement_reached: boolean
+  agreement_type: string | null
+  summary: string | null
+  relation_delta: number
+  economy_delta: number
+  domestic_events: unknown[]
+}
+
+export type PanelView = 'dashboard' | 'diplomacy' | 'advisor' | 'events' | 'actions' | 'regions'

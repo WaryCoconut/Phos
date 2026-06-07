@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     # API IA compatible OpenAI — socle.ai par défaut
     api_base_url: str = "https://app.socle.ai/api/v1"
     api_key: str = "sk-change-me"
-    model: str = "qwen3-235b-a22b-instruct-2507"
+    model: str = "MJ Phos"
 
     # Serveur
     host: str = "0.0.0.0"

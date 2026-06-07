@@ -7,10 +7,12 @@ import {
   ZoomableGroup,
   type GeoRecord,
 } from 'react-simple-maps'
+import { Plus, Minus, RotateCcw } from 'lucide-react'
 import type { MouseEvent } from 'react'
-import type { Country, MapPOI } from '@/types'
+import type { Country, MapPOI, RegionState } from '@/types'
 
-const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
+const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json'
+const GEO_ADMIN1_URL = '/ne_admin1.json'
 
 // Complete ISO 3166-1 numeric → alpha-3 mapping for all 174 countries in world-atlas 110m
 const NUMERIC_TO_ALPHA3: Record<string, string> = {
@@ -57,45 +59,43 @@ const NUMERIC_TO_ALPHA3: Record<string, string> = {
 const WORLD_NAMES: Record<string, string> = {
   AFG: 'Afghanistan',        ALB: 'Albanie',             ATA: 'Antarctique',
   DZA: 'Algérie',            AGO: 'Angola',              AZE: 'Azerbaïdjan',
-  AUT: 'Autriche',           BHS: 'Bahamas',             BGD: 'Bangladesh',
+  AUT: 'Autriche',           BGD: 'Bangladesh',
   ARM: 'Arménie',            BEL: 'Belgique',            BTN: 'Bhoutan',
-  BOL: 'Bolivie',            BIH: 'Bosnie-Herzégovine',  BWA: 'Botswana',
-  BLZ: 'Belize',             SLB: 'Îles Salomon',        BRN: 'Brunéi',
-  BGR: 'Bulgarie',           MMR: 'Myanmar',             BDI: 'Burundi',
+  BOL: 'Bolivie',            BIH: 'Bosnie-Herzégovine',
+  SLB: 'Îles Salomon',       BRN: 'Brunéi',
+  BGR: 'Bulgarie',           MMR: 'Myanmar',
   BLR: 'Biélorussie',        KHM: 'Cambodge',            CMR: 'Cameroun',
-  CAF: 'Rép. Centrafricaine',LKA: 'Sri Lanka',           TCD: 'Tchad',
-  CHL: 'Chili',              TWN: 'Taïwan',              COG: 'Congo (Brazzaville)',
-  COD: 'Congo (RDC)',        CRI: 'Costa Rica',          HRV: 'Croatie',
-  CYP: 'Chypre',             BEN: 'Bénin',               DNK: 'Danemark',
-  DOM: 'Rép. Dominicaine',   ECU: 'Équateur',            SLV: 'El Salvador',
-  GNQ: 'Guinée équatoriale', ERI: 'Érythrée',            EST: 'Estonie',
+  LKA: 'Sri Lanka',
+  CHL: 'Chili',              TWN: 'Taïwan',
+  CRI: 'Costa Rica',         HRV: 'Croatie',
+  CYP: 'Chypre',             DNK: 'Danemark',
+  DOM: 'Rép. Dominicaine',   ECU: 'Équateur',
+  EST: 'Estonie',
   FLK: 'Îles Malouines',     FJI: 'Fidji',               FIN: 'Finlande',
-  ATF: 'Terres australes fr.',DJI: 'Djibouti',           GAB: 'Gabon',
-  GEO: 'Géorgie',            GMB: 'Gambie',              PSE: 'Palestine',
+  ATF: 'Terres australes fr.',
+  GEO: 'Géorgie',            PSE: 'Palestine',
   GHA: 'Ghana',              GRL: 'Groenland',           GTM: 'Guatemala',
-  GIN: 'Guinée',             GUY: 'Guyana',              HTI: 'Haïti',
-  HND: 'Honduras',           ISL: 'Islande',             IRL: 'Irlande',
-  CIV: "Côte d'Ivoire",      JAM: 'Jamaïque',            JOR: 'Jordanie',
+  ISL: 'Islande',
+  IRL: 'Irlande',            CIV: "Côte d'Ivoire",       JOR: 'Jordanie',
   KEN: 'Kenya',              KWT: 'Koweït',              KGZ: 'Kirghizistan',
-  LAO: 'Laos',               LBN: 'Liban',               LSO: 'Lesotho',
-  LVA: 'Lettonie',           LBR: 'Liberia',             LBY: 'Libye',
-  LTU: 'Lituanie',           LUX: 'Luxembourg',          MDG: 'Madagascar',
-  MWI: 'Malawi',             MLI: 'Mali',                MRT: 'Mauritanie',
+  LAO: 'Laos',               LBN: 'Liban',
+  LVA: 'Lettonie',           LBY: 'Libye',
+  LTU: 'Lituanie',           LUX: 'Luxembourg',
   MNG: 'Mongolie',           MDA: 'Moldavie',            MNE: 'Monténégro',
-  MAR: 'Maroc',              MOZ: 'Mozambique',          OMN: 'Oman',
-  NAM: 'Namibie',            NPL: 'Népal',               NCL: 'Nouvelle-Calédonie',
-  VUT: 'Vanuatu',            NZL: 'Nouvelle-Zélande',    NIC: 'Nicaragua',
-  NER: 'Niger',              PAN: 'Panama',              PNG: 'Papouasie-Nvl-Guinée',
+  MAR: 'Maroc',              OMN: 'Oman',
+  NPL: 'Népal',              NCL: 'Nouvelle-Calédonie',
+  VUT: 'Vanuatu',            NZL: 'Nouvelle-Zélande',
+  PAN: 'Panama',             PNG: 'Papouasie-Nvl-Guinée',
   PRY: 'Paraguay',           PER: 'Pérou',               PRT: 'Portugal',
-  GNB: 'Guinée-Bissau',      TLS: 'Timor-Leste',         PRI: 'Porto Rico',
-  RWA: 'Rwanda',             SEN: 'Sénégal',             SRB: 'Serbie',
-  SLE: 'Sierra Leone',       SVK: 'Slovaquie',           SVN: 'Slovénie',
-  SOM: 'Somalie',            ZWE: 'Zimbabwe',            SSD: 'Soudan du Sud',
-  SDN: 'Soudan',             ESH: 'Sahara occidental',   SUR: 'Suriname',
-  SWZ: 'Eswatini',           TJK: 'Tadjikistan',         TGO: 'Togo',
-  TTO: 'Trinité-et-Tobago',  TUN: 'Tunisie',             TKM: 'Turkménistan',
-  UGA: 'Ouganda',            MKD: 'Macédoine du Nord',   TZA: 'Tanzanie',
-  BFA: 'Burkina Faso',       URY: 'Uruguay',             UZB: 'Ouzbékistan',
+  TLS: 'Timor-Leste',        PRI: 'Porto Rico',
+  SRB: 'Serbie',
+  SVK: 'Slovaquie',          SVN: 'Slovénie',
+  SOM: 'Somalie',            ZWE: 'Zimbabwe',
+  SDN: 'Soudan',             ESH: 'Sahara occidental',
+  TJK: 'Tadjikistan',
+  TUN: 'Tunisie',            TKM: 'Turkménistan',
+  MKD: 'Macédoine du Nord',  TZA: 'Tanzanie',
+  URY: 'Uruguay',            UZB: 'Ouzbékistan',
   YEM: 'Yémen',              ZMB: 'Zambie',
 }
 
@@ -207,6 +207,53 @@ const CAPITALS: Record<string, { name: string; coords: [number, number] }> = {
   YEM: { name: 'Sanaa',           coords: [44.2,  15.4] },
   ZMB: { name: 'Lusaka',          coords: [28.3, -15.4] },
   ZWE: { name: 'Harare',          coords: [31.0, -17.8] },
+  // Caribbean
+  HTI: { name: 'Port-au-Prince',  coords: [-72.3,  18.5] },
+  JAM: { name: 'Kingston',        coords: [-76.8,  18.0] },
+  TTO: { name: 'Port of Spain',   coords: [-61.5,  10.7] },
+  BHS: { name: 'Nassau',          coords: [-77.3,  25.1] },
+  BLZ: { name: 'Belmopan',        coords: [-88.8,  17.3] },
+  GUY: { name: 'Georgetown',      coords: [-58.2,   6.8] },
+  SUR: { name: 'Paramaribo',      coords: [-55.2,   5.8] },
+  // Central America
+  HND: { name: 'Tegucigalpa',     coords: [-87.2,  14.1] },
+  SLV: { name: 'San Salvador',    coords: [-89.2,  13.7] },
+  NIC: { name: 'Managua',         coords: [-86.3,  12.1] },
+  // Africa – West
+  SEN: { name: 'Dakar',           coords: [-17.4,  14.7] },
+  MLI: { name: 'Bamako',          coords: [ -8.0,  12.6] },
+  BFA: { name: 'Ouagadougou',     coords: [ -1.5,  12.4] },
+  NER: { name: 'Niamey',          coords: [  2.1,  13.5] },
+  TCD: { name: "N'Djamena",       coords: [ 15.0,  12.1] },
+  GIN: { name: 'Conakry',         coords: [-13.7,   9.5] },
+  SLE: { name: 'Freetown',        coords: [-13.2,   8.5] },
+  LBR: { name: 'Monrovia',        coords: [-10.8,   6.3] },
+  GNB: { name: 'Bissau',          coords: [-15.6,  11.9] },
+  GMB: { name: 'Banjul',          coords: [-16.6,  13.5] },
+  MRT: { name: 'Nouakchott',      coords: [-15.9,  18.1] },
+  BEN: { name: 'Porto-Novo',      coords: [  2.6,   6.4] },
+  TGO: { name: 'Lomé',            coords: [  1.2,   6.1] },
+  // Africa – Central
+  COD: { name: 'Kinshasa',        coords: [ 15.32, -4.32] },
+  COG: { name: 'Brazzaville',     coords: [ 15.28, -4.26] },
+  CAF: { name: 'Bangui',          coords: [ 18.6,   4.4] },
+  GAB: { name: 'Libreville',      coords: [  9.4,   0.4] },
+  GNQ: { name: 'Malabo',          coords: [  8.8,   3.8] },
+  // Africa – East
+  UGA: { name: 'Kampala',         coords: [ 32.6,   0.3] },
+  RWA: { name: 'Kigali',          coords: [ 30.1,  -1.9] },
+  BDI: { name: 'Bujumbura',       coords: [ 29.4,  -3.4] },
+  SSD: { name: 'Juba',            coords: [ 31.6,   4.9] },
+  ERI: { name: 'Asmara',          coords: [ 38.9,  15.3] },
+  DJI: { name: 'Djibouti',        coords: [ 43.1,  11.6] },
+  // Africa – Southern
+  MOZ: { name: 'Maputo',          coords: [ 32.6, -25.9] },
+  MDG: { name: 'Antananarivo',    coords: [ 47.5, -18.9] },
+  MWI: { name: 'Lilongwe',        coords: [ 33.8, -14.0] },
+  NAM: { name: 'Windhoek',        coords: [ 17.1, -22.6] },
+  BWA: { name: 'Gaborone',        coords: [ 25.9, -24.7] },
+  LSO: { name: 'Maseru',          coords: [ 27.5, -29.3] },
+  SWZ: { name: 'Mbabane',         coords: [ 31.1, -26.3] },
 }
 
 const REGIONS: { name: string; coords: [number, number]; color: string }[] = [
@@ -238,6 +285,18 @@ const GAME_COUNTRY_IDS = new Set([
   'LBY','LKA','LTU','LVA','MAR','MKD','MMR','MNG','NZL','OMN',
   'PAN','PER','PRT','PRY','SDN','SOM','SRB','SVK','SVN','TUN',
   'TWN','TZA','URY','UZB','YEM','ZMB','ZWE',
+  // Caribbean
+  'HTI','JAM','TTO','BHS','BLZ','GUY','SUR',
+  // Central America
+  'HND','SLV','NIC',
+  // Africa – West
+  'SEN','MLI','BFA','NER','TCD','GIN','SLE','LBR','GNB','GMB','MRT','BEN','TGO',
+  // Africa – Central
+  'COD','COG','CAF','GAB','GNQ',
+  // Africa – East
+  'UGA','RWA','BDI','SSD','ERI','DJI',
+  // Africa – Southern
+  'MOZ','MDG','MWI','NAM','BWA','LSO','SWZ',
 ])
 
 function getRelationColor(score: number): string {
@@ -263,6 +322,11 @@ interface Props {
   pois?: MapPOI[]
   showCapitals?: boolean
   showRegions?: boolean
+  regionState?: RegionState
+  // Custom universe map
+  customMapUrl?: string
+  featureIdProp?: string
+  initialTerritories?: Record<string, string>
 }
 
 const WorldMap = memo(function WorldMap({
@@ -274,8 +338,14 @@ const WorldMap = memo(function WorldMap({
   pois = [],
   showCapitals = true,
   showRegions = true,
+  regionState,
+  customMapUrl,
+  featureIdProp = 'id',
+  initialTerritories = {},
 }: Props) {
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null)
+  const [zoom, setZoom] = useState(1)
+  const [center, setCenter] = useState<[number, number]>([10, 20])
   const playerCountry = countries[playerCountryId]
 
   function getFillColor(numericId: string): string {
@@ -301,6 +371,39 @@ const WorldMap = memo(function WorldMap({
     return country.color || '#334155'
   }
 
+  function getAdmin1Fill(geo: GeoRecord): string {
+    const adm1Code = (geo.properties as Record<string, unknown>)?.adm1_code as string | undefined
+    if (!adm1Code || !regionState) return 'none'
+    const occupied = regionState.occupied[adm1Code]
+    if (occupied) {
+      if (viewMode === 'relations' && playerCountry) {
+        return getRelationColor(playerCountry.relations[occupied.occupied_by] ?? 0)
+      }
+      return countries[occupied.occupied_by]?.color ?? '#ef4444'
+    }
+    const independent = regionState.independent[adm1Code]
+    if (independent) {
+      return countries[independent.country_id]?.color ?? '#7c3aed'
+    }
+    return 'none'
+  }
+
+  function getAdmin1Tooltip(geo: GeoRecord): string | null {
+    const adm1Code = (geo.properties as Record<string, unknown>)?.adm1_code as string | undefined
+    if (!adm1Code || !regionState) return null
+    const occupied = regionState.occupied[adm1Code]
+    if (occupied) {
+      const occName = countries[occupied.occupied_by]?.name ?? occupied.occupied_by
+      return `🚩 ${occupied.region_name} — Occupé par ${occName}`
+    }
+    const independent = regionState.independent[adm1Code]
+    if (independent) {
+      const newName = countries[independent.country_id]?.name ?? independent.country_id
+      return `🆓 ${independent.region_name} → ${newName} (indépendant depuis ${independent.since_year})`
+    }
+    return null
+  }
+
   function getCountryLabel(alpha3: string): string {
     const gameCountry = countries[alpha3]
     if (gameCountry) return `${gameCountry.flag || ''} ${gameCountry.name}`
@@ -316,52 +419,158 @@ const WorldMap = memo(function WorldMap({
         projectionConfig={{ scale: 130, center: [10, 20] }}
         style={{ width: '100%', height: '100%' }}
       >
-        <ZoomableGroup zoom={1} minZoom={0.8} maxZoom={8}>
+        <ZoomableGroup
+          zoom={zoom}
+          center={center}
+          minZoom={0.8}
+          maxZoom={12}
+          onMoveEnd={({ zoom: z, coordinates }) => {
+            setZoom(z)
+            setCenter(coordinates as [number, number])
+          }}
+        >
 
-          {/* Country fills */}
-          <Geographies geography={GEO_URL}>
-            {({ geographies }: { geographies: GeoRecord[] }) =>
-              geographies.map((geo: GeoRecord) => {
-                const numericId = String(geo.id)
-                const alpha3 = NUMERIC_TO_ALPHA3[numericId] || ''
-                const isGame = GAME_COUNTRY_IDS.has(alpha3)
-                const isPlayer = alpha3 === playerCountryId
-                const isSelected = alpha3 === selectedCountryId
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill={getFillColor(numericId)}
-                    stroke="#0f172a"
-                    strokeWidth={0.3}
-                    style={{
-                      default: { outline: 'none' },
-                      hover: {
-                        fill: isPlayer ? '#fbbf24'
-                          : isSelected ? '#93c5fd'
-                          : isGame ? '#475569'
-                          : '#2e3f52',
-                        outline: 'none',
-                        cursor: isGame ? 'pointer' : 'default',
-                      },
-                      pressed: { outline: 'none' },
-                    }}
-                    onMouseEnter={(e: MouseEvent<SVGPathElement>) => {
-                      if (!alpha3) return
-                      setTooltip({ x: e.clientX, y: e.clientY, text: getCountryLabel(alpha3) })
-                    }}
-                    onMouseLeave={() => setTooltip(null)}
-                    onClick={() => {
-                      if (alpha3 && isGame && alpha3 !== playerCountryId) onSelectCountry(alpha3)
-                    }}
-                  />
-                )
-              })
-            }
-          </Geographies>
+          {customMapUrl ? (
+            /* ── Custom universe map ── */
+            <Geographies geography={customMapUrl}>
+              {({ geographies }: { geographies: GeoRecord[] }) =>
+                geographies.map((geo: GeoRecord) => {
+                  const props = geo.properties as Record<string, unknown>
+                  const featureId = String(
+                    featureIdProp === '_feature_id'
+                      ? (geo.id ?? '')
+                      : (props[featureIdProp] ?? geo.id ?? '')
+                  )
+                  const factionId = initialTerritories[featureId] ?? featureId
+                  const faction = countries[factionId]
+                  const isPlayer = factionId === playerCountryId
+                  const isSelected = factionId === selectedCountryId
+                  const displayName = String(props.name ?? props.NAME ?? props.label ?? featureId)
 
-          {/* Region labels */}
-          {showRegions && REGIONS.map((region) => (
+                  let fill: string
+                  if (isPlayer) fill = '#f59e0b'
+                  else if (isSelected) fill = '#60a5fa'
+                  else if (faction) {
+                    if (viewMode === 'relations' && playerCountry)
+                      fill = getRelationColor(playerCountry.relations[factionId] ?? 0)
+                    else if (viewMode === 'stability')
+                      fill = getStabilityColor(faction.stability ?? 50)
+                    else fill = faction.color || '#334155'
+                  } else fill = '#1e293b'
+
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      fill={fill}
+                      stroke="#0f172a"
+                      strokeWidth={0.5}
+                      style={{
+                        default: { outline: 'none' },
+                        hover: {
+                          fill: isPlayer ? '#fbbf24' : isSelected ? '#93c5fd' : faction ? '#475569' : '#2e3f52',
+                          outline: 'none',
+                          cursor: faction ? 'pointer' : 'default',
+                        },
+                        pressed: { outline: 'none' },
+                      }}
+                      onMouseEnter={(e: MouseEvent<SVGPathElement>) =>
+                        setTooltip({
+                          x: e.clientX, y: e.clientY,
+                          text: faction ? `${faction.flag || ''} ${faction.name} — ${displayName}` : displayName,
+                        })
+                      }
+                      onMouseLeave={() => setTooltip(null)}
+                      onClick={() => {
+                        if (faction && factionId !== playerCountryId) onSelectCountry(factionId)
+                      }}
+                    />
+                  )
+                })
+              }
+            </Geographies>
+          ) : (
+            <>
+              {/* Country fills */}
+              <Geographies geography={GEO_URL}>
+                {({ geographies }: { geographies: GeoRecord[] }) =>
+                  geographies.map((geo: GeoRecord) => {
+                    const numericId = String(geo.id)
+                    const alpha3 = NUMERIC_TO_ALPHA3[numericId] || ''
+                    const isGame = GAME_COUNTRY_IDS.has(alpha3)
+                    const isPlayer = alpha3 === playerCountryId
+                    const isSelected = alpha3 === selectedCountryId
+                    return (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        fill={getFillColor(numericId)}
+                        stroke="#0f172a"
+                        strokeWidth={0.3}
+                        style={{
+                          default: { outline: 'none' },
+                          hover: {
+                            fill: isPlayer ? '#fbbf24'
+                              : isSelected ? '#93c5fd'
+                              : isGame ? '#475569'
+                              : '#2e3f52',
+                            outline: 'none',
+                            cursor: isGame ? 'pointer' : 'default',
+                          },
+                          pressed: { outline: 'none' },
+                        }}
+                        onMouseEnter={(e: MouseEvent<SVGPathElement>) => {
+                          if (!alpha3) return
+                          setTooltip({ x: e.clientX, y: e.clientY, text: getCountryLabel(alpha3) })
+                        }}
+                        onMouseLeave={() => setTooltip(null)}
+                        onClick={() => {
+                          if (alpha3 && isGame && alpha3 !== playerCountryId) onSelectCountry(alpha3)
+                        }}
+                      />
+                    )
+                  })
+                }
+              </Geographies>
+
+              {/* Province/state internal borders — colored when occupied or independent */}
+              <Geographies geography={GEO_ADMIN1_URL}>
+                {({ geographies }: { geographies: GeoRecord[] }) =>
+                  geographies.map((geo: GeoRecord) => {
+                    const fill = getAdmin1Fill(geo)
+                    const tip = getAdmin1Tooltip(geo)
+                    const isActive = fill !== 'none'
+                    return (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        fill={fill}
+                        stroke="#0f172a"
+                        strokeWidth={0.45}
+                        style={{
+                          default: { outline: 'none' },
+                          hover:   { fill: isActive ? fill : 'none', outline: 'none' },
+                          pressed: { outline: 'none' },
+                        }}
+                        onMouseEnter={tip ? (e) => setTooltip({ x: e.clientX, y: e.clientY, text: tip }) : undefined}
+                        onMouseLeave={tip ? () => setTooltip(null) : undefined}
+                        onClick={isActive ? () => {
+                          const adm1Code = (geo.properties as Record<string, unknown>)?.adm1_code as string
+                          const ind = regionState?.independent[adm1Code]
+                          const occ = regionState?.occupied[adm1Code]
+                          const targetId = ind?.country_id ?? occ?.occupied_by
+                          if (targetId && targetId !== playerCountryId) onSelectCountry(targetId)
+                        } : undefined}
+                      />
+                    )
+                  })
+                }
+              </Geographies>
+            </>
+          )}
+
+          {/* Region labels — world map only */}
+          {!customMapUrl && showRegions && REGIONS.map((region) => (
             <Marker key={region.name} coordinates={region.coords}>
               <text
                 textAnchor="middle"
@@ -381,8 +590,8 @@ const WorldMap = memo(function WorldMap({
             </Marker>
           ))}
 
-          {/* Capital markers (game countries only) */}
-          {showCapitals && Object.entries(CAPITALS).map(([countryId, capital]) => {
+          {/* Capital markers — world map only */}
+          {!customMapUrl && showCapitals && Object.entries(CAPITALS).map(([countryId, capital]) => {
             const country = countries[countryId]
             if (!country) return null
             const isPlayer = countryId === playerCountryId
@@ -431,6 +640,31 @@ const WorldMap = memo(function WorldMap({
 
         </ZoomableGroup>
       </ComposableMap>
+
+      {/* Zoom controls */}
+      <div className="absolute top-3 right-3 flex flex-col gap-1">
+        <button
+          onClick={() => setZoom((z) => Math.min(12, +(z * 1.5).toFixed(2)))}
+          className="w-8 h-8 bg-pax-panel border border-pax-border rounded-lg flex items-center justify-center text-slate-300 hover:text-white hover:border-slate-500 transition-colors"
+          title="Zoom in"
+        >
+          <Plus className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => setZoom((z) => Math.max(0.8, +(z / 1.5).toFixed(2)))}
+          className="w-8 h-8 bg-pax-panel border border-pax-border rounded-lg flex items-center justify-center text-slate-300 hover:text-white hover:border-slate-500 transition-colors"
+          title="Zoom out"
+        >
+          <Minus className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => { setZoom(1); setCenter([10, 20]) }}
+          className="w-8 h-8 bg-pax-panel border border-pax-border rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-500 transition-colors"
+          title="Reset view"
+        >
+          <RotateCcw className="w-3.5 h-3.5" />
+        </button>
+      </div>
 
       {/* Tooltip */}
       {tooltip && (

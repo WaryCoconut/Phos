@@ -1,0 +1,2060 @@
+{
+  "AUS-2651": {
+    "country_id": "AUS",
+    "name": "Western Australia",
+    "name_fr": "Australie-Occidentale",
+    "lat": -25.85,
+    "lon": 121.65
+  },
+  "AUS-2650": {
+    "country_id": "AUS",
+    "name": "Northern Territory",
+    "name_fr": "Territoire du Nord",
+    "lat": -20.1,
+    "lon": 133.78
+  },
+  "AUS-2655": {
+    "country_id": "AUS",
+    "name": "South Australia",
+    "name_fr": "Australie-Méridionale",
+    "lat": -29.65,
+    "lon": 135.78
+  },
+  "AUS-2657": {
+    "country_id": "AUS",
+    "name": "Queensland",
+    "name_fr": "Queensland",
+    "lat": -23.14,
+    "lon": 144.78
+  },
+  "AUS-2660": {
+    "country_id": "AUS",
+    "name": "Tasmania",
+    "name_fr": "Tasmanie",
+    "lat": -42.14,
+    "lon": 146.6
+  },
+  "AUS-2656": {
+    "country_id": "AUS",
+    "name": "Victoria",
+    "name_fr": "Victoria",
+    "lat": -37.01,
+    "lon": 144.75
+  },
+  "AUS-2653": {
+    "country_id": "AUS",
+    "name": "Australian Capital Territory",
+    "name_fr": "Territoire de la capitale australienne",
+    "lat": -35.46,
+    "lon": 148.98
+  },
+  "AUS-1932": {
+    "country_id": "AUS",
+    "name": "Jervis Bay Territory",
+    "name_fr": "Territoire de la baie de Jervis",
+    "lat": -35.15,
+    "lon": 150.69
+  },
+  "AUS-2654": {
+    "country_id": "AUS",
+    "name": "New South Wales",
+    "name_fr": "Nouvelle-Galles du Sud",
+    "lat": -32.48,
+    "lon": 146.78
+  },
+  "BRA-576": {
+    "country_id": "BRA",
+    "name": "Acre",
+    "name_fr": "Acre",
+    "lat": -8.93,
+    "lon": -70.3
+  },
+  "BRA-595": {
+    "country_id": "BRA",
+    "name": "Rondônia",
+    "name_fr": "Rondônia",
+    "lat": -10.97,
+    "lon": -63.14
+  },
+  "BRA-670": {
+    "country_id": "BRA",
+    "name": "Roraima",
+    "name_fr": "Roraima",
+    "lat": 1.94,
+    "lon": -61.33
+  },
+  "BRA-592": {
+    "country_id": "BRA",
+    "name": "Amazonas",
+    "name_fr": "Amazonas",
+    "lat": -4.22,
+    "lon": -63.79
+  },
+  "BRA-594": {
+    "country_id": "BRA",
+    "name": "Pará",
+    "name_fr": "Pará",
+    "lat": -4.44,
+    "lon": -52.65
+  },
+  "BRA-600": {
+    "country_id": "BRA",
+    "name": "Mato Grosso do Sul",
+    "name_fr": "Mato Grosso do Sul",
+    "lat": -20.68,
+    "lon": -54.55
+  },
+  "BRA-681": {
+    "country_id": "BRA",
+    "name": "Amapá",
+    "name_fr": "Amapá",
+    "lat": 1.41,
+    "lon": -51.68
+  },
+  "BRA-602": {
+    "country_id": "BRA",
+    "name": "Mato Grosso",
+    "name_fr": "Mato Grosso",
+    "lat": -13.39,
+    "lon": -55.92
+  },
+  "BRA-613": {
+    "country_id": "BRA",
+    "name": "Paraná",
+    "name_fr": "Paraná",
+    "lat": -24.66,
+    "lon": -51.32
+  },
+  "BRA-599": {
+    "country_id": "BRA",
+    "name": "Distrito Federal",
+    "name_fr": "fédéral",
+    "lat": -15.77,
+    "lon": -47.79
+  },
+  "BRA-1294": {
+    "country_id": "BRA",
+    "name": "Goiás",
+    "name_fr": "Goiás",
+    "lat": -15.86,
+    "lon": -49.58
+  },
+  "BRA-596": {
+    "country_id": "BRA",
+    "name": "Tocantins",
+    "name_fr": "Tocantins",
+    "lat": -10.22,
+    "lon": -48.25
+  },
+  "BRA-1311": {
+    "country_id": "BRA",
+    "name": "São Paulo",
+    "name_fr": "São Paulo",
+    "lat": -22.23,
+    "lon": -48.52
+  },
+  "BRA-593": {
+    "country_id": "BRA",
+    "name": "Maranhão",
+    "name_fr": "Maranhão",
+    "lat": -5.02,
+    "lon": -45.39
+  },
+  "BRA-627": {
+    "country_id": "BRA",
+    "name": "Rio de Janeiro",
+    "name_fr": "Rio de Janeiro",
+    "lat": -22.4,
+    "lon": -43.12
+  },
+  "BRA-622": {
+    "country_id": "BRA",
+    "name": "Piauí",
+    "name_fr": "Piauí",
+    "lat": -8.09,
+    "lon": -43.2
+  },
+  "BRA-601": {
+    "country_id": "BRA",
+    "name": "Minas Gerais",
+    "name_fr": "Minas Gerais",
+    "lat": -18.59,
+    "lon": -44.48
+  },
+  "BRA-625": {
+    "country_id": "BRA",
+    "name": "Espírito Santo",
+    "name_fr": "Espírito Santo",
+    "lat": -19.69,
+    "lon": -40.54
+  },
+  "BRA-624": {
+    "country_id": "BRA",
+    "name": "Bahia",
+    "name_fr": "Bahia",
+    "lat": -12.37,
+    "lon": -41.8
+  },
+  "BRA-621": {
+    "country_id": "BRA",
+    "name": "Ceará",
+    "name_fr": "Ceará",
+    "lat": -5.38,
+    "lon": -39.34
+  },
+  "BRA-629": {
+    "country_id": "BRA",
+    "name": "Sergipe",
+    "name_fr": "Sergipe",
+    "lat": -10.59,
+    "lon": -37.38
+  },
+  "BRA-623": {
+    "country_id": "BRA",
+    "name": "Alagoas",
+    "name_fr": "Alagoas",
+    "lat": -9.77,
+    "lon": -36.69
+  },
+  "BRA-628": {
+    "country_id": "BRA",
+    "name": "Rio Grande do Norte",
+    "name_fr": "Rio Grande do Norte",
+    "lat": -5.66,
+    "lon": -36.55
+  },
+  "BRA-1313": {
+    "country_id": "BRA",
+    "name": "Pernambuco",
+    "name_fr": "Pernambouc",
+    "lat": -8.47,
+    "lon": -37.3
+  },
+  "BRA-626": {
+    "country_id": "BRA",
+    "name": "Paraíba",
+    "name_fr": "Paraíba",
+    "lat": -7.34,
+    "lon": -36.27
+  },
+  "BRA-614": {
+    "country_id": "BRA",
+    "name": "Santa Catarina",
+    "name_fr": "Santa Catarina",
+    "lat": -27.04,
+    "lon": -51.16
+  },
+  "BRA-612": {
+    "country_id": "BRA",
+    "name": "Rio Grande do Sul",
+    "name_fr": "Rio Grande do Sul",
+    "lat": -29.73,
+    "lon": -53.66
+  },
+  "CAN-632": {
+    "country_id": "CAN",
+    "name": "Alberta",
+    "name_fr": "Alberta",
+    "lat": 55.28,
+    "lon": -115
+  },
+  "CAN-633": {
+    "country_id": "CAN",
+    "name": "British Columbia",
+    "name_fr": "Colombie-Britannique",
+    "lat": 54.69,
+    "lon": -124.66
+  },
+  "CAN-630": {
+    "country_id": "CAN",
+    "name": "Manitoba",
+    "name_fr": "Manitoba",
+    "lat": 54.85,
+    "lon": -97.38
+  },
+  "CAN-684": {
+    "country_id": "CAN",
+    "name": "New Brunswick",
+    "name_fr": "Nouveau-Brunswick",
+    "lat": 46.58,
+    "lon": -66.46
+  },
+  "CAN-686": {
+    "country_id": "CAN",
+    "name": "Newfoundland and Labrador",
+    "name_fr": "Terre-Neuve-et-Labrador",
+    "lat": 48.66,
+    "lon": -56.22
+  },
+  "CAN-685": {
+    "country_id": "CAN",
+    "name": "Nova Scotia",
+    "name_fr": "Nouvelle-Écosse",
+    "lat": 45.23,
+    "lon": -62.81
+  },
+  "CAN-635": {
+    "country_id": "CAN",
+    "name": "Northwest Territories",
+    "name_fr": "Territoires du Nord-Ouest",
+    "lat": 64.08,
+    "lon": -119.94
+  },
+  "CAN-634": {
+    "country_id": "CAN",
+    "name": "Nunavut",
+    "name_fr": "Nunavut",
+    "lat": 64.39,
+    "lon": -97.14
+  },
+  "CAN-682": {
+    "country_id": "CAN",
+    "name": "Ontario",
+    "name_fr": "Ontario",
+    "lat": 50.52,
+    "lon": -84.79
+  },
+  "CAN-687": {
+    "country_id": "CAN",
+    "name": "Prince Edward Island",
+    "name_fr": "Île-du-Prince-Édouard",
+    "lat": 46.34,
+    "lon": -63.39
+  },
+  "CAN-683": {
+    "country_id": "CAN",
+    "name": "Québec",
+    "name_fr": "Québec",
+    "lat": 52.26,
+    "lon": -73.72
+  },
+  "CAN-631": {
+    "country_id": "CAN",
+    "name": "Saskatchewan",
+    "name_fr": "Saskatchewan",
+    "lat": 54.5,
+    "lon": -105.68
+  },
+  "CAN-636": {
+    "country_id": "CAN",
+    "name": "Yukon",
+    "name_fr": "Yukon",
+    "lat": 63.61,
+    "lon": -135.7
+  },
+  "USA-3563": {
+    "country_id": "USA",
+    "name": "Alaska",
+    "name_fr": "Alaska",
+    "lat": 65.36,
+    "lon": -151.6
+  },
+  "USA-3541": {
+    "country_id": "USA",
+    "name": "Alabama",
+    "name_fr": "Alabama",
+    "lat": 32.86,
+    "lon": -86.72
+  },
+  "USA-3528": {
+    "country_id": "USA",
+    "name": "Arkansas",
+    "name_fr": "Arkansas",
+    "lat": 34.76,
+    "lon": -92.14
+  },
+  "USA-3520": {
+    "country_id": "USA",
+    "name": "Arizona",
+    "name_fr": "Arizona",
+    "lat": 34.3,
+    "lon": -111.94
+  },
+  "USA-3521": {
+    "country_id": "USA",
+    "name": "California",
+    "name_fr": "Californie",
+    "lat": 36.75,
+    "lon": -119.59
+  },
+  "USA-3522": {
+    "country_id": "USA",
+    "name": "Colorado",
+    "name_fr": "Colorado",
+    "lat": 39.0,
+    "lon": -105.54
+  },
+  "USA-3537": {
+    "country_id": "USA",
+    "name": "Connecticut",
+    "name_fr": "Connecticut",
+    "lat": 41.65,
+    "lon": -72.76
+  },
+  "USA-3556": {
+    "country_id": "USA",
+    "name": "District of Columbia",
+    "name_fr": "Washington",
+    "lat": 38.89,
+    "lon": -77.01
+  },
+  "USA-3555": {
+    "country_id": "USA",
+    "name": "Delaware",
+    "name_fr": "Delaware",
+    "lat": 38.87,
+    "lon": -75.41
+  },
+  "USA-3542": {
+    "country_id": "USA",
+    "name": "Florida",
+    "name_fr": "Floride",
+    "lat": 28.16,
+    "lon": -81.62
+  },
+  "USA-3543": {
+    "country_id": "USA",
+    "name": "Georgia",
+    "name_fr": "Géorgie",
+    "lat": 32.85,
+    "lon": -83.41
+  },
+  "USA-3517": {
+    "country_id": "USA",
+    "name": "Hawaii",
+    "name_fr": "Hawaï",
+    "lat": 21.49,
+    "lon": -158.0
+  },
+  "USA-3529": {
+    "country_id": "USA",
+    "name": "Iowa",
+    "name_fr": "Iowa",
+    "lat": 42.04,
+    "lon": -93.39
+  },
+  "USA-3518": {
+    "country_id": "USA",
+    "name": "Idaho",
+    "name_fr": "Idaho",
+    "lat": 43.78,
+    "lon": -114.13
+  },
+  "USA-3546": {
+    "country_id": "USA",
+    "name": "Illinois",
+    "name_fr": "Illinois",
+    "lat": 39.95,
+    "lon": -89.2
+  },
+  "USA-3547": {
+    "country_id": "USA",
+    "name": "Indiana",
+    "name_fr": "Indiana",
+    "lat": 39.89,
+    "lon": -86.14
+  },
+  "USA-3530": {
+    "country_id": "USA",
+    "name": "Kansas",
+    "name_fr": "Kansas",
+    "lat": 38.5,
+    "lon": -98.33
+  },
+  "USA-3548": {
+    "country_id": "USA",
+    "name": "Kentucky",
+    "name_fr": "Kentucky",
+    "lat": 37.4,
+    "lon": -85.57
+  },
+  "USA-3535": {
+    "country_id": "USA",
+    "name": "Louisiana",
+    "name_fr": "Louisiane",
+    "lat": 30.53,
+    "lon": -92.0
+  },
+  "USA-3513": {
+    "country_id": "USA",
+    "name": "Massachusetts",
+    "name_fr": "Massachusetts",
+    "lat": 42.37,
+    "lon": -72.0
+  },
+  "USA-3557": {
+    "country_id": "USA",
+    "name": "Maryland",
+    "name_fr": "Maryland",
+    "lat": 39.39,
+    "lon": -77.05
+  },
+  "USA-3561": {
+    "country_id": "USA",
+    "name": "Maine",
+    "name_fr": "Maine",
+    "lat": 45.15,
+    "lon": -69.2
+  },
+  "USA-3562": {
+    "country_id": "USA",
+    "name": "Michigan",
+    "name_fr": "Michigan",
+    "lat": 43.43,
+    "lon": -84.95
+  },
+  "USA-3514": {
+    "country_id": "USA",
+    "name": "Minnesota",
+    "name_fr": "Minnesota",
+    "lat": 46.06,
+    "lon": -93.36
+  },
+  "USA-3531": {
+    "country_id": "USA",
+    "name": "Missouri",
+    "name_fr": "Missouri",
+    "lat": 38.55,
+    "lon": -92.45
+  },
+  "USA-3544": {
+    "country_id": "USA",
+    "name": "Mississippi",
+    "name_fr": "Mississippi",
+    "lat": 32.87,
+    "lon": -89.72
+  },
+  "USA-3515": {
+    "country_id": "USA",
+    "name": "Montana",
+    "name_fr": "Montana",
+    "lat": 47.0,
+    "lon": -110.04
+  },
+  "USA-3549": {
+    "country_id": "USA",
+    "name": "North Carolina",
+    "name_fr": "Caroline du Nord",
+    "lat": 35.62,
+    "lon": -78.87
+  },
+  "USA-3516": {
+    "country_id": "USA",
+    "name": "North Dakota",
+    "name_fr": "Dakota du Nord",
+    "lat": 47.47,
+    "lon": -100.3
+  },
+  "USA-3532": {
+    "country_id": "USA",
+    "name": "Nebraska",
+    "name_fr": "Nebraska",
+    "lat": 41.5,
+    "lon": -99.69
+  },
+  "USA-3538": {
+    "country_id": "USA",
+    "name": "New Hampshire",
+    "name_fr": "New Hampshire",
+    "lat": 43.6,
+    "lon": -71.63
+  },
+  "USA-3558": {
+    "country_id": "USA",
+    "name": "New Jersey",
+    "name_fr": "New Jersey",
+    "lat": 40.04,
+    "lon": -74.47
+  },
+  "USA-3524": {
+    "country_id": "USA",
+    "name": "New Mexico",
+    "name_fr": "Nouveau-Mexique",
+    "lat": 34.5,
+    "lon": -106.02
+  },
+  "USA-3523": {
+    "country_id": "USA",
+    "name": "Nevada",
+    "name_fr": "Nevada",
+    "lat": 39.43,
+    "lon": -117.02
+  },
+  "USA-3559": {
+    "country_id": "USA",
+    "name": "New York",
+    "name_fr": "État de New York",
+    "lat": 43.2,
+    "lon": -75.32
+  },
+  "USA-3550": {
+    "country_id": "USA",
+    "name": "Ohio",
+    "name_fr": "Ohio",
+    "lat": 40.09,
+    "lon": -82.67
+  },
+  "USA-3533": {
+    "country_id": "USA",
+    "name": "Oklahoma",
+    "name_fr": "Oklahoma",
+    "lat": 35.45,
+    "lon": -97.13
+  },
+  "USA-3525": {
+    "country_id": "USA",
+    "name": "Oregon",
+    "name_fr": "Oregon",
+    "lat": 43.83,
+    "lon": -120.39
+  },
+  "USA-3560": {
+    "country_id": "USA",
+    "name": "Pennsylvania",
+    "name_fr": "Pennsylvanie",
+    "lat": 40.86,
+    "lon": -77.61
+  },
+  "USA-3539": {
+    "country_id": "USA",
+    "name": "Rhode Island",
+    "name_fr": "Rhode Island",
+    "lat": 41.62,
+    "lon": -71.51
+  },
+  "USA-3545": {
+    "country_id": "USA",
+    "name": "South Carolina",
+    "name_fr": "Caroline du Sud",
+    "lat": 33.86,
+    "lon": -80.65
+  },
+  "USA-3534": {
+    "country_id": "USA",
+    "name": "South Dakota",
+    "name_fr": "Dakota du Sud",
+    "lat": 44.47,
+    "lon": -100.25
+  },
+  "USA-3551": {
+    "country_id": "USA",
+    "name": "Tennessee",
+    "name_fr": "Tennessee",
+    "lat": 35.75,
+    "lon": -86.34
+  },
+  "USA-3536": {
+    "country_id": "USA",
+    "name": "Texas",
+    "name_fr": "Texas",
+    "lat": 31.13,
+    "lon": -98.76
+  },
+  "USA-3526": {
+    "country_id": "USA",
+    "name": "Utah",
+    "name_fr": "Utah",
+    "lat": 39.5,
+    "lon": -111.54
+  },
+  "USA-3552": {
+    "country_id": "USA",
+    "name": "Virginia",
+    "name_fr": "Virginie",
+    "lat": 37.74,
+    "lon": -78.24
+  },
+  "USA-3540": {
+    "country_id": "USA",
+    "name": "Vermont",
+    "name_fr": "Vermont",
+    "lat": 44.09,
+    "lon": -72.73
+  },
+  "USA-3519": {
+    "country_id": "USA",
+    "name": "Washington",
+    "name_fr": "Washington",
+    "lat": 47.49,
+    "lon": -120.36
+  },
+  "USA-3553": {
+    "country_id": "USA",
+    "name": "Wisconsin",
+    "name_fr": "Wisconsin",
+    "lat": 44.37,
+    "lon": -89.58
+  },
+  "USA-3554": {
+    "country_id": "USA",
+    "name": "West Virginia",
+    "name_fr": "Virginie-Occidentale",
+    "lat": 38.64,
+    "lon": -80.71
+  },
+  "USA-3527": {
+    "country_id": "USA",
+    "name": "Wyoming",
+    "name_fr": "Wyoming",
+    "lat": 43.0,
+    "lon": -107.55
+  },
+  "CHN-1150": {
+    "country_id": "CHN",
+    "name": "Gansu",
+    "name_fr": "Gansu",
+    "lat": 38.74,
+    "lon": 100.73
+  },
+  "CHN-1151": {
+    "country_id": "CHN",
+    "name": "Qinghai",
+    "name_fr": "Qinghai",
+    "lat": 35.27,
+    "lon": 96.24
+  },
+  "CHN-1152": {
+    "country_id": "CHN",
+    "name": "Guangxi",
+    "name_fr": "Guangxi",
+    "lat": 23.75,
+    "lon": 108.76
+  },
+  "CHN-1153": {
+    "country_id": "CHN",
+    "name": "Guizhou",
+    "name_fr": "Guizhou",
+    "lat": 26.8,
+    "lon": 106.56
+  },
+  "CHN-1154": {
+    "country_id": "CHN",
+    "name": "Chongqing",
+    "name_fr": "Chongqing",
+    "lat": 30.02,
+    "lon": 107.73
+  },
+  "CHN-1155": {
+    "country_id": "CHN",
+    "name": "Beijing",
+    "name_fr": "Pékin",
+    "lat": 39.95,
+    "lon": 116.39
+  },
+  "CHN-1178": {
+    "country_id": "CHN",
+    "name": "Fujian",
+    "name_fr": "Fujian",
+    "lat": 26.41,
+    "lon": 118.18
+  },
+  "CHN-1179": {
+    "country_id": "CHN",
+    "name": "Anhui",
+    "name_fr": "Anhui",
+    "lat": 31.95,
+    "lon": 117.25
+  },
+  "CHN-1180": {
+    "country_id": "CHN",
+    "name": "Guangdong",
+    "name_fr": "Guangdong",
+    "lat": 23.79,
+    "lon": 113.72
+  },
+  "CHN-1662": {
+    "country_id": "CHN",
+    "name": "Xizang",
+    "name_fr": "Tibet",
+    "lat": 31.45,
+    "lon": 88.41
+  },
+  "IND-3259": {
+    "country_id": "IND",
+    "name": "Sikkim",
+    "name_fr": "Sikkim",
+    "lat": 27.57,
+    "lon": 88.45
+  },
+  "CHN-1756": {
+    "country_id": "CHN",
+    "name": "Xinjiang",
+    "name_fr": "Xinjiang",
+    "lat": 41.12,
+    "lon": 85.43
+  },
+  "CHN-1775": {
+    "country_id": "CHN",
+    "name": "Hainan",
+    "name_fr": "Hainan",
+    "lat": 19.19,
+    "lon": 109.83
+  },
+  "CHN-1803": {
+    "country_id": "CHN",
+    "name": "Ningxia",
+    "name_fr": "Níngxià",
+    "lat": 37.18,
+    "lon": 106.04
+  },
+  "CHN-1804": {
+    "country_id": "CHN",
+    "name": "Shaanxi",
+    "name_fr": "Shaanxi",
+    "lat": 33.77,
+    "lon": 108.36
+  },
+  "CHN-1805": {
+    "country_id": "CHN",
+    "name": "Shanxi",
+    "name_fr": "Shanxi",
+    "lat": 37.76,
+    "lon": 112.39
+  },
+  "CHN-1807": {
+    "country_id": "CHN",
+    "name": "Hubei",
+    "name_fr": "Hubei",
+    "lat": 30.99,
+    "lon": 112.26
+  },
+  "CHN-1808": {
+    "country_id": "CHN",
+    "name": "Hunan",
+    "name_fr": "Hunan",
+    "lat": 27.67,
+    "lon": 111.71
+  },
+  "CHN-1809": {
+    "country_id": "CHN",
+    "name": "Sichuan",
+    "name_fr": "Sichuan",
+    "lat": 30.54,
+    "lon": 102.38
+  },
+  "CHN-1810": {
+    "country_id": "CHN",
+    "name": "Yunnan",
+    "name_fr": "Yunnan",
+    "lat": 24.46,
+    "lon": 101.66
+  },
+  "CHN-1811": {
+    "country_id": "CHN",
+    "name": "Hebei",
+    "name_fr": "Hebei",
+    "lat": 38.52,
+    "lon": 115.31
+  },
+  "CHN-1812": {
+    "country_id": "CHN",
+    "name": "Henan",
+    "name_fr": "Henan",
+    "lat": 33.91,
+    "lon": 113.48
+  },
+  "CHN-1813": {
+    "country_id": "CHN",
+    "name": "Liaoning",
+    "name_fr": "Liaoning",
+    "lat": 41.39,
+    "lon": 123.07
+  },
+  "CHN-1814": {
+    "country_id": "CHN",
+    "name": "Shandong",
+    "name_fr": "Shandong",
+    "lat": 36.33,
+    "lon": 118.11
+  },
+  "CHN-1816": {
+    "country_id": "CHN",
+    "name": "Tianjin",
+    "name_fr": "Tianjin",
+    "lat": 39.37,
+    "lon": 117.35
+  },
+  "CHN-1817": {
+    "country_id": "CHN",
+    "name": "Jiangxi",
+    "name_fr": "Jiangxi",
+    "lat": 27.64,
+    "lon": 116.02
+  },
+  "CHN-1818": {
+    "country_id": "CHN",
+    "name": "Jiangsu",
+    "name_fr": "Jiangsu",
+    "lat": 32.98,
+    "lon": 119.94
+  },
+  "CHN-1819": {
+    "country_id": "CHN",
+    "name": "Shanghai",
+    "name_fr": "Shanghai",
+    "lat": 31.09,
+    "lon": 121.41
+  },
+  "CHN-1820": {
+    "country_id": "CHN",
+    "name": "Zhejiang",
+    "name_fr": "Zhejiang",
+    "lat": 29.11,
+    "lon": 119.97
+  },
+  "CHN-1828": {
+    "country_id": "CHN",
+    "name": "Jilin",
+    "name_fr": "Jilin",
+    "lat": 43.3,
+    "lon": 126.47
+  },
+  "CHN-1838": {
+    "country_id": "CHN",
+    "name": "Inner Mongol",
+    "name_fr": "Mongolie-Intérieure",
+    "lat": 41.59,
+    "lon": 111.62
+  },
+  "CHN-1839": {
+    "country_id": "CHN",
+    "name": "Heilongjiang",
+    "name_fr": "Heilongjiang",
+    "lat": 46.85,
+    "lon": 127.97
+  },
+  "IDN-1136": {
+    "country_id": "IDN",
+    "name": "Aceh",
+    "name_fr": "Aceh",
+    "lat": 4.42,
+    "lon": 97.0
+  },
+  "IDN-1185": {
+    "country_id": "IDN",
+    "name": "Kalimantan Timur",
+    "name_fr": "Kalimantan oriental",
+    "lat": 1.29,
+    "lon": 116.35
+  },
+  "IDN-1223": {
+    "country_id": "IDN",
+    "name": "Jawa Barat",
+    "name_fr": "Java occidental",
+    "lat": -6.91,
+    "lon": 107.64
+  },
+  "IDN-1224": {
+    "country_id": "IDN",
+    "name": "Jawa Tengah",
+    "name_fr": "Java central",
+    "lat": -7.29,
+    "lon": 109.9
+  },
+  "IDN-1225": {
+    "country_id": "IDN",
+    "name": "Bengkulu",
+    "name_fr": "Bengkulu",
+    "lat": -3.49,
+    "lon": 102.37
+  },
+  "IDN-1226": {
+    "country_id": "IDN",
+    "name": "Banten",
+    "name_fr": "Banten",
+    "lat": -6.26,
+    "lon": 106.17
+  },
+  "IDN-1227": {
+    "country_id": "IDN",
+    "name": "Jakarta Raya",
+    "name_fr": "Jakarta",
+    "lat": -6.22,
+    "lon": 106.84
+  },
+  "IDN-1228": {
+    "country_id": "IDN",
+    "name": "Kalimantan Barat",
+    "name_fr": "Kalimantan occidental",
+    "lat": -0.06,
+    "lon": 111.3
+  },
+  "IDN-1229": {
+    "country_id": "IDN",
+    "name": "Lampung",
+    "name_fr": "Lampung",
+    "lat": -4.92,
+    "lon": 105.06
+  },
+  "IDN-1230": {
+    "country_id": "IDN",
+    "name": "Sumatera Selatan",
+    "name_fr": "Sumatra du Sud",
+    "lat": -3.38,
+    "lon": 104.07
+  },
+  "IDN-1231": {
+    "country_id": "IDN",
+    "name": "Bangka-Belitung",
+    "name_fr": "Îles Bangka Belitung",
+    "lat": -2.96,
+    "lon": 106.82
+  },
+  "IDN-1232": {
+    "country_id": "IDN",
+    "name": "Bali",
+    "name_fr": "Bali",
+    "lat": -8.34,
+    "lon": 115.18
+  },
+  "IDN-1233": {
+    "country_id": "IDN",
+    "name": "Jawa Timur",
+    "name_fr": "Java oriental",
+    "lat": -7.88,
+    "lon": 112.62
+  },
+  "IDN-1234": {
+    "country_id": "IDN",
+    "name": "Kalimantan Selatan",
+    "name_fr": "Kalimantan du Sud",
+    "lat": -3.01,
+    "lon": 115.45
+  },
+  "IDN-1235": {
+    "country_id": "IDN",
+    "name": "Nusa Tenggara Timur",
+    "name_fr": "Petites Îles de la Sonde orientales",
+    "lat": -8.58,
+    "lon": 120.69
+  },
+  "IDN-1236": {
+    "country_id": "IDN",
+    "name": "Sulawesi Selatan",
+    "name_fr": "Sulawesi du Sud",
+    "lat": -3.74,
+    "lon": 119.99
+  },
+  "IDN-1237": {
+    "country_id": "IDN",
+    "name": "Sulawesi Barat",
+    "name_fr": "Sulawesi occidental",
+    "lat": -2.7,
+    "lon": 119.32
+  },
+  "IDN-1796": {
+    "country_id": "IDN",
+    "name": "Kepulauan Riau",
+    "name_fr": "Îles Riau",
+    "lat": -0.14,
+    "lon": 104.6
+  },
+  "IDN-1837": {
+    "country_id": "IDN",
+    "name": "Gorontalo",
+    "name_fr": "Gorontalo",
+    "lat": 0.76,
+    "lon": 122.33
+  },
+  "IDN-1930": {
+    "country_id": "IDN",
+    "name": "Jambi",
+    "name_fr": "Jambi",
+    "lat": -1.65,
+    "lon": 102.82
+  },
+  "IDN-1931": {
+    "country_id": "IDN",
+    "name": "Kalimantan Tengah",
+    "name_fr": "Kalimantan central",
+    "lat": -1.84,
+    "lon": 113.29
+  },
+  "IDN-1933": {
+    "country_id": "IDN",
+    "name": "Papua Barat",
+    "name_fr": "Papouasie occidentale",
+    "lat": -1.33,
+    "lon": 132.82
+  },
+  "IDN-381": {
+    "country_id": "IDN",
+    "name": "Sumatera Utara",
+    "name_fr": "Sumatra du Nord",
+    "lat": 2.36,
+    "lon": 99.22
+  },
+  "IDN-492": {
+    "country_id": "IDN",
+    "name": "Riau",
+    "name_fr": "Riau",
+    "lat": 0.4,
+    "lon": 101.75
+  },
+  "IDN-513": {
+    "country_id": "IDN",
+    "name": "Sulawesi Utara",
+    "name_fr": "Sulawesi du Nord",
+    "lat": 0.85,
+    "lon": 124.45
+  },
+  "IDN-538": {
+    "country_id": "IDN",
+    "name": "Maluku Utara",
+    "name_fr": "Moluques du Nord",
+    "lat": -2.29,
+    "lon": 125.98
+  },
+  "IDN-539": {
+    "country_id": "IDN",
+    "name": "Sumatera Barat",
+    "name_fr": "Sumatra occidental",
+    "lat": -0.64,
+    "lon": 100.61
+  },
+  "IDN-540": {
+    "country_id": "IDN",
+    "name": "Yogyakarta",
+    "name_fr": "Territoire spécial de Yogyakarta",
+    "lat": -7.84,
+    "lon": 110.44
+  },
+  "IDN-554": {
+    "country_id": "IDN",
+    "name": "Maluku",
+    "name_fr": "Moluques",
+    "lat": -8.25,
+    "lon": 128.16
+  },
+  "IDN-555": {
+    "country_id": "IDN",
+    "name": "Nusa Tenggara Barat",
+    "name_fr": "Petites Îles de la Sonde occidentales",
+    "lat": -8.57,
+    "lon": 116.29
+  },
+  "IDN-556": {
+    "country_id": "IDN",
+    "name": "Sulawesi Tenggara",
+    "name_fr": "Sulawesi du Sud-Est",
+    "lat": -4.07,
+    "lon": 122.12
+  },
+  "IDN-557": {
+    "country_id": "IDN",
+    "name": "Sulawesi Tengah",
+    "name_fr": "Sulawesi central",
+    "lat": -1.3,
+    "lon": 120.15
+  },
+  "IDN-558": {
+    "country_id": "IDN",
+    "name": "Papua",
+    "name_fr": "Papouasie",
+    "lat": -4.11,
+    "lon": 138.69
+  },
+  "IND-20011": {
+    "country_id": "IND",
+    "name": "Telangana",
+    "name_fr": "Telangana",
+    "lat": 17.43,
+    "lon": 78.47
+  },
+  "IND-20012": {
+    "country_id": "IND",
+    "name": "Ladakh",
+    "name_fr": "Ladakh",
+    "lat": 34.03,
+    "lon": 77.48
+  },
+  "IND-2427": {
+    "country_id": "IND",
+    "name": "Chandigarh",
+    "name_fr": "Chandigarh",
+    "lat": 30.75,
+    "lon": 76.76
+  },
+  "IND-2428": {
+    "country_id": "IND",
+    "name": "Delhi",
+    "name_fr": "Delhi",
+    "lat": 28.69,
+    "lon": 77.09
+  },
+  "IND-2429": {
+    "country_id": "IND",
+    "name": "Himachal Pradesh",
+    "name_fr": "Himachal Pradesh",
+    "lat": 31.68,
+    "lon": 77.29
+  },
+  "IND-2430": {
+    "country_id": "IND",
+    "name": "Haryana",
+    "name_fr": "Haryana",
+    "lat": 29.1,
+    "lon": 76.27
+  },
+  "IND-2431": {
+    "country_id": "IND",
+    "name": "Jammu and Kashmir",
+    "name_fr": "Jammu-et-Cachemire",
+    "lat": 33.97,
+    "lon": 76.64
+  },
+  "IND-2441": {
+    "country_id": "IND",
+    "name": "Andhra Pradesh",
+    "name_fr": "Andhra Pradesh",
+    "lat": 16.49,
+    "lon": 79.21
+  },
+  "IND-2442": {
+    "country_id": "IND",
+    "name": "Kerala",
+    "name_fr": "Kerala",
+    "lat": 10.37,
+    "lon": 76.52
+  },
+  "IND-2443": {
+    "country_id": "IND",
+    "name": "Lakshadweep",
+    "name_fr": "Lakshadweep",
+    "lat": 11.22,
+    "lon": 72.78
+  },
+  "IND-2444": {
+    "country_id": "IND",
+    "name": "Odisha",
+    "name_fr": "Odisha",
+    "lat": 20.62,
+    "lon": 84.43
+  },
+  "IND-2445": {
+    "country_id": "IND",
+    "name": "Dadra and Nagar Haveli and Daman and Diu",
+    "name_fr": "Dadra et Nagar Haveli et Daman et Diu",
+    "lat": 20.18,
+    "lon": 73.03
+  },
+  "IND-2446": {
+    "country_id": "IND",
+    "name": "Karnataka",
+    "name_fr": "Karnataka",
+    "lat": 14.37,
+    "lon": 75.67
+  },
+  "IND-3265": {
+    "country_id": "IND",
+    "name": "Goa",
+    "name_fr": "Goa",
+    "lat": 15.31,
+    "lon": 74.0
+  },
+  "IND-2474": {
+    "country_id": "IND",
+    "name": "Andaman and Nicobar",
+    "name_fr": "Îles Andaman-et-Nicobar",
+    "lat": 6.84,
+    "lon": 93.79
+  },
+  "IND-2477": {
+    "country_id": "IND",
+    "name": "Assam",
+    "name_fr": "Assam",
+    "lat": 26.33,
+    "lon": 92.99
+  },
+  "IND-2478": {
+    "country_id": "IND",
+    "name": "Manipur",
+    "name_fr": "Manipur",
+    "lat": 24.74,
+    "lon": 93.85
+  },
+  "IND-2479": {
+    "country_id": "IND",
+    "name": "Nagaland",
+    "name_fr": "Nagaland",
+    "lat": 26.11,
+    "lon": 94.57
+  },
+  "IND-2489": {
+    "country_id": "IND",
+    "name": "Meghalaya",
+    "name_fr": "Meghalaya",
+    "lat": 25.48,
+    "lon": 91.3
+  },
+  "IND-3249": {
+    "country_id": "IND",
+    "name": "Punjab",
+    "name_fr": "Pendjab",
+    "lat": 31.02,
+    "lon": 75.38
+  },
+  "IND-3250": {
+    "country_id": "IND",
+    "name": "Rajasthan",
+    "name_fr": "Rajasthan",
+    "lat": 26.75,
+    "lon": 73.86
+  },
+  "IND-3253": {
+    "country_id": "IND",
+    "name": "Uttar Pradesh",
+    "name_fr": "Uttar Pradesh",
+    "lat": 26.72,
+    "lon": 81.0
+  },
+  "IND-3254": {
+    "country_id": "IND",
+    "name": "Uttarakhand",
+    "name_fr": "Uttarakhand",
+    "lat": 30.06,
+    "lon": 79.28
+  },
+  "IND-3256": {
+    "country_id": "IND",
+    "name": "Jharkhand",
+    "name_fr": "Jharkhand",
+    "lat": 23.52,
+    "lon": 85.06
+  },
+  "IND-3257": {
+    "country_id": "IND",
+    "name": "West Bengal",
+    "name_fr": "Bengale-Occidental",
+    "lat": 23.05,
+    "lon": 87.73
+  },
+  "IND-3258": {
+    "country_id": "IND",
+    "name": "Bihar",
+    "name_fr": "Bihar",
+    "lat": 25.69,
+    "lon": 85.81
+  },
+  "IND-3260": {
+    "country_id": "IND",
+    "name": "Chhattisgarh",
+    "name_fr": "Chhattisgarh",
+    "lat": 21.8,
+    "lon": 82.31
+  },
+  "IND-3261": {
+    "country_id": "IND",
+    "name": "Madhya Pradesh",
+    "name_fr": "Madhya Pradesh",
+    "lat": 22.94,
+    "lon": 78.42
+  },
+  "IND-3262": {
+    "country_id": "IND",
+    "name": "Puducherry",
+    "name_fr": "Territoire de Pondichéry",
+    "lat": 10.92,
+    "lon": 79.78
+  },
+  "IND-3263": {
+    "country_id": "IND",
+    "name": "Tamil Nadu",
+    "name_fr": "Tamil Nadu",
+    "lat": 11.02,
+    "lon": 78.27
+  },
+  "IND-3264": {
+    "country_id": "IND",
+    "name": "Gujarat",
+    "name_fr": "Gujarat",
+    "lat": 22.75,
+    "lon": 71.3
+  },
+  "IND-3299": {
+    "country_id": "IND",
+    "name": "Arunachal Pradesh",
+    "name_fr": "Arunachal Pradesh",
+    "lat": 28.41,
+    "lon": 94.47
+  },
+  "IND-3300": {
+    "country_id": "IND",
+    "name": "Mizoram",
+    "name_fr": "Mizoram",
+    "lat": 23.2,
+    "lon": 92.84
+  },
+  "IND-3301": {
+    "country_id": "IND",
+    "name": "Tripura",
+    "name_fr": "Tripura",
+    "lat": 23.85,
+    "lon": 91.7
+  },
+  "RUS-2167": {
+    "country_id": "RUS",
+    "name": "Tomsk",
+    "name_fr": "Tomsk",
+    "lat": 58.45,
+    "lon": 82.23
+  },
+  "RUS-2279": {
+    "country_id": "RUS",
+    "name": "Adygey",
+    "name_fr": "Adyguée",
+    "lat": 44.47,
+    "lon": 40.13
+  },
+  "RUS-2280": {
+    "country_id": "RUS",
+    "name": "Karachay-Cherkess",
+    "name_fr": "Karatchaïévo-Tcherkessie",
+    "lat": 43.71,
+    "lon": 41.69
+  },
+  "RUS-2303": {
+    "country_id": "RUS",
+    "name": "Ingush",
+    "name_fr": "Ingouchie",
+    "lat": 43.37,
+    "lon": 44.85
+  },
+  "RUS-2304": {
+    "country_id": "RUS",
+    "name": "Kabardin-Balkar",
+    "name_fr": "Kabardino-Balkarie",
+    "lat": 43.38,
+    "lon": 43.4
+  },
+  "RUS-2305": {
+    "country_id": "RUS",
+    "name": "North Ossetia",
+    "name_fr": "Ossétie du Nord-Alanie",
+    "lat": 43.0,
+    "lon": 44.17
+  },
+  "RUS-2306": {
+    "country_id": "RUS",
+    "name": "Stavropol'",
+    "name_fr": "Stavropol",
+    "lat": 44.98,
+    "lon": 43.28
+  },
+  "RUS-2321": {
+    "country_id": "RUS",
+    "name": "Chukchi Autonomous Okrug",
+    "name_fr": "Tchoukotka",
+    "lat": 66.75,
+    "lon": 170.52
+  },
+  "RUS-2324": {
+    "country_id": "RUS",
+    "name": "Kaliningrad",
+    "name_fr": "Kaliningrad",
+    "lat": 54.66,
+    "lon": 21.23
+  },
+  "RUS-2333": {
+    "country_id": "RUS",
+    "name": "Murmansk",
+    "name_fr": "Mourmansk",
+    "lat": 67.96,
+    "lon": 34.32
+  },
+  "RUS-2334": {
+    "country_id": "RUS",
+    "name": "Novgorod",
+    "name_fr": "Novgorod",
+    "lat": 58.42,
+    "lon": 32.95
+  },
+  "RUS-2335": {
+    "country_id": "RUS",
+    "name": "Pskov",
+    "name_fr": "Pskov",
+    "lat": 57.24,
+    "lon": 29.12
+  },
+  "RUS-2336": {
+    "country_id": "RUS",
+    "name": "Leningrad",
+    "name_fr": "Léningrad",
+    "lat": 59.99,
+    "lon": 32.77
+  },
+  "RUS-2337": {
+    "country_id": "RUS",
+    "name": "City of St. Petersburg",
+    "name_fr": "Saint-Pétersbourg",
+    "lat": 59.81,
+    "lon": 30.29
+  },
+  "RUS-2342": {
+    "country_id": "RUS",
+    "name": "Bryansk",
+    "name_fr": "Briansk",
+    "lat": 53.09,
+    "lon": 33.28
+  },
+  "RUS-2343": {
+    "country_id": "RUS",
+    "name": "Smolensk",
+    "name_fr": "Smolensk",
+    "lat": 54.67,
+    "lon": 33.08
+  },
+  "RUS-2353": {
+    "country_id": "RUS",
+    "name": "Karelia",
+    "name_fr": "Carélie",
+    "lat": 63.53,
+    "lon": 33.14
+  },
+  "RUS-2354": {
+    "country_id": "RUS",
+    "name": "Arkhangel'sk",
+    "name_fr": "d'Arkhangelsk",
+    "lat": 63.31,
+    "lon": 41.99
+  },
+  "RUS-2355": {
+    "country_id": "RUS",
+    "name": "Ivanovo",
+    "name_fr": "d'Ivanovo",
+    "lat": 57.12,
+    "lon": 41.62
+  },
+  "RUS-2359": {
+    "country_id": "RUS",
+    "name": "Vologda",
+    "name_fr": "Vologda",
+    "lat": 59.64,
+    "lon": 40.93
+  },
+  "RUS-2356": {
+    "country_id": "RUS",
+    "name": "Kostroma",
+    "name_fr": "Kostroma",
+    "lat": 58.39,
+    "lon": 43.47
+  },
+  "RUS-2357": {
+    "country_id": "RUS",
+    "name": "Nizhegorod",
+    "name_fr": "Nijni Novgorod",
+    "lat": 56.14,
+    "lon": 44.78
+  },
+  "RUS-2358": {
+    "country_id": "RUS",
+    "name": "Tver'",
+    "name_fr": "Tver",
+    "lat": 57.03,
+    "lon": 34.54
+  },
+  "RUS-2360": {
+    "country_id": "RUS",
+    "name": "Yaroslavl'",
+    "name_fr": "d'Iaroslavl",
+    "lat": 57.73,
+    "lon": 39.25
+  },
+  "RUS-2361": {
+    "country_id": "RUS",
+    "name": "Kaluga",
+    "name_fr": "Kalouga",
+    "lat": 54.24,
+    "lon": 35.34
+  },
+  "RUS-2362": {
+    "country_id": "RUS",
+    "name": "Kursk",
+    "name_fr": "Koursk",
+    "lat": 51.74,
+    "lon": 36.29
+  },
+  "RUS-2363": {
+    "country_id": "RUS",
+    "name": "Lipetsk",
+    "name_fr": "Lipetsk",
+    "lat": 52.75,
+    "lon": 39.21
+  },
+  "RUS-2364": {
+    "country_id": "RUS",
+    "name": "Moskovskaya",
+    "name_fr": "Moscou",
+    "lat": 55.15,
+    "lon": 38.67
+  },
+  "RUS-2365": {
+    "country_id": "RUS",
+    "name": "Moskva",
+    "name_fr": "Moscou",
+    "lat": 55.72,
+    "lon": 37.62
+  },
+  "RUS-2366": {
+    "country_id": "RUS",
+    "name": "Orel",
+    "name_fr": "d'Orel",
+    "lat": 52.88,
+    "lon": 36.42
+  },
+  "RUS-2367": {
+    "country_id": "RUS",
+    "name": "Rostov",
+    "name_fr": "Rostov",
+    "lat": 47.99,
+    "lon": 41.26
+  },
+  "RUS-2368": {
+    "country_id": "RUS",
+    "name": "Tula",
+    "name_fr": "Toula",
+    "lat": 54.07,
+    "lon": 37.42
+  },
+  "RUS-2369": {
+    "country_id": "RUS",
+    "name": "Volgograd",
+    "name_fr": "Volgograd",
+    "lat": 49.5,
+    "lon": 44.45
+  },
+  "RUS-2370": {
+    "country_id": "RUS",
+    "name": "Belgorod",
+    "name_fr": "Belgorod",
+    "lat": 50.88,
+    "lon": 37.28
+  },
+  "RUS-2371": {
+    "country_id": "RUS",
+    "name": "Krasnodar",
+    "name_fr": "Krasnodar",
+    "lat": 45.84,
+    "lon": 39.47
+  },
+  "RUS-2372": {
+    "country_id": "RUS",
+    "name": "Mordovia",
+    "name_fr": "Mordovie",
+    "lat": 54.12,
+    "lon": 44.46
+  },
+  "RUS-2373": {
+    "country_id": "RUS",
+    "name": "Penza",
+    "name_fr": "Penza",
+    "lat": 53.06,
+    "lon": 44.82
+  },
+  "RUS-2374": {
+    "country_id": "RUS",
+    "name": "Ryazan'",
+    "name_fr": "Riazan",
+    "lat": 54.34,
+    "lon": 40.63
+  },
+  "RUS-2375": {
+    "country_id": "RUS",
+    "name": "Tambov",
+    "name_fr": "Tambov",
+    "lat": 52.78,
+    "lon": 41.59
+  },
+  "RUS-2376": {
+    "country_id": "RUS",
+    "name": "Vladimir",
+    "name_fr": "Vladimir",
+    "lat": 55.9,
+    "lon": 40.62
+  },
+  "RUS-2377": {
+    "country_id": "RUS",
+    "name": "Voronezh",
+    "name_fr": "Voronej",
+    "lat": 50.78,
+    "lon": 40.52
+  },
+  "RUS-2378": {
+    "country_id": "RUS",
+    "name": "Bashkortostan",
+    "name_fr": "Bachkirie",
+    "lat": 54.21,
+    "lon": 56.56
+  },
+  "RUS-2379": {
+    "country_id": "RUS",
+    "name": "Chelyabinsk",
+    "name_fr": "Tcheliabinsk",
+    "lat": 54.11,
+    "lon": 60.24
+  },
+  "RUS-2380": {
+    "country_id": "RUS",
+    "name": "Kurgan",
+    "name_fr": "Kourgan",
+    "lat": 55.43,
+    "lon": 65.35
+  },
+  "RUS-2381": {
+    "country_id": "RUS",
+    "name": "Nenets",
+    "name_fr": "Nénétsie",
+    "lat": 67.83,
+    "lon": 56.29
+  },
+  "RUS-2382": {
+    "country_id": "RUS",
+    "name": "Yamal-Nenets",
+    "name_fr": "Iamalie",
+    "lat": 65.41,
+    "lon": 75.19
+  },
+  "RUS-2383": {
+    "country_id": "RUS",
+    "name": "Komi",
+    "name_fr": "république des Komis",
+    "lat": 64.12,
+    "lon": 55.82
+  },
+  "RUS-2384": {
+    "country_id": "RUS",
+    "name": "Kirov",
+    "name_fr": "Kirov",
+    "lat": 58.19,
+    "lon": 50.11
+  },
+  "RUS-2385": {
+    "country_id": "RUS",
+    "name": "Mariy-El",
+    "name_fr": "république des Maris",
+    "lat": 56.54,
+    "lon": 47.91
+  },
+  "RUS-2386": {
+    "country_id": "RUS",
+    "name": "Sverdlovsk",
+    "name_fr": "Sverdlovsk",
+    "lat": 58.9,
+    "lon": 61.71
+  },
+  "RUS-2387": {
+    "country_id": "RUS",
+    "name": "Udmurt",
+    "name_fr": "Oudmourtie",
+    "lat": 57.34,
+    "lon": 52.8
+  },
+  "RUS-2388": {
+    "country_id": "RUS",
+    "name": "Astrakhan'",
+    "name_fr": "d'Astrakhan",
+    "lat": 47.03,
+    "lon": 47.72
+  },
+  "RUS-2389": {
+    "country_id": "RUS",
+    "name": "Chuvash",
+    "name_fr": "Tchouvachie",
+    "lat": 55.49,
+    "lon": 47.17
+  },
+  "RUS-2390": {
+    "country_id": "RUS",
+    "name": "Kalmyk",
+    "name_fr": "Kalmoukie",
+    "lat": 46.52,
+    "lon": 45.47
+  },
+  "RUS-2392": {
+    "country_id": "RUS",
+    "name": "Samara",
+    "name_fr": "Samara",
+    "lat": 53.18,
+    "lon": 50.44
+  },
+  "RUS-2391": {
+    "country_id": "RUS",
+    "name": "Orenburg",
+    "name_fr": "d'Orenbourg",
+    "lat": 51.52,
+    "lon": 56.21
+  },
+  "RUS-2393": {
+    "country_id": "RUS",
+    "name": "Saratov",
+    "name_fr": "Saratov",
+    "lat": 51.67,
+    "lon": 46.64
+  },
+  "RUS-2394": {
+    "country_id": "RUS",
+    "name": "Tatarstan",
+    "name_fr": "Tatarstan",
+    "lat": 55.37,
+    "lon": 50.74
+  },
+  "RUS-2395": {
+    "country_id": "RUS",
+    "name": "Ul'yanovsk",
+    "name_fr": "d'Oulianovsk",
+    "lat": 53.92,
+    "lon": 47.38
+  },
+  "RUS-2396": {
+    "country_id": "RUS",
+    "name": "Khanty-Mansiy",
+    "name_fr": "Khantys-Mansis",
+    "lat": 61.43,
+    "lon": 71.38
+  },
+  "RUS-2397": {
+    "country_id": "RUS",
+    "name": "Omsk",
+    "name_fr": "d'Omsk",
+    "lat": 56.05,
+    "lon": 73.4
+  },
+  "RUS-2398": {
+    "country_id": "RUS",
+    "name": "Tyumen'",
+    "name_fr": "Tioumen",
+    "lat": 57.26,
+    "lon": 68.52
+  },
+  "RUS-2399": {
+    "country_id": "RUS",
+    "name": "Altay",
+    "name_fr": "république de l'Altaï",
+    "lat": 52.43,
+    "lon": 82.87
+  },
+  "RUS-2400": {
+    "country_id": "RUS",
+    "name": "Gorno-Altay",
+    "name_fr": "république de l'Altaï",
+    "lat": 50.98,
+    "lon": 86.94
+  },
+  "RUS-2401": {
+    "country_id": "RUS",
+    "name": "Kemerovo",
+    "name_fr": "Kemerovo",
+    "lat": 54.65,
+    "lon": 87.17
+  },
+  "RUS-2402": {
+    "country_id": "RUS",
+    "name": "Khakass",
+    "name_fr": "Khakassie",
+    "lat": 53.36,
+    "lon": 89.84
+  },
+  "RUS-2403": {
+    "country_id": "RUS",
+    "name": "Novosibirsk",
+    "name_fr": "Novossibirsk",
+    "lat": 55.31,
+    "lon": 80.08
+  },
+  "RUS-2416": {
+    "country_id": "RUS",
+    "name": "Chechnya",
+    "name_fr": "Tchétchénie",
+    "lat": 43.22,
+    "lon": 45.76
+  },
+  "RUS-2417": {
+    "country_id": "RUS",
+    "name": "Dagestan",
+    "name_fr": "Daghestan",
+    "lat": 42.36,
+    "lon": 47.14
+  },
+  "RUS-2602": {
+    "country_id": "RUS",
+    "name": "Irkutsk",
+    "name_fr": "d'Irkoutsk",
+    "lat": 56.83,
+    "lon": 105.97
+  },
+  "RUS-2603": {
+    "country_id": "RUS",
+    "name": "Krasnoyarsk",
+    "name_fr": "Krasnoïarsk",
+    "lat": 65.56,
+    "lon": 95.2
+  },
+  "RUS-2605": {
+    "country_id": "RUS",
+    "name": "Tuva",
+    "name_fr": "Touva",
+    "lat": 51.61,
+    "lon": 93.99
+  },
+  "RUS-2606": {
+    "country_id": "RUS",
+    "name": "Buryat",
+    "name_fr": "Bouriatie",
+    "lat": 52.91,
+    "lon": 109.34
+  },
+  "RUS-2609": {
+    "country_id": "RUS",
+    "name": "Amur",
+    "name_fr": "l'Amour",
+    "lat": 52.92,
+    "lon": 128.35
+  },
+  "RUS-2610": {
+    "country_id": "RUS",
+    "name": "Chita",
+    "name_fr": "Transbaïkalie",
+    "lat": 52.16,
+    "lon": 116.56
+  },
+  "RUS-2611": {
+    "country_id": "RUS",
+    "name": "Primor'ye",
+    "name_fr": "du Primorié",
+    "lat": 44.86,
+    "lon": 134.59
+  },
+  "RUS-2612": {
+    "country_id": "RUS",
+    "name": "Sakha (Yakutia)",
+    "name_fr": "république Sakha",
+    "lat": 65.6,
+    "lon": 130.99
+  },
+  "RUS-2613": {
+    "country_id": "RUS",
+    "name": "Yevrey",
+    "name_fr": "autonome juif",
+    "lat": 48.64,
+    "lon": 132.76
+  },
+  "RUS-2614": {
+    "country_id": "RUS",
+    "name": "Khabarovsk",
+    "name_fr": "Khabarovsk",
+    "lat": 57.02,
+    "lon": 135.44
+  },
+  "RUS-2615": {
+    "country_id": "RUS",
+    "name": "Maga Buryatdan",
+    "name_fr": "Magadan",
+    "lat": 62.63,
+    "lon": 153.8
+  },
+  "RUS-2616": {
+    "country_id": "RUS",
+    "name": "Sakhalin",
+    "name_fr": "Sakhaline",
+    "lat": 47.35,
+    "lon": 152.47
+  },
+  "RUS-283": {
+    "country_id": "RUS",
+    "name": "Crimea",
+    "name_fr": "République autonome de Crimée",
+    "lat": 45.31,
+    "lon": 34.28
+  },
+  "RUS-3200": {
+    "country_id": "RUS",
+    "name": "Perm'",
+    "name_fr": "Perm",
+    "lat": 58.87,
+    "lon": 56.59
+  },
+  "RUS-3468": {
+    "country_id": "RUS",
+    "name": "Kamchatka",
+    "name_fr": "du Kamtchatka",
+    "lat": 56.53,
+    "lon": 160.19
+  },
+  "RUS-5482": {
+    "country_id": "RUS",
+    "name": "Sevastopol",
+    "name_fr": "Sébastopol",
+    "lat": 44.52,
+    "lon": 33.64
+  },
+  "ZAF-1188": {
+    "country_id": "ZAF",
+    "name": "Northern Cape",
+    "name_fr": "Cap-Nord",
+    "lat": -29.74,
+    "lon": 21.0
+  },
+  "ZAF-1189": {
+    "country_id": "ZAF",
+    "name": "Western Cape",
+    "name_fr": "Cap-Occidental",
+    "lat": -33.5,
+    "lon": 20.97
+  },
+  "ZAF-1201": {
+    "country_id": "ZAF",
+    "name": "North West",
+    "name_fr": "Nord-Ouest",
+    "lat": -26.4,
+    "lon": 25.74
+  },
+  "ZAF-1206": {
+    "country_id": "ZAF",
+    "name": "Free State",
+    "name_fr": "État libre",
+    "lat": -28.58,
+    "lon": 26.49
+  },
+  "ZAF-1208": {
+    "country_id": "ZAF",
+    "name": "Gauteng",
+    "name_fr": "Gauteng",
+    "lat": -26.17,
+    "lon": 28.21
+  },
+  "ZAF-1209": {
+    "country_id": "ZAF",
+    "name": "Mpumalanga",
+    "name_fr": "Mpumalanga",
+    "lat": -25.99,
+    "lon": 30.14
+  },
+  "ZAF-1210": {
+    "country_id": "ZAF",
+    "name": "Limpopo",
+    "name_fr": "Limpopo",
+    "lat": -23.59,
+    "lon": 29.13
+  },
+  "ZAF-1216": {
+    "country_id": "ZAF",
+    "name": "KwaZulu-Natal",
+    "name_fr": "KwaZulu-Natal",
+    "lat": -28.75,
+    "lon": 30.82
+  },
+  "ZAF-1926": {
+    "country_id": "ZAF",
+    "name": "Eastern Cape",
+    "name_fr": "Cap-Oriental",
+    "lat": -32.06,
+    "lon": 26.64
+  },
+  "IND-2447": {
+    "country_id": "IND",
+    "name": "Maharashtra",
+    "name_fr": "Maharashtra",
+    "lat": 19.47,
+    "lon": 75.46
+  }
+}

@@ -28,8 +28,8 @@ interface SavedSession {
 }
 
 const months = [
-  'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin',
-  'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc',
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ]
 
 export default function Home() {
@@ -57,7 +57,7 @@ export default function Home() {
       if (data.length > 0) setSelectedScenario(data[0].id)
       setIsLoading(false)
     }).catch(() => {
-      setError('Impossible de contacter le backend. Assurez-vous que le serveur FastAPI tourne sur le port 8000.')
+      setError('Cannot reach the backend. Make sure the FastAPI server is running on port 8000.')
       setIsLoading(false)
     })
     loadSessions()
@@ -88,7 +88,7 @@ export default function Home() {
       const { session_id } = await gameApi.create(selectedScenario, selectedCountry)
       navigate(`/game/${session_id}`)
     } catch {
-      setError('Impossible de créer la partie. Vérifiez le backend et votre clé API.')
+      setError('Could not create the game. Check the backend and your API key.')
       setIsStarting(false)
     }
   }
@@ -124,16 +124,16 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-6 py-5 flex items-center gap-4">
           <Globe className="w-8 h-8 text-pax-accent" />
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-white">OpenPaxHistoria</h1>
-            <p className="text-sm text-slate-400">Simulation géopolitique narrative alimentée par IA</p>
+            <h1 className="text-2xl font-bold text-white">Phos</h1>
+            <p className="text-sm text-slate-400">AI-powered geopolitical narrative simulation</p>
           </div>
           <button
             onClick={() => setShowSettings(true)}
             className="btn-secondary flex items-center gap-2"
-            title="Configuration API"
+            title="API settings"
           >
             <Settings className="w-4 h-4" />
-            {isConfigured() ? 'API configurée' : 'Configurer l\'API'}
+            {isConfigured() ? 'API configured' : 'Configure API'}
           </button>
         </div>
       </div>
@@ -153,11 +153,11 @@ export default function Home() {
           </div>
         ) : (
           <>
-            {/* Parties sauvegardées */}
+            {/* Saved sessions */}
             {savedSessions.length > 0 && (
               <div className="mb-10">
                 <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <RotateCcw className="w-5 h-5 text-pax-accent" /> Reprendre une partie
+                  <RotateCcw className="w-5 h-5 text-pax-accent" /> Continue a game
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {savedSessions.map((s) => (
@@ -175,7 +175,7 @@ export default function Home() {
                           <div className="text-pax-gold text-sm font-bold">
                             {months[s.month - 1]} {s.year}
                           </div>
-                          <div className="text-xs text-slate-500">Tour {s.turn}</div>
+                          <div className="text-xs text-slate-500">Turn {s.turn}</div>
                         </div>
                       </div>
                       <div className="flex gap-2">
@@ -183,13 +183,13 @@ export default function Home() {
                           onClick={() => navigate(`/game/${s.id}`)}
                           className="flex-1 btn-primary flex items-center justify-center gap-1.5 text-xs py-1.5"
                         >
-                          <PlayCircle className="w-3.5 h-3.5" /> Reprendre
+                          <PlayCircle className="w-3.5 h-3.5" /> Resume
                         </button>
                         <button
                           onClick={() => deleteSession(s.id)}
                           disabled={deletingId === s.id}
                           className="btn-secondary px-2 py-1.5 text-xs text-red-400 hover:text-red-300 hover:border-red-800 disabled:opacity-50"
-                          title="Supprimer cette sauvegarde"
+                          title="Delete this save"
                         >
                           {deletingId === s.id ? (
                             <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -204,12 +204,12 @@ export default function Home() {
               </div>
             )}
 
-            {/* Nouvelle partie */}
+            {/* New game */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Sélection scénario */}
+              {/* Scenario selection */}
               <div>
                 <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-pax-accent" /> Choisir un scénario
+                  <Clock className="w-5 h-5 text-pax-accent" /> Choose a scenario
                 </h2>
                 <div className="space-y-3">
                   {scenarios.map((s) => (
@@ -227,12 +227,12 @@ export default function Home() {
                         </div>
                         <div className="text-right shrink-0 ml-4">
                           <div className="text-pax-gold font-bold">{s.start_year}</div>
-                          <div className="text-xs text-slate-500">{s.country_count} pays</div>
+                          <div className="text-xs text-slate-500">{s.country_count} countries</div>
                         </div>
                       </div>
                       {s.custom && (
                         <span className="text-xs bg-pax-accent/20 text-pax-accent px-2 py-0.5 rounded-full mt-2 inline-block">
-                          Personnalisé
+                          Custom
                         </span>
                       )}
                     </button>
@@ -243,20 +243,20 @@ export default function Home() {
                   >
                     <div className="flex items-center gap-2 text-slate-400 hover:text-white">
                       <Map className="w-4 h-4" />
-                      <span className="text-sm">Créer un scénario personnalisé</span>
+                      <span className="text-sm">Create a custom scenario</span>
                     </div>
                   </button>
                 </div>
               </div>
 
-              {/* Sélection pays */}
+              {/* Country selection */}
               <div>
                 <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <Globe className="w-5 h-5 text-pax-accent" /> Choisir votre pays
+                  <Globe className="w-5 h-5 text-pax-accent" /> Choose your country
                 </h2>
                 <input
                   type="text"
-                  placeholder="Rechercher un pays..."
+                  placeholder="Search a country..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full bg-pax-panel border border-pax-border rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-pax-accent mb-3"
@@ -299,9 +299,9 @@ export default function Home() {
                 className="btn-primary flex items-center gap-3 px-8 py-3 text-base font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {isStarting ? (
-                  <><Loader2 className="w-5 h-5 animate-spin" /> Création de la partie...</>
+                  <><Loader2 className="w-5 h-5 animate-spin" /> Creating game...</>
                 ) : (
-                  <><Globe className="w-5 h-5" /> Commencer la partie</>
+                  <><Globe className="w-5 h-5" /> Start game</>
                 )}
               </button>
             </div>

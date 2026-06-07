@@ -10,7 +10,7 @@ export interface ApiSettings {
 const DEFAULTS: ApiSettings = {
   apiKey: '',
   apiBaseUrl: 'https://app.socle.ai/api/v1',
-  model: 'qwen3-235b-a22b-instruct-2507',
+  model: 'MJ Phos',
 }
 
 interface SettingsStore {

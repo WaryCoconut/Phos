@@ -12,12 +12,12 @@ interface Message {
 }
 
 const SUGGESTED_QUESTIONS = [
-  'Donne-moi un briefing de la situation actuelle',
-  'Quelles sont mes principales menaces ?',
-  'Comment améliorer mes relations avec nos voisins ?',
-  'Quelle politique économique recommandes-tu ?',
-  'Dois-je rejoindre ou quitter des alliances ?',
-  'Quelles sont nos opportunités diplomatiques ?',
+  'Give me a briefing on the current situation',
+  'What are my main threats?',
+  'How can I improve relations with our neighbors?',
+  'What economic policy do you recommend?',
+  'Should I join or leave any alliances?',
+  'What are our diplomatic opportunities?',
 ]
 
 interface Props {
@@ -55,7 +55,7 @@ export default function AdvisorPanel({ gameState }: Props) {
           updated[updated.length - 1] = {
             ...last,
             streaming: false,
-            content: error ? `⚠️ Erreur : ${error}` : last.content,
+            content: error ? `⚠️ Error: ${error}` : last.content,
           }
         }
         return updated
@@ -97,7 +97,7 @@ export default function AdvisorPanel({ gameState }: Props) {
           updated[updated.length - 1] = {
             ...last,
             streaming: false,
-            content: error ? `⚠️ Erreur : ${error}` : last.content,
+            content: error ? `⚠️ Error: ${error}` : last.content,
           }
         }
         return updated
@@ -134,7 +134,7 @@ export default function AdvisorPanel({ gameState }: Props) {
       {/* Header */}
       <div className="p-4 border-b border-pax-border">
         <h2 className="font-semibold text-white flex items-center gap-2">
-          <BookOpen className="w-4 h-4 text-pax-accent" /> Conseiller Politique
+          <BookOpen className="w-4 h-4 text-pax-accent" /> Political Advisor
         </h2>
         <p className="text-xs text-slate-400 mt-1">
           {gameState.player_country.name} · {gameState.year}/{String(gameState.month).padStart(2, '0')}
@@ -147,18 +147,18 @@ export default function AdvisorPanel({ gameState }: Props) {
           <div className="space-y-4">
             <div className="text-center py-4">
               <BookOpen className="w-10 h-10 text-slate-600 mx-auto mb-2" />
-              <p className="text-sm text-slate-400">Votre conseiller politique est prêt.</p>
+              <p className="text-sm text-slate-400">Your political advisor is ready.</p>
               <button
                 onClick={requestBriefing}
                 disabled={isBriefing}
                 className="mt-3 btn-primary flex items-center gap-2 mx-auto"
               >
                 <Sparkles className="w-4 h-4" />
-                {isBriefing ? 'Rédaction...' : 'Briefing de situation'}
+                {isBriefing ? 'Writing...' : 'Situation briefing'}
               </button>
             </div>
             <div>
-              <div className="text-xs text-slate-500 mb-2">Questions suggérées :</div>
+              <div className="text-xs text-slate-500 mb-2">Suggested questions:</div>
               <div className="space-y-1.5">
                 {SUGGESTED_QUESTIONS.map((q) => (
                   <button
@@ -192,7 +192,7 @@ export default function AdvisorPanel({ gameState }: Props) {
                 <div className="flex-1 bg-slate-800 border border-pax-border rounded-lg px-3 py-2 text-sm text-slate-200 leading-relaxed prose prose-invert prose-sm max-w-none">
                   {msg.content
                     ? <ReactMarkdown>{msg.content}</ReactMarkdown>
-                    : msg.streaming && <span className="text-slate-400 text-xs animate-pulse">analyse en cours...</span>}
+                    : msg.streaming && <span className="text-slate-400 text-xs animate-pulse">analyzing...</span>}
                   {msg.streaming && msg.content && <span className="cursor-blink" />}
                 </div>
               </div>
@@ -209,7 +209,7 @@ export default function AdvisorPanel({ gameState }: Props) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Posez une question à votre conseiller..."
+            placeholder="Ask your advisor a question..."
             rows={2}
             disabled={isSending}
             className="flex-1 bg-slate-800 border border-pax-border rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 resize-none focus:outline-none focus:border-pax-accent disabled:opacity-50"

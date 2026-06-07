@@ -2,6 +2,14 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict
 
 
+class CountryNationalStats(BaseModel):
+    sovereignty: float = 50.0           # indépendance politique/institutionnelle 0-100
+    food_autonomy: float = 50.0         # autosuffisance alimentaire 0-100+
+    energy_autonomy: float = 50.0       # autosuffisance énergétique 0-100+
+    economic_independence: float = 50.0 # indépendance économique 0-100
+    security: float = 50.0              # sécurité intérieure / ordre public 0-100
+
+
 class CountryEconomy(BaseModel):
     gdp: float  # milliards USD
     gdp_per_capita: float
@@ -9,8 +17,10 @@ class CountryEconomy(BaseModel):
     inflation: float = 2.0
     unemployment: float = 5.0
     debt_pct_gdp: float = 50.0
+    budget_balance_pct_gdp: float = -2.0  # % du PIB, positif = excédent, négatif = déficit
     currency: str = "USD"
     main_sectors: List[str] = []
+    sectors: Dict[str, float] = {}  # {agriculture/industrie/services: % du PIB}
 
 
 class CountryMilitary(BaseModel):
@@ -18,6 +28,7 @@ class CountryMilitary(BaseModel):
     active_personnel: int = 0
     nuclear_weapons: bool = False
     defense_budget_pct: float = 2.0  # % du PIB
+    equipment: Dict[str, int] = {}   # {chars_combat/avions_chasse/…: count}
 
 
 class Country(BaseModel):
@@ -33,10 +44,13 @@ class Country(BaseModel):
     alliances: List[str] = []
     economy: Optional[CountryEconomy] = None
     military: Optional[CountryMilitary] = None
+    national_stats: Optional[CountryNationalStats] = None
     relations: Dict[str, int] = {}  # country_id -> score -100..+100
     personality_traits: List[str] = []
+    personality: str = ""  # description libre de la personnalité diplomatique
     description: str = ""
     color: Optional[str] = None  # couleur sur la carte (hex)
+    initial_stability: int = 50  # stabilité au démarrage de la partie (0-100)
 
 
 class CountryState(BaseModel):

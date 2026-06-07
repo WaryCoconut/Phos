@@ -66,7 +66,7 @@ def create_session(scenario_id: str, player_country_id: str) -> GameSession:
     country_states: Dict[str, dict] = {}
     for cid, country in scenario.countries.items():
         country_states[cid] = {
-            "stability": 50,
+            "stability": getattr(country, "initial_stability", 50),
             "economy_modifier": 1.0,
             "military_modifier": 1.0,
             "relations": dict(country.relations),
@@ -120,6 +120,24 @@ def get_game_state(session_id: str) -> Optional[dict]:
     player_country = scenario.countries.get(session.player_country_id)
     player_state = session.country_states.get(session.player_country_id, {})
 
+    # Merge scenario countries
+    countries: dict = {
+        cid: _merge_country(scenario.countries.get(cid), state)
+        for cid, state in session.country_states.items()
+    }
+    # Overlay dynamic countries (created from independent regions)
+    for cid, data in session.dynamic_countries.items():
+        dyn_state = session.country_states.get(cid, {})
+        merged = dict(data)
+        merged["stability"] = dyn_state.get("stability", merged.get("stability", 45))
+        merged["economy_modifier"] = dyn_state.get("economy_modifier", 1.0)
+        merged["military_modifier"] = dyn_state.get("military_modifier", 1.0)
+        merged["relations"] = dyn_state.get("relations", merged.get("relations", {}))
+        merged["at_war_with"] = dyn_state.get("at_war_with", [])
+        merged["sanctions_by"] = dyn_state.get("sanctions_by", [])
+        merged["active_events"] = dyn_state.get("active_events", [])
+        countries[cid] = merged
+
     return {
         "session_id": session.id,
         "scenario_id": session.scenario_id,
@@ -127,10 +145,7 @@ def get_game_state(session_id: str) -> Optional[dict]:
         "month": session.month,
         "turn": session.turn,
         "player_country": _merge_country(player_country, player_state),
-        "countries": {
-            cid: _merge_country(scenario.countries.get(cid), state)
-            for cid, state in session.country_states.items()
-        },
+        "countries": countries,
         "alliances": {k: v.model_dump() for k, v in scenario.alliances.items()},
         "recent_events": [e.model_dump(mode="json") for e in session.world_events[-10:]],
         "domestic_events": [e.model_dump(mode="json") for e in session.domestic_events[-20:]],
@@ -138,6 +153,10 @@ def get_game_state(session_id: str) -> Optional[dict]:
         "diplomatic_history": [m.model_dump(mode="json") for m in session.diplomatic_history[-20:]],
         "action_history": [a.model_dump(mode="json") for a in session.action_history[-10:]],
         "pending_actions": [a.model_dump(mode="json") for a in session.pending_actions],
+        "region_state": session.region_state,
+        "custom_map_id": scenario.custom_map_id,
+        "custom_map_feature_id_property": scenario.custom_map_feature_id_property,
+        "initial_territories": scenario.initial_territories,
     }
 
 
@@ -236,6 +255,22 @@ def apply_simulation_month(session: GameSession, action_result: dict | None, eve
             ps["stability"] = max(0, min(100, s))
             session.country_states[session.player_country_id] = ps
 
+        # Apply national stat deltas (sovereignty, food_autonomy, energy_autonomy, economic_independence)
+        stat_deltas = action_result.get("stat_deltas", {})
+        if stat_deltas:
+            scenario = load_scenario(session.scenario_id)
+            base_country = scenario.countries.get(session.player_country_id) if scenario else None
+            base_ns = (base_country.national_stats.model_dump() if base_country and base_country.national_stats
+                       else {"sovereignty": 50, "food_autonomy": 50, "energy_autonomy": 50, "economic_independence": 50})
+            ps = session.country_states.get(session.player_country_id, {})
+            current_ns = ps.get("national_stats") or dict(base_ns)
+            for key in ("sovereignty", "food_autonomy", "energy_autonomy", "economic_independence"):
+                delta = stat_deltas.get(key, 0)
+                if delta:
+                    current_ns[key] = round(max(0, min(120, current_ns.get(key, base_ns.get(key, 50)) + delta)), 1)
+            ps["national_stats"] = current_ns
+            session.country_states[session.player_country_id] = ps
+
         # Apply map POI from Game Master
         poi_data = action_result.get("map_poi")
         if poi_data and action_result.get("applicable", True):
@@ -251,6 +286,7 @@ def apply_simulation_month(session: GameSession, action_result: dict | None, eve
             )
             session.map_pois.append(poi)
 
+    _progress_war_invasions(session)
     _simulate_economic_tick(session)
     session.updated_at = datetime.utcnow()
     _save_session(session)
@@ -367,6 +403,54 @@ def get_diplomatic_history_with(session_id: str, target_country_id: str) -> list
     ]
 
 
+def apply_diplomatic_effects(
+    session_id: str,
+    player_country_id: str,
+    target_country_id: str,
+    effect: dict,
+) -> None:
+    session = get_session(session_id)
+    if not session:
+        return
+
+    rel_delta = effect.get("relation_delta", 0)
+    if rel_delta:
+        for cid, oid in [(player_country_id, target_country_id), (target_country_id, player_country_id)]:
+            if cid in session.country_states:
+                rel = session.country_states[cid].get("relations", {})
+                current = rel.get(oid, 0)
+                rel[oid] = max(-100, min(100, current + rel_delta))
+                session.country_states[cid]["relations"] = rel
+
+    eco_delta = effect.get("economy_delta", 0.0)
+    if eco_delta:
+        ps = session.country_states.get(player_country_id, {})
+        eco = ps.get("economy_modifier", 1.0) * (1 + eco_delta)
+        ps["economy_modifier"] = round(eco, 4)
+        session.country_states[player_country_id] = ps
+
+    for de_data in effect.get("domestic_events", [])[:1]:
+        if isinstance(de_data, dict) and de_data.get("title"):
+            from app.models.game import DomesticEvent
+            de = DomesticEvent(
+                title=de_data["title"],
+                description=de_data.get("description", ""),
+                type=de_data.get("type", "diplomatic"),
+                severity=max(1, min(3, int(de_data.get("severity", 1)))),
+                stability_impact=max(-15, min(10, int(de_data.get("stability_impact", 0)))),
+                year=session.year,
+                month=session.month,
+            )
+            session.domestic_events.append(de)
+            ps = session.country_states.get(player_country_id, {})
+            s = ps.get("stability", 50) + de_data.get("stability_impact", 0)
+            ps["stability"] = max(0, min(100, s))
+            session.country_states[player_country_id] = ps
+
+    session.updated_at = datetime.utcnow()
+    _save_session(session)
+
+
 def list_sessions() -> list[dict]:
     os.makedirs(SESSIONS_DIR, exist_ok=True)
     result = []
@@ -412,6 +496,13 @@ def _merge_country(country, state: dict) -> dict:
         d["at_war_with"] = state.get("at_war_with", [])
         d["sanctions_by"] = state.get("sanctions_by", [])
         d["active_events"] = state.get("active_events", [])
+        # Overlay dynamic national_stats, sectors, equipment if evolved during play
+        if state.get("national_stats"):
+            d["national_stats"] = state["national_stats"]
+        if state.get("sectors") and d.get("economy"):
+            d["economy"]["sectors"] = state["sectors"]
+        if state.get("equipment") and d.get("military"):
+            d["military"]["equipment"] = state["equipment"]
     return d
 
 
@@ -435,3 +526,277 @@ def _simulate_economic_tick(session: GameSession):
             continue
         growth = country.economy.gdp_growth / 100 / 12
         state["economy_modifier"] = round(state.get("economy_modifier", 1.0) * (1 + growth), 4)
+
+
+# ─── Régions ────────────────────────────────────────────────────────────────────
+
+def _ensure_region_state(session: GameSession) -> dict:
+    if not isinstance(session.region_state, dict):
+        session.region_state = {"occupied": {}, "independent": {}}
+    session.region_state.setdefault("occupied", {})
+    session.region_state.setdefault("independent", {})
+    return session.region_state
+
+
+def _get_military_power(session: GameSession, country_id: str) -> float:
+    scenario = load_scenario(session.scenario_id)
+    dyn = session.dynamic_countries.get(country_id)
+    if dyn:
+        base = float(dyn.get("military", {}).get("strength", 1))
+    elif scenario:
+        country = scenario.countries.get(country_id)
+        base = float(country.military.strength) if country and country.military else 1.0
+    else:
+        return 1.0
+    modifier = session.country_states.get(country_id, {}).get("military_modifier", 1.0)
+    return base * modifier
+
+
+def _progress_war_invasions(session: GameSession):
+    """Each month: warring sides may capture a region of the opponent (30 % chance)."""
+    import random
+    from app.data.regions import get_country_regions, SUPPORTED_COUNTRIES
+
+    rs = _ensure_region_state(session)
+    war_pairs: set[tuple] = set()
+    for cid, state in session.country_states.items():
+        for enemy in state.get("at_war_with", []):
+            war_pairs.add(tuple(sorted([cid, enemy])))
+
+    for (a_id, b_id) in war_pairs:
+        if random.random() > 0.30:
+            continue
+        a_pow = _get_military_power(session, a_id)
+        b_pow = _get_military_power(session, b_id)
+
+        # Stronger side attacks
+        if a_pow >= b_pow:
+            attacker, defender = a_id, b_id
+        else:
+            attacker, defender = b_id, a_id
+
+        if defender not in SUPPORTED_COUNTRIES:
+            continue
+
+        all_regions = get_country_regions(defender)
+        free_regions = [
+            r for r in all_regions
+            if r["adm1_code"] not in rs["occupied"]
+            and r["adm1_code"] not in rs["independent"]
+        ]
+        if not free_regions:
+            continue
+
+        region = random.choice(free_regions)
+        rs["occupied"][region["adm1_code"]] = {
+            "occupied_by": attacker,
+            "country_id": defender,
+            "region_name": region.get("name_fr") or region["name"],
+        }
+        from app.models.game import WorldEvent
+        session.world_events.append(WorldEvent(
+            title=f"Invasion : {region.get('name_fr') or region['name']}",
+            description=(
+                f"Les forces de {attacker} ont pris le contrôle de la région "
+                f"{region.get('name_fr') or region['name']} ({defender})."
+            ),
+            affected_countries=[attacker, defender],
+            year=session.year,
+            month=session.month,
+        ))
+
+
+def get_region_state(session_id: str) -> Optional[dict]:
+    session = get_session(session_id)
+    if not session:
+        return None
+    return _ensure_region_state(session)
+
+
+def occupy_region(session_id: str, adm1_code: str, occupying_country_id: str) -> dict:
+    """MJ manually occupies a region."""
+    from app.data.regions import get_region
+    session = get_session(session_id)
+    if not session:
+        raise ValueError("Session introuvable")
+    region = get_region(adm1_code)
+    if not region:
+        raise ValueError(f"Région inconnue : {adm1_code}")
+
+    rs = _ensure_region_state(session)
+    rs["occupied"][adm1_code] = {
+        "occupied_by": occupying_country_id,
+        "country_id": region["country_id"],
+        "region_name": region.get("name_fr") or region["name"],
+    }
+    session.updated_at = datetime.utcnow()
+    _save_session(session)
+    return rs
+
+
+def liberate_region(session_id: str, adm1_code: str) -> dict:
+    """Remove occupation from a region."""
+    session = get_session(session_id)
+    if not session:
+        raise ValueError("Session introuvable")
+    rs = _ensure_region_state(session)
+    rs["occupied"].pop(adm1_code, None)
+    session.updated_at = datetime.utcnow()
+    _save_session(session)
+    return rs
+
+
+def declare_region_independent(
+    session_id: str,
+    adm1_code: str,
+    new_country_name: str,
+    new_country_flag: str = "🏳️",
+) -> dict:
+    """Create a new independent country from a region."""
+    from app.data.regions import get_region, generate_country_id
+    import random
+
+    session = get_session(session_id)
+    if not session:
+        raise ValueError("Session introuvable")
+    region = get_region(adm1_code)
+    if not region:
+        raise ValueError(f"Région inconnue : {adm1_code}")
+
+    parent_id = region["country_id"]
+    scenario = load_scenario(session.scenario_id)
+    parent_sc = scenario.countries.get(parent_id) if scenario else None
+    parent_state = session.country_states.get(parent_id, {})
+
+    existing_ids = set(session.country_states.keys()) | set(session.dynamic_countries.keys())
+    new_id = generate_country_id(parent_id, new_country_name, existing_ids)
+
+    # Inherit ~15 % of parent's resources
+    ratio = 0.15
+    parent_gdp = (parent_sc.economy.gdp if parent_sc and parent_sc.economy else 100.0)
+    parent_gdp *= parent_state.get("economy_modifier", 1.0)
+    parent_pop = parent_sc.population if parent_sc else 50_000_000
+    parent_mil = (parent_sc.military.strength if parent_sc and parent_sc.military else 3)
+
+    # Inherit parent's relations, slightly degraded
+    parent_rels = dict(parent_state.get("relations", parent_sc.relations if parent_sc else {}))
+    new_relations = {k: max(-30, v - 20) for k, v in parent_rels.items() if k != new_id}
+    new_relations[parent_id] = -40  # tense with former country
+
+    REGION_COLORS = [
+        "#7c3aed", "#be185d", "#0369a1", "#047857", "#b45309",
+        "#9333ea", "#db2777", "#0284c7", "#059669", "#d97706",
+    ]
+    color = random.choice(REGION_COLORS)
+
+    continent = parent_sc.continent if parent_sc else "Monde"
+
+    new_country: dict = {
+        "id": new_id,
+        "name": new_country_name,
+        "flag": new_country_flag,
+        "capital": region.get("name_fr") or region["name"],
+        "continent": continent,
+        "population": int(parent_pop * ratio),
+        "government_type": "transition",
+        "ideology": "nationalisme",
+        "leader": "Gouvernement provisoire",
+        "alliances": [],
+        "economy": {
+            "gdp": round(parent_gdp * ratio, 2),
+            "gdp_per_capita": int((parent_sc.economy.gdp_per_capita if parent_sc and parent_sc.economy else 5000) * 0.8),
+            "gdp_growth": -1.5,
+            "inflation": 8.0,
+            "unemployment": 12.0,
+            "debt_pct_gdp": 45.0,
+            "currency": "XXX",
+            "main_sectors": ["services", "industrie"],
+            "sectors": {"agriculture": 15.0, "industrie": 35.0, "services": 50.0},
+        },
+        "military": {
+            "strength": max(1, int(parent_mil * ratio)),
+            "active_personnel": int((parent_sc.military.active_personnel if parent_sc and parent_sc.military else 50000) * ratio),
+            "nuclear_weapons": False,
+            "defense_budget_pct": 2.0,
+            "equipment": {},
+        },
+        "national_stats": {
+            "sovereignty": 40.0,
+            "food_autonomy": 45.0,
+            "energy_autonomy": 40.0,
+            "economic_independence": 35.0,
+        },
+        "relations": new_relations,
+        "personality_traits": ["jeune_état", "fragile", "nationaliste"],
+        "description": (
+            f"{new_country_name} est un État nouvellement indépendant issu de la région "
+            f"{region.get('name_fr') or region['name']} ({parent_id}), en {session.year}."
+        ),
+        "color": color,
+        "stability": 40,
+        "economy_modifier": 1.0,
+        "military_modifier": 1.0,
+        "at_war_with": [],
+        "sanctions_by": [],
+        "active_events": [],
+    }
+
+    # Reduce parent's economy proportionally
+    ps = session.country_states.setdefault(parent_id, {})
+    ps["economy_modifier"] = round(ps.get("economy_modifier", 1.0) * (1 - ratio * 0.8), 4)
+    ps["stability"] = max(0, ps.get("stability", 50) - 10)
+    session.country_states[parent_id] = ps
+
+    # Register new country
+    session.dynamic_countries[new_id] = new_country
+    session.country_states[new_id] = {
+        "stability": 40,
+        "economy_modifier": 1.0,
+        "military_modifier": 1.0,
+        "relations": new_relations,
+        "at_war_with": [],
+        "sanctions_by": [],
+        "active_events": [],
+    }
+
+    # Mark region as independent
+    rs = _ensure_region_state(session)
+    rs["occupied"].pop(adm1_code, None)
+    rs["independent"][adm1_code] = {
+        "country_id": new_id,
+        "parent_id": parent_id,
+        "region_name": region.get("name_fr") or region["name"],
+        "since_year": session.year,
+    }
+
+    from app.models.game import WorldEvent
+    session.world_events.append(WorldEvent(
+        title=f"Indépendance : {new_country_name}",
+        description=(
+            f"{new_country_name} déclare son indépendance depuis la région "
+            f"{region.get('name_fr') or region['name']} ({parent_id})."
+        ),
+        affected_countries=[new_id, parent_id],
+        year=session.year,
+        month=session.month,
+    ))
+
+    session.updated_at = datetime.utcnow()
+    _save_session(session)
+    return {"new_country_id": new_id, "region_state": rs}
+
+
+def reunify_region(session_id: str, adm1_code: str) -> dict:
+    """Remove independence — region rejoins its parent country."""
+    session = get_session(session_id)
+    if not session:
+        raise ValueError("Session introuvable")
+    rs = _ensure_region_state(session)
+    ind = rs["independent"].pop(adm1_code, None)
+    if ind:
+        cid = ind["country_id"]
+        session.dynamic_countries.pop(cid, None)
+        session.country_states.pop(cid, None)
+    session.updated_at = datetime.utcnow()
+    _save_session(session)
+    return rs

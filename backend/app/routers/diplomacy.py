@@ -42,6 +42,7 @@ async def send_diplomatic_message(
                 world_context=world_context,
                 diplomatic_history=history,
                 config=config,
+                session_id=session_id,
             ):
                 full_response += chunk
                 yield f"data: {json.dumps({'chunk': chunk})}\n\n"
@@ -53,7 +54,23 @@ async def send_diplomatic_message(
                 response=full_response,
             )
             game_engine.add_diplomatic_message(session_id, msg)
-            yield f"data: {json.dumps({'done': True, 'message_id': msg.id})}\n\n"
+
+            # Analyse the exchange and apply game effects
+            effect = await ai_service.analyze_diplomatic_exchange(
+                player_country=player_country.model_dump(),
+                target_country=target_country.model_dump(),
+                player_message=req.message,
+                country_response=full_response,
+                config=config,
+            )
+            if effect.get("relation_delta") or effect.get("economy_delta") or effect.get("domestic_events"):
+                game_engine.apply_diplomatic_effects(
+                    session_id=session_id,
+                    player_country_id=session.player_country_id,
+                    target_country_id=req.target_country_id,
+                    effect=effect,
+                )
+            yield f"data: {json.dumps({'done': True, 'message_id': msg.id, 'game_effect': effect})}\n\n"
         except Exception as e:
             yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
