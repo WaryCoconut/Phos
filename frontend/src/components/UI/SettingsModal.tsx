@@ -3,12 +3,28 @@ import { Settings, X, Eye, EyeOff, Check, AlertTriangle, Info } from 'lucide-rea
 import { useSettingsStore, type ApiSettings } from '@/store/settingsStore'
 
 const PRESETS = [
-  { label: 'Socle.ai', baseUrl: 'https://app.socle.ai/api/v1', model: 'MJ Phos' },
+  { label: 'Socle', baseUrl: 'https://app.socle.ai/api/v1', model: 'qwen3-235b-a22b-instruct-2507' },
   { label: 'Ollama (local)', baseUrl: 'http://localhost:11434/v1', model: 'llama3' },
 ]
 
+
 function isSocle(url: string) {
-  return url.includes('socle.ai')
+  return url.includes('socle.ai') || url.includes('host.docker.internal')
+}
+
+async function syncAgent(settings: ApiSettings) {
+  try {
+    await fetch('/api/ai/sync-agent', {
+      method: 'POST',
+      headers: {
+        'x-api-key': settings.apiKey,
+        'x-api-base-url': settings.apiBaseUrl,
+        'x-api-model': settings.model,
+      },
+    })
+  } catch {
+    // non-blocking
+  }
 }
 
 interface Props {
@@ -29,8 +45,11 @@ export default function SettingsModal({ open, onClose, required = false }: Props
     setForm((f) => ({ ...f, apiBaseUrl: baseUrl, model }))
   }
 
-  function save() {
+  async function save() {
     update(form)
+    if (isSocle(form.apiBaseUrl) && form.apiKey.trim()) {
+      syncAgent(form)
+    }
     setSaved(true)
     setTimeout(() => {
       setSaved(false)
@@ -74,7 +93,7 @@ export default function SettingsModal({ open, onClose, required = false }: Props
                   key={p.label}
                   onClick={() => applyPreset(p.baseUrl, p.model)}
                   className={`text-sm px-3 py-2 rounded-lg border transition-colors text-left ${
-                    form.apiBaseUrl === p.baseUrl
+                    isSocle(form.apiBaseUrl) === isSocle(p.baseUrl)
                       ? 'border-pax-accent bg-pax-accent/10 text-white'
                       : 'border-pax-border text-slate-400 hover:border-slate-500 hover:text-slate-200'
                   }`}
@@ -117,27 +136,33 @@ export default function SettingsModal({ open, onClose, required = false }: Props
             />
           </div>
 
-          {/* Model / Agent */}
+          {/* Model */}
           <div>
-            <label className="stat-label block mb-1.5">
-              {socle ? 'Agent name' : 'Model'}
-            </label>
-            <input
-              type="text"
-              value={form.model}
-              onChange={(e) => setForm((f) => ({ ...f, model: e.target.value }))}
-              placeholder={socle ? 'MJ Phos' : 'llama3'}
-              className="w-full bg-slate-800 border border-pax-border rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-pax-accent"
-            />
-            {socle && (
-              <div className="mt-2 flex items-start gap-1.5 text-xs text-slate-400 bg-slate-800/60 border border-pax-border rounded-lg px-3 py-2">
-                <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-pax-accent" />
-                <span>
-                  Create an agent named <span className="text-white font-medium">MJ Phos</span> on{' '}
-                  <span className="text-pax-accent">socle.ai</span> with memory enabled.
-                  The agent will remember context across turns and conversations.
-                </span>
-              </div>
+            <label className="stat-label block mb-1.5">Modèle</label>
+            {socle ? (
+              <>
+                <input
+                  type="text"
+                  value={form.model}
+                  onChange={(e) => setForm((f) => ({ ...f, model: e.target.value }))}
+                  placeholder="qwen3-235b-a22b-instruct-2507"
+                  className="w-full bg-slate-800 border border-pax-border rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-pax-accent"
+                />
+                <div className="mt-2 flex items-start gap-1.5 text-xs text-slate-400 bg-slate-800/60 border border-pax-border rounded-lg px-3 py-2">
+                  <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-pax-accent" />
+                  <span>
+                    L'agent <span className="text-white font-medium">MJ Phos</span> sera créé ou mis à jour automatiquement sur ton instance Socle.
+                  </span>
+                </div>
+              </>
+            ) : (
+              <input
+                type="text"
+                value={form.model}
+                onChange={(e) => setForm((f) => ({ ...f, model: e.target.value }))}
+                placeholder="llama3"
+                className="w-full bg-slate-800 border border-pax-border rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-pax-accent"
+              />
             )}
           </div>
         </div>

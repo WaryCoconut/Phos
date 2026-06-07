@@ -63,3 +63,43 @@ async def get_briefing(
         )
     )
     return await ask_advisor(session_id, req, config)
+
+
+@router.post("/{session_id}/summary")
+async def get_turn_summary(
+    session_id: str,
+    config: AiConfig = Depends(get_ai_config),
+):
+    session = game_engine.get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session introuvable")
+
+    scenario = load_scenario(session.scenario_id)
+    if not scenario:
+        raise HTTPException(status_code=404, detail="Scénario introuvable")
+
+    player_country = scenario.countries.get(session.player_country_id)
+    if not player_country:
+        raise HTTPException(status_code=400, detail="Pays du joueur introuvable")
+
+    player_state = session.country_states.get(session.player_country_id, {})
+    recent_actions = [a.model_dump(mode="json") for a in session.action_history[-5:]]
+    recent_world_events = [e.model_dump(mode="json") for e in session.world_events[-6:]]
+
+    async def event_stream():
+        try:
+            async for chunk in ai_service.generate_turn_summary(
+                player_country=player_country.model_dump(),
+                year=session.year,
+                month=session.month,
+                recent_actions=recent_actions,
+                recent_world_events=recent_world_events,
+                player_state=player_state,
+                config=config,
+            ):
+                yield f"data: {json.dumps({'chunk': chunk})}\n\n"
+            yield f"data: {json.dumps({'done': True})}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream")

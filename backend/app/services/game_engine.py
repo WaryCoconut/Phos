@@ -1,10 +1,11 @@
 import json
 import os
+import tempfile
 import uuid
 from typing import Dict, Optional
 from datetime import datetime
 
-from app.models.game import GameSession, ActionResult, WorldEvent, DiplomaticMessage
+from app.models.game import GameSession, ActionResult, WorldEvent, DiplomaticMessage, Treaty, PendingConsequence
 from app.services.scenario_loader import load_scenario
 
 SESSIONS_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "sessions")
@@ -23,11 +24,19 @@ def _snapshots_dir(session_id: str) -> str:
     return os.path.join(SESSIONS_DIR, session_id)
 
 
+def _atomic_write(path: str, data: dict):
+    """Write JSON atomically via temp file + os.replace to avoid corruption on crash."""
+    dir_ = os.path.dirname(path) or '.'
+    os.makedirs(dir_, exist_ok=True)
+    with tempfile.NamedTemporaryFile('w', dir=dir_, suffix='.tmp', delete=False, encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False)
+        tmp = f.name
+    os.replace(tmp, path)
+
+
 def _save_session(session: GameSession):
     os.makedirs(SESSIONS_DIR, exist_ok=True)
-    data = session.model_dump(mode="json")
-    with open(_session_path(session.id), "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False)
+    _atomic_write(_session_path(session.id), session.model_dump(mode="json"))
 
 
 def _save_snapshot(session: GameSession):
@@ -35,9 +44,7 @@ def _save_snapshot(session: GameSession):
     snap_dir = _snapshots_dir(session.id)
     os.makedirs(snap_dir, exist_ok=True)
     path = os.path.join(snap_dir, f"turn_{session.turn:05d}.json")
-    data = session.model_dump(mode="json")
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False)
+    _atomic_write(path, session.model_dump(mode="json"))
 
     # Nettoyer les vieux snapshots
     snaps = sorted(f for f in os.listdir(snap_dir) if f.endswith(".json"))
@@ -154,6 +161,7 @@ def get_game_state(session_id: str) -> Optional[dict]:
         "action_history": [a.model_dump(mode="json") for a in session.action_history[-10:]],
         "pending_actions": [a.model_dump(mode="json") for a in session.pending_actions],
         "region_state": session.region_state,
+        "treaties": [t.model_dump(mode="json") for t in session.treaties],
         "custom_map_id": scenario.custom_map_id,
         "custom_map_feature_id_property": scenario.custom_map_feature_id_property,
         "initial_territories": scenario.initial_territories,
@@ -194,102 +202,158 @@ def remove_queued_action(session_id: str, index: int) -> list:
     return [a.model_dump(mode="json") for a in session.pending_actions]
 
 
-def apply_simulation_month(session: GameSession, action_result: dict | None, events: list):
-    """Apply one month's changes to session state. Save after each month."""
-    from app.models.game import ActionResult, WorldEvent
+def apply_action_result_to_session(session: GameSession, action_result: dict, save: bool = True, scale: float = 1.0):
+    """Apply one action's deltas to session state without advancing the month."""
+    from app.models.game import ActionResult, DomesticEvent, MapPOI
 
-    session.month += 1
-    if session.month > 12:
-        session.month = 1
-        session.year += 1
+    result = ActionResult(
+        action=action_result["action"],
+        consequences=action_result["narrative"],
+        relation_changes=action_result.get("relation_changes", {}),
+        year=session.year,
+        month=session.month,
+    )
+    _apply_relation_changes(session, result.relation_changes)
+
+    player_state = session.country_states.get(session.player_country_id, {})
+    stab = player_state.get("stability", 50) + action_result.get("stability_delta", 0) * scale
+    player_state["stability"] = max(0, min(100, round(stab)))
+    eco = player_state.get("economy_modifier", 1.0) * (1 + action_result.get("economy_delta", 0.0) * scale)
+    player_state["economy_modifier"] = round(eco, 4)
+    session.country_states[session.player_country_id] = player_state
+
+    for de_data in action_result.get("domestic_events", []):
+        if not isinstance(de_data, dict) or not de_data.get("title"):
+            continue
+        de = DomesticEvent(
+            title=de_data["title"],
+            description=de_data.get("description", ""),
+            type=de_data.get("type", "social"),
+            severity=max(1, min(3, int(de_data.get("severity", 1)))),
+            stability_impact=max(-15, min(10, int(de_data.get("stability_impact", 0)))),
+            year=session.year,
+            month=session.month,
+        )
+        session.domestic_events.append(de)
+        ps = session.country_states.get(session.player_country_id, {})
+        s = ps.get("stability", 50) + de_data.get("stability_impact", 0)
+        ps["stability"] = max(0, min(100, round(s)))
+        session.country_states[session.player_country_id] = ps
+
+    stat_deltas = action_result.get("stat_deltas", {})
+    if stat_deltas:
+        scenario = load_scenario(session.scenario_id)
+        base_country = scenario.countries.get(session.player_country_id) if scenario else None
+        base_ns = (base_country.national_stats.model_dump() if base_country and base_country.national_stats
+                   else {"sovereignty": 50, "food_autonomy": 50, "energy_autonomy": 50, "economic_independence": 50})
+        ps = session.country_states.get(session.player_country_id, {})
+        current_ns = ps.get("national_stats") or dict(base_ns)
+        for key in ("sovereignty", "food_autonomy", "energy_autonomy", "economic_independence"):
+            delta = stat_deltas.get(key, 0)
+            if delta:
+                current_ns[key] = round(max(0, min(120, current_ns.get(key, base_ns.get(key, 50)) + delta)), 1)
+        ps["national_stats"] = current_ns
+        session.country_states[session.player_country_id] = ps
+
+    poi_data = action_result.get("map_poi")
+    if poi_data and action_result.get("applicable", True) and isinstance(poi_data, dict) and poi_data.get("name"):
+        poi = MapPOI(
+            name=poi_data["name"],
+            type=poi_data["type"],
+            country_id=session.player_country_id,
+            coordinates=poi_data["coordinates"],
+            icon=poi_data.get("icon", "📍"),
+            year=session.year,
+            month=session.month,
+        )
+        session.map_pois.append(poi)
+
+    for fe_data in action_result.get("future_events", [])[:2]:
+        if not isinstance(fe_data, dict) or not fe_data.get("title"):
+            continue
+        months_ahead = max(1, int(fe_data.get("months_ahead", 1)))
+        trig_month = session.month + months_ahead
+        trig_year = session.year + (trig_month - 1) // 12
+        trig_month = ((trig_month - 1) % 12) + 1
+        session.pending_consequences.append(PendingConsequence(
+            trigger_year=trig_year,
+            trigger_month=trig_month,
+            source_action=action_result.get("action", ""),
+            title=str(fe_data["title"]),
+            description=str(fe_data.get("description", "")),
+            event_type=str(fe_data.get("type", "consequence")),
+            stability_impact=max(-20, min(15, int(fe_data.get("stability_impact", 0)))),
+            economy_impact=max(-0.05, min(0.05, float(fe_data.get("economy_impact", 0.0)))),
+        ))
+
+    session.updated_at = datetime.utcnow()
+    if save:
+        _save_session(session)
+
+
+def apply_simulation_unit(
+    session: GameSession,
+    action_result: dict | None,
+    events: list,
+    days: int = 30,
+    scale: float = 1.0,
+):
+    """Advance time by `days`, apply world events + optional action, war, treaties, economy, pending consequences. Saves."""
+    from app.models.game import WorldEvent
+
+    # Advance day/month/year
+    day = getattr(session, 'day', 1) + days
+    while day > 30:
+        day -= 30
+        session.month += 1
+        if session.month > 12:
+            session.month = 1
+            session.year += 1
+    session.day = day
     session.turn += 1
 
-    # Apply world events
+    player_id = session.player_country_id
     for e in events:
         event = WorldEvent(
             title=e.get("title", "Événement mondial"),
             description=e.get("description", ""),
             affected_countries=e.get("affected_countries", []),
             relation_changes=e.get("relation_changes", {}),
+            stability_impact=max(-30, min(10, int(e.get("stability_impact", 0)))),
+            economy_impact=max(-0.08, min(0.05, float(e.get("economy_impact", 0.0)))),
             year=session.year,
             month=session.month,
+            day=session.day,
+            type=e.get("type", "general"),
         )
         session.world_events.append(event)
         _apply_relation_changes(session, event.relation_changes)
+        # Apply direct stability/economy impacts if the player is affected
+        if player_id in event.affected_countries:
+            if event.stability_impact:
+                ps = session.country_states.get(player_id, {})
+                ps["stability"] = max(0, min(100, round(ps.get("stability", 50) + event.stability_impact)))
+                session.country_states[player_id] = ps
+            if event.economy_impact:
+                ps = session.country_states.get(player_id, {})
+                ps["economy_modifier"] = round(ps.get("economy_modifier", 1.0) * (1 + event.economy_impact), 4)
+                session.country_states[player_id] = ps
 
-    # Apply action result (not stored in history — consumed by game master)
     if action_result:
-        result = ActionResult(
-            action=action_result["action"],
-            consequences=action_result["narrative"],
-            relation_changes=action_result.get("relation_changes", {}),
-            year=session.year,
-            month=session.month,
-        )
-        _apply_relation_changes(session, result.relation_changes)
+        apply_action_result_to_session(session, action_result, save=False, scale=scale)
 
-        # Apply stability and economy deltas
-        player_state = session.country_states.get(session.player_country_id, {})
-        stab = player_state.get("stability", 50) + action_result.get("stability_delta", 0)
-        player_state["stability"] = max(0, min(100, stab))
-        eco = player_state.get("economy_modifier", 1.0) * (1 + action_result.get("economy_delta", 0.0))
-        player_state["economy_modifier"] = round(eco, 4)
-        session.country_states[session.player_country_id] = player_state
-
-        # Apply domestic events from Game Master
-        for de_data in action_result.get("domestic_events", []):
-            from app.models.game import DomesticEvent
-            de = DomesticEvent(
-                title=de_data["title"],
-                description=de_data["description"],
-                type=de_data.get("type", "social"),
-                severity=de_data.get("severity", 1),
-                stability_impact=de_data.get("stability_impact", 0),
-                year=session.year,
-                month=session.month,
-            )
-            session.domestic_events.append(de)
-            # Apply domestic stability impact
-            ps = session.country_states.get(session.player_country_id, {})
-            s = ps.get("stability", 50) + de_data.get("stability_impact", 0)
-            ps["stability"] = max(0, min(100, s))
-            session.country_states[session.player_country_id] = ps
-
-        # Apply national stat deltas (sovereignty, food_autonomy, energy_autonomy, economic_independence)
-        stat_deltas = action_result.get("stat_deltas", {})
-        if stat_deltas:
-            scenario = load_scenario(session.scenario_id)
-            base_country = scenario.countries.get(session.player_country_id) if scenario else None
-            base_ns = (base_country.national_stats.model_dump() if base_country and base_country.national_stats
-                       else {"sovereignty": 50, "food_autonomy": 50, "energy_autonomy": 50, "economic_independence": 50})
-            ps = session.country_states.get(session.player_country_id, {})
-            current_ns = ps.get("national_stats") or dict(base_ns)
-            for key in ("sovereignty", "food_autonomy", "energy_autonomy", "economic_independence"):
-                delta = stat_deltas.get(key, 0)
-                if delta:
-                    current_ns[key] = round(max(0, min(120, current_ns.get(key, base_ns.get(key, 50)) + delta)), 1)
-            ps["national_stats"] = current_ns
-            session.country_states[session.player_country_id] = ps
-
-        # Apply map POI from Game Master
-        poi_data = action_result.get("map_poi")
-        if poi_data and action_result.get("applicable", True):
-            from app.models.game import MapPOI
-            poi = MapPOI(
-                name=poi_data["name"],
-                type=poi_data["type"],
-                country_id=session.player_country_id,
-                coordinates=poi_data["coordinates"],
-                icon=poi_data.get("icon", "📍"),
-                year=session.year,
-                month=session.month,
-            )
-            session.map_pois.append(poi)
-
+    _fire_pending_consequences(session)
+    _check_stability_crisis(session)
     _progress_war_invasions(session)
-    _simulate_economic_tick(session)
+    _apply_treaty_effects(session)
+    _simulate_economic_tick(session, scale=scale)
     session.updated_at = datetime.utcnow()
     _save_session(session)
+
+
+def apply_simulation_month(session: GameSession, action_result: dict | None, events: list):
+    """Backward-compat wrapper — advance by 30 days (full month)."""
+    apply_simulation_unit(session, action_result, events, days=30, scale=1.0)
 
 
 def add_diplomatic_message(session_id: str, msg: DiplomaticMessage):
@@ -403,6 +467,39 @@ def get_diplomatic_history_with(session_id: str, target_country_id: str) -> list
     ]
 
 
+def add_treaty(session_id: str, treaty: Treaty) -> None:
+    """Persist a new treaty, skipping duplicates of the same type between the same pair."""
+    session = get_session(session_id)
+    if not session:
+        return
+    pair = {treaty.country_a, treaty.country_b}
+    for existing in session.treaties:
+        if existing.type == treaty.type and {existing.country_a, existing.country_b} == pair:
+            return
+    session.treaties.append(treaty)
+    session.updated_at = datetime.utcnow()
+    _save_session(session)
+
+
+def _apply_treaty_effects(session: GameSession) -> None:
+    """Apply monthly economy and relation bonuses from active treaties."""
+    player_id = session.player_country_id
+    for treaty in session.treaties:
+        involves_player = treaty.country_a == player_id or treaty.country_b == player_id
+        if treaty.economy_bonus and involves_player:
+            ps = session.country_states.get(player_id, {})
+            ps["economy_modifier"] = round(ps.get("economy_modifier", 1.0) * (1 + treaty.economy_bonus / 12), 6)
+            session.country_states[player_id] = ps
+
+        if treaty.relation_bonus:
+            other = treaty.country_b if treaty.country_a == player_id else treaty.country_a
+            for cid, oid in [(player_id, other), (other, player_id)]:
+                if cid in session.country_states:
+                    rel = session.country_states[cid].get("relations", {})
+                    rel[oid] = min(100, rel.get(oid, 0) + treaty.relation_bonus)
+                    session.country_states[cid]["relations"] = rel
+
+
 def apply_diplomatic_effects(
     session_id: str,
     player_country_id: str,
@@ -446,6 +543,23 @@ def apply_diplomatic_effects(
             s = ps.get("stability", 50) + de_data.get("stability_impact", 0)
             ps["stability"] = max(0, min(100, s))
             session.country_states[player_country_id] = ps
+
+    # Persist treaty when an agreement is reached
+    if effect.get("agreement_reached") and effect.get("agreement_type"):
+        agreement_type = effect["agreement_type"]
+        economy_bonus = 0.005 if agreement_type == "commercial" else 0.0
+        relation_bonus = 1 if agreement_type in ("diplomatique", "militaire") else 0
+        treaty = Treaty(
+            type=agreement_type,
+            country_a=player_country_id,
+            country_b=target_country_id,
+            summary=effect.get("summary") or f"Accord {agreement_type}",
+            year=session.year,
+            month=session.month,
+            economy_bonus=economy_bonus,
+            relation_bonus=relation_bonus,
+        )
+        add_treaty(session.id, treaty)
 
     session.updated_at = datetime.utcnow()
     _save_session(session)
@@ -516,7 +630,7 @@ def _apply_relation_changes(session: GameSession, changes: Dict[str, Dict[str, i
                 session.country_states[country_id]["relations"] = rel
 
 
-def _simulate_economic_tick(session: GameSession):
+def _simulate_economic_tick(session: GameSession, scale: float = 1.0):
     scenario = load_scenario(session.scenario_id)
     if not scenario:
         return
@@ -524,8 +638,65 @@ def _simulate_economic_tick(session: GameSession):
         country = scenario.countries.get(cid)
         if not country or not country.economy:
             continue
-        growth = country.economy.gdp_growth / 100 / 12
+        growth = country.economy.gdp_growth / 100 / 12 * scale
         state["economy_modifier"] = round(state.get("economy_modifier", 1.0) * (1 + growth), 4)
+
+
+def _fire_pending_consequences(session: GameSession) -> None:
+    """Fire any PendingConsequences whose trigger date has been reached."""
+    if not session.pending_consequences:
+        return
+
+    fired_ids: list[str] = []
+    for pc in session.pending_consequences:
+        if (session.year, session.month) >= (pc.trigger_year, pc.trigger_month):
+            from app.models.game import WorldEvent
+            session.world_events.append(WorldEvent(
+                title=pc.title,
+                description=pc.description,
+                affected_countries=[session.player_country_id],
+                year=session.year,
+                month=session.month,
+                type=pc.event_type,
+                triggered_by_player=True,
+            ))
+            if pc.stability_impact:
+                ps = session.country_states.get(session.player_country_id, {})
+                ps["stability"] = max(0, min(100, round(ps.get("stability", 50) + pc.stability_impact)))
+                session.country_states[session.player_country_id] = ps
+            if pc.economy_impact:
+                ps = session.country_states.get(session.player_country_id, {})
+                ps["economy_modifier"] = round(ps.get("economy_modifier", 1.0) * (1 + pc.economy_impact), 4)
+                session.country_states[session.player_country_id] = ps
+            fired_ids.append(pc.id)
+
+    session.pending_consequences = [pc for pc in session.pending_consequences if pc.id not in fired_ids]
+
+
+def _check_stability_crisis(session: GameSession) -> None:
+    """Trigger a coup/crisis event if stability falls below 10."""
+    import random
+    ps = session.country_states.get(session.player_country_id, {})
+    if ps.get("stability", 50) >= 10:
+        return
+    if random.random() > 0.6:
+        return
+    from app.models.game import WorldEvent, DomesticEvent
+    session.domestic_events.append(DomesticEvent(
+        title="Crise de gouvernance — Instabilité critique",
+        description=(
+            "La chute de la stabilité sous le seuil critique provoque une crise de gouvernance. "
+            "Des factions militaires et civiles contestent l'autorité de l'État. "
+            "Des mesures d'urgence doivent être prises immédiatement."
+        ),
+        type="military",
+        severity=3,
+        stability_impact=-10,
+        year=session.year,
+        month=session.month,
+    ))
+    ps["stability"] = max(0, round(ps.get("stability", 0)) - 10)
+    session.country_states[session.player_country_id] = ps
 
 
 # ─── Régions ────────────────────────────────────────────────────────────────────
@@ -550,6 +721,49 @@ def _get_military_power(session: GameSession, country_id: str) -> float:
         return 1.0
     modifier = session.country_states.get(country_id, {}).get("military_modifier", 1.0)
     return base * modifier
+
+
+def _trigger_alliance_defense(session: GameSession, attacker: str, defender: str) -> None:
+    """When defender is invaded, allies in the same alliance react automatically."""
+    scenario = load_scenario(session.scenario_id)
+    if not scenario:
+        return
+
+    for alliance_id, alliance in scenario.alliances.items():
+        if defender not in alliance.members:
+            continue
+        for ally_id in alliance.members:
+            if ally_id in (defender, attacker):
+                continue
+            ally_state = session.country_states.get(ally_id)
+            if not ally_state:
+                continue
+
+            # Degrade attacker relations with every alliance member
+            rel = ally_state.get("relations", {})
+            rel[attacker] = max(-100, rel.get(attacker, 0) - 15)
+            ally_state["relations"] = rel
+            session.country_states[ally_id] = ally_state
+
+            # Close allies (relation ≥ 60) automatically enter the war
+            if rel.get(defender, 0) >= 60 and attacker not in ally_state.get("at_war_with", []):
+                ally_state.setdefault("at_war_with", []).append(attacker)
+                session.country_states[ally_id] = ally_state
+                atk_state = session.country_states.get(attacker, {})
+                if ally_id not in atk_state.get("at_war_with", []):
+                    atk_state.setdefault("at_war_with", []).append(ally_id)
+                    session.country_states[attacker] = atk_state
+                from app.models.game import WorldEvent as WE
+                session.world_events.append(WE(
+                    title=f"Défense collective ({alliance_id})",
+                    description=(
+                        f"{ally_id} active la clause de défense collective de l'alliance "
+                        f"{alliance_id} et entre en guerre contre {attacker} aux côtés de {defender}."
+                    ),
+                    affected_countries=[ally_id, defender, attacker],
+                    year=session.year,
+                    month=session.month,
+                ))
 
 
 def _progress_war_invasions(session: GameSession):
@@ -604,6 +818,7 @@ def _progress_war_invasions(session: GameSession):
             year=session.year,
             month=session.month,
         ))
+        _trigger_alliance_defense(session, attacker, defender)
 
 
 def get_region_state(session_id: str) -> Optional[dict]:

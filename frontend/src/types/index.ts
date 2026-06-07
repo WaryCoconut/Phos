@@ -69,6 +69,8 @@ export interface WorldEvent {
   affected_countries: string[]
   year: number
   month: number
+  day?: number
+  type?: string
   triggered_by_player: boolean
 }
 
@@ -115,12 +117,13 @@ export interface MapPOI {
   month: number
 }
 
-export type SimDuration = { label: string; months: number }
+export type SimDuration = { label: string; months?: number; weeks?: number }
 
 export interface SimEvent {
-  type: 'month_start' | 'world_event' | 'action_result' | 'domestic_event' | 'poi_added' | 'done' | 'error'
+  type: 'month_start' | 'week_start' | 'world_event' | 'action_result' | 'domestic_event' | 'poi_added' | 'done' | 'error'
   year?: number
   month?: number
+  day?: number
   turn?: number
   title?: string
   description?: string
@@ -130,7 +133,7 @@ export interface SimEvent {
   relation_changes?: Record<string, Record<string, number>>
   stability_delta?: number
   message?: string
-  // domestic_event fields
+  // domestic_event + world_event type field
   event_type?: string
   severity?: number
   stability_impact?: number
@@ -141,6 +144,12 @@ export interface SimEvent {
   poi_icon?: string
   poi_coordinates?: [number, number]
   poi_country_id?: string
+  // done event summary fields
+  final_stability?: number
+  final_economy_modifier?: number
+  world_event_count?: number
+  action_count?: number
+  treaty_count?: number
 }
 
 export interface OccupiedRegion {
@@ -188,6 +197,7 @@ export interface GameState {
   action_history: ActionResult[]
   pending_actions?: PendingAction[]
   region_state?: RegionState
+  treaties?: Treaty[]
   custom_map_id?: string
   custom_map_feature_id_property?: string
   initial_territories?: Record<string, string>
@@ -211,4 +221,28 @@ export interface DiplomaticEffect {
   domestic_events: unknown[]
 }
 
-export type PanelView = 'dashboard' | 'diplomacy' | 'advisor' | 'events' | 'actions' | 'regions'
+export interface Treaty {
+  id: string
+  type: string
+  country_a: string
+  country_b: string
+  summary: string
+  year: number
+  month: number
+  economy_bonus: number
+  relation_bonus: number
+}
+
+export interface StatSnapshot {
+  turn: number
+  stability: number
+  economy_modifier: number
+  sovereignty?: number
+  food_autonomy?: number
+  energy_autonomy?: number
+  economic_independence?: number
+}
+
+export type LeftPanel = 'actions' | 'diplomacy'
+export type RightPanel = 'advisor' | 'dashboard' | 'events'
+export type PanelView = LeftPanel | RightPanel

@@ -1,10 +1,29 @@
-import { Shield, TrendingUp, Users, Swords, AlertTriangle, Globe, Wheat, Zap, Building2, Flag } from 'lucide-react'
-import type { Country, CountryNationalStats } from '@/types'
+import { Shield, TrendingUp, Users, Swords, AlertTriangle, Globe, Wheat, Zap, Building2, Flag, Handshake, MessageSquare } from 'lucide-react'
+import type { Country, CountryNationalStats, StatSnapshot, Treaty, DiplomaticMessage } from '@/types'
 
 interface Props {
   country: Country
   isPlayer?: boolean
   playerCountry?: Country
+  statHistory?: StatSnapshot[]
+  treaties?: Treaty[]
+  diplomaticHistory?: DiplomaticMessage[]
+}
+
+function Sparkline({ data, color = '#3b82f6' }: { data: number[]; color?: string }) {
+  if (data.length < 2) return null
+  const min = Math.min(...data)
+  const max = Math.max(...data)
+  const range = max - min || 1
+  const W = 56, H = 18
+  const pts = data
+    .map((v, i) => `${(i / (data.length - 1)) * W},${H - ((v - min) / range) * H}`)
+    .join(' ')
+  return (
+    <svg width={W} height={H} style={{ overflow: 'visible', flexShrink: 0 }}>
+      <polyline points={pts} fill="none" stroke={color} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
 }
 
 function StatBlock({
@@ -138,7 +157,7 @@ const EQUIPMENT_META: { key: string; label: string; icon: string }[] = [
   { key: 'artillerie',     label: 'Artillery pieces',      icon: '💣' },
 ]
 
-export default function CountryDashboard({ country, isPlayer = false, playerCountry }: Props) {
+export default function CountryDashboard({ country, isPlayer = false, playerCountry, statHistory, treaties, diplomaticHistory }: Props) {
   const eco = country.economy
   const mil = country.military
   const ns = country.national_stats
@@ -181,9 +200,17 @@ export default function CountryDashboard({ country, isPlayer = false, playerCoun
             <AlertTriangle className="w-4 h-4 text-slate-400" />
             <span className="stat-label">National stability</span>
           </div>
-          <span className="text-sm font-semibold text-white">{country.stability}/100</span>
+          <div className="flex items-center gap-2">
+            {statHistory && statHistory.length >= 2 && (
+              <Sparkline
+                data={statHistory.map(s => s.stability)}
+                color={country.stability >= 50 ? '#22c55e' : '#ef4444'}
+              />
+            )}
+            <span className="text-sm font-semibold text-white">{Math.round(country.stability)}/100</span>
+          </div>
         </div>
-        <StabilityBar value={country.stability} />
+        <StabilityBar value={Math.round(country.stability)} />
       </div>
 
       {/* Strategic indices */}
@@ -211,13 +238,26 @@ export default function CountryDashboard({ country, isPlayer = false, playerCoun
             <TrendingUp className="w-3.5 h-3.5" /> Economy
           </h3>
           <div className="grid grid-cols-2 gap-2">
-            <StatBlock
-              icon={TrendingUp}
-              label="GDP"
-              value={`${(eco.gdp * (country.economy_modifier ?? 1)).toFixed(0)} B$`}
-              sub={`${eco.gdp_growth >= 0 ? '+' : ''}${eco.gdp_growth}% / yr`}
-              color={eco.gdp_growth >= 0 ? 'text-green-400' : 'text-red-400'}
-            />
+            <div className="bg-slate-800/50 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-1">
+                <TrendingUp className="w-4 h-4 text-slate-400" />
+                <span className="stat-label">GDP</span>
+              </div>
+              <div className="flex items-end justify-between gap-2">
+                <div>
+                  <div className={`stat-value ${eco.gdp_growth >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {(eco.gdp * (country.economy_modifier ?? 1)).toFixed(0)} B$
+                  </div>
+                  <div className="text-xs text-slate-500 mt-0.5">{eco.gdp_growth >= 0 ? '+' : ''}{eco.gdp_growth}% / yr</div>
+                </div>
+                {statHistory && statHistory.length >= 2 && (
+                  <Sparkline
+                    data={statHistory.map(s => s.economy_modifier * eco.gdp)}
+                    color={eco.gdp_growth >= 0 ? '#22c55e' : '#ef4444'}
+                  />
+                )}
+              </div>
+            </div>
             <StatBlock
               icon={Users}
               label="GDP/capita"
@@ -352,6 +392,56 @@ export default function CountryDashboard({ country, isPlayer = false, playerCoun
             <AlertTriangle className="w-4 h-4" /> At war
           </div>
           <div className="text-xs text-red-300">{country.at_war_with.join(', ')}</div>
+        </div>
+      )}
+
+      {/* Active treaties (player only) */}
+      {isPlayer && treaties && treaties.length > 0 && (
+        <div>
+          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <Handshake className="w-3.5 h-3.5" /> Active treaties
+          </h3>
+          <div className="space-y-1.5">
+            {treaties.map((t) => (
+              <div key={t.id} className="bg-slate-800/50 rounded-lg px-3 py-2 flex items-start justify-between gap-2">
+                <div>
+                  <div className="text-xs text-white font-medium capitalize">{t.type} — {t.country_b === country.id ? t.country_a : t.country_b}</div>
+                  <div className="text-xs text-slate-400 mt-0.5 line-clamp-1">{t.summary}</div>
+                </div>
+                <div className="shrink-0 text-right text-xs text-slate-500">
+                  {t.year}/{String(t.month).padStart(2, '0')}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Diplomatic history (foreign country) */}
+      {!isPlayer && diplomaticHistory && diplomaticHistory.length > 0 && (
+        <div>
+          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <MessageSquare className="w-3.5 h-3.5" /> Diplomatic exchanges
+          </h3>
+          <div className="space-y-2">
+            {diplomaticHistory.slice(-6).map((msg) => (
+              <div key={msg.id} className="bg-slate-800/50 rounded-lg p-2.5 space-y-1.5">
+                {msg.content && (
+                  <div className="text-xs">
+                    <span className="text-pax-accent font-medium">You: </span>
+                    <span className="text-slate-300 line-clamp-2">{msg.content}</span>
+                  </div>
+                )}
+                {msg.response && (
+                  <div className="text-xs">
+                    <span className="text-pax-gold font-medium">{country.name}: </span>
+                    <span className="text-slate-400 line-clamp-3">{msg.response}</span>
+                  </div>
+                )}
+                <div className="text-xs text-slate-600">{new Date(msg.timestamp).toLocaleDateString('fr-FR')}</div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

@@ -10,6 +10,19 @@ logger = logging.getLogger(__name__)
 # Keys: "advisor:{session_id}" | "diplomacy:{session_id}:{country_id}"
 _memory: dict[str, str] = {}
 
+AGENT_NAME = "MJ Phos"
+DEFAULT_SOCLE_MODEL = "qwen3-235b-a22b-instruct-2507"
+
+# key: base_url → {"id": "ast_xxx", "model": "llm-name"}
+_agent_cache: dict[str, dict] = {}
+
+_MJ_PHOS_INSTRUCTIONS = (
+    "Tu es MJ Phos, le maître du jeu d'une simulation géopolitique réaliste. "
+    "Tu joues simultanément le rôle de conseiller stratégique, de représentant des pays étrangers, "
+    "et de narrateur des événements mondiaux. "
+    "Tu es réaliste, cohérent avec le contexte géopolitique, et tu maintiens la mémoire des événements passés."
+)
+
 
 COUNTRY_CENTROIDS: dict[str, list[float]] = {
     "USA": [-98.0, 38.0], "CHN": [104.0, 35.0], "RUS": [90.0, 61.0],
@@ -45,7 +58,71 @@ def _client(config: AiConfig) -> AsyncOpenAI:
 
 
 def _is_socle(config: AiConfig) -> bool:
-    return "socle.ai" in (config.base_url or "")
+    url = config.base_url or ""
+    return "socle.ai" in url or "host.docker.internal" in url
+
+
+# ─── Agent resolution ────────────────────────────────────────────────────────
+
+def _llm_from_config(config: AiConfig) -> str:
+    if not config.model or config.model == AGENT_NAME:
+        return DEFAULT_SOCLE_MODEL
+    return config.model
+
+
+def _session_from_memory_key(memory_key: str | None) -> str | None:
+    """Extract session_id from keys like 'advisor:{sid}' or 'diplomacy:{sid}:{cid}'."""
+    if not memory_key:
+        return None
+    parts = memory_key.split(":")
+    return parts[1] if len(parts) >= 2 else None
+
+
+def _agent_name(session_id: str | None) -> str:
+    return f"{session_id}-MJPhos" if session_id else AGENT_NAME
+
+
+async def _resolve_model(config: AiConfig, session_id: str | None = None) -> str:
+    """Return ast_xxx id for the session's MJ Phos agent, creating/updating it as needed."""
+    if config.model.startswith("ast_"):
+        return config.model
+
+    llm = _llm_from_config(config)
+    name = _agent_name(session_id)
+    cache_key = f"{config.base_url}:{name}"
+
+    cached = _agent_cache.get(cache_key)
+    if cached and cached["model"] == llm:
+        return cached["id"]
+
+    client = _client(config)
+    agents = await client.beta.assistants.list()
+    for agent in agents.data:
+        if agent.name == name:
+            if getattr(agent, "model", None) != llm:
+                await client.beta.assistants.update(agent.id, model=llm)
+                logger.info("Updated agent '%s' model → %s", name, llm)
+            _agent_cache[cache_key] = {"id": agent.id, "model": llm}
+            return agent.id
+
+    agent = await client.beta.assistants.create(
+        name=name,
+        instructions=_MJ_PHOS_INSTRUCTIONS,
+        model=llm,
+    )
+    _agent_cache[cache_key] = {"id": agent.id, "model": llm}
+    logger.info("Created agent '%s' → %s (model: %s)", name, agent.id, llm)
+    return agent.id
+
+
+async def sync_agent(config: AiConfig) -> dict:
+    """Force agent re-sync (model update). Called explicitly when settings change."""
+    llm = _llm_from_config(config)
+    for key in list(_agent_cache.keys()):
+        if key.startswith(config.base_url):
+            _agent_cache.pop(key, None)
+    agent_id = await _resolve_model(config)
+    return {"agent_id": agent_id, "model": llm}
 
 
 # ─── Socle Responses API ──────────────────────────────────────────────────────
@@ -80,8 +157,10 @@ async def _chat_responses(messages: list[dict], config: AiConfig, memory_key: st
     prev_id = _memory.get(memory_key) if memory_key else None
     if prev_id:
         kwargs["previous_response_id"] = prev_id
+    session_id = _session_from_memory_key(memory_key)
+    model = await _resolve_model(config, session_id)
     response = await _client(config).responses.create(
-        model=config.model, store=True, **kwargs
+        model=model, store=True, **kwargs
     )
     if memory_key:
         _memory[memory_key] = response.id
@@ -95,9 +174,11 @@ async def _stream_responses(
     prev_id = _memory.get(memory_key) if memory_key else None
     if prev_id:
         kwargs["previous_response_id"] = prev_id
+    session_id = _session_from_memory_key(memory_key)
     try:
+        model = await _resolve_model(config, session_id)
         stream = await _client(config).responses.create(
-            model=config.model, stream=True, store=True, **kwargs
+            model=model, stream=True, store=True, **kwargs
         )
         new_id: str | None = None
         async for event in stream:
@@ -112,8 +193,9 @@ async def _stream_responses(
             _memory[memory_key] = new_id
     except Exception as e:
         logger.warning("Responses API streaming failed (%s), fallback to sync", e)
+        model = await _resolve_model(config, session_id)
         response = await _client(config).responses.create(
-            model=config.model, store=True, **kwargs
+            model=model, store=True, **kwargs
         )
         if memory_key:
             _memory[memory_key] = response.id
@@ -123,11 +205,22 @@ async def _stream_responses(
 # ─── Standard Chat Completions API (Ollama, OpenAI, …) ───────────────────────
 
 async def _chat_completions(messages: list[dict], config: AiConfig) -> str:
+    model = _llm_from_config(config) if _is_socle(config) else config.model
     response = await _client(config).chat.completions.create(
-        model=config.model,
+        model=model,
         messages=messages,
     )
     return response.choices[0].message.content or ""
+
+
+async def _chat_responses_raw(messages: list[dict], config: AiConfig) -> str:
+    """Socle one-shot call via Responses API with raw LLM (no agent, no memory)."""
+    kwargs = _build_responses_kwargs(messages)
+    llm = _llm_from_config(config)
+    response = await _client(config).responses.create(
+        model=llm, store=False, **kwargs
+    )
+    return response.output_text or ""
 
 
 async def _stream_completions(
@@ -158,7 +251,9 @@ async def chat(
     messages: list[dict], config: AiConfig, memory_key: str | None = None
 ) -> str:
     if _is_socle(config):
-        return await _chat_responses(messages, config, memory_key)
+        # Use Responses API with raw LLM (no agent) — Chat Completions on local
+        # Socle has a server-side bug where `tools` is not defined.
+        return await _chat_responses_raw(messages, config)
     return await _chat_completions(messages, config)
 
 
@@ -268,6 +363,7 @@ async def process_player_action(
     month: int,
     world_state: dict,
     config: AiConfig,
+    recent_diplomacy: list[dict] | None = None,
 ) -> dict:
     """Returns structured dict including Game Master domestic events and optional map POI."""
     player_id = player_country["id"]
@@ -276,13 +372,24 @@ async def process_player_action(
         for cid, cs in list(world_state.items())[:12]
     ]
 
+    diplomacy_context = ""
+    if recent_diplomacy:
+        lines = []
+        for d in recent_diplomacy[-6:]:
+            if d.get("player"):
+                lines.append(f"  → {player_country['name']} : {d['player'][:120]}")
+            if d.get("response"):
+                lines.append(f"  ← Réponse : {d['response'][:120]}")
+        if lines:
+            diplomacy_context = "\n\nDiplomatie récente :\n" + "\n".join(lines)
+
     system = f"""Tu es le moteur de simulation géopolitique et maître du jeu de Phos.
 Nous sommes en {_format_date(year, month)}.
 Le joueur contrôle {player_country['name']} (ID: {player_id}).
 Gouvernement : {player_country.get('government_type', 'inconnu')}, idéologie : {player_country.get('ideology', 'inconnu')}.
 
 Contexte mondial :
-{chr(10).join(countries_summary)}
+{chr(10).join(countries_summary)}{diplomacy_context}
 
 Analyse l'action du joueur et réponds UNIQUEMENT en JSON valide, sans texte autour :
 {{
@@ -306,7 +413,17 @@ Analyse l'action du joueur et réponds UNIQUEMENT en JSON valide, sans texte aut
     "food_autonomy": 0,
     "energy_autonomy": 0,
     "economic_independence": 0
-  }}
+  }},
+  "future_events": [
+    {{
+      "title": "Titre de la conséquence future",
+      "description": "Description en 2 phrases",
+      "type": "consequence",
+      "months_ahead": 2,
+      "stability_impact": -5,
+      "economy_impact": 0.0
+    }}
+  ]
 }}
 
 Règles générales :
@@ -336,7 +453,15 @@ Règles map_poi (null OU 1 objet si l'action crée une infrastructure physique t
 - type : "university"|"military_base"|"factory"|"hospital"|"parliament"|"port"|"dam"|"research_center"|"monument"|"embassy"|"airport"|"nuclear_plant"|"cultural_center"|"stadium"
 - icon : emoji (🎓 université, ⚔️ base militaire, 🏭 usine, 🏥 hôpital, 🏛️ parlement, ⚓ port, 💧 barrage, 🔬 recherche, 🗿 monument, 🏢 ambassade, ✈️ aéroport, ☢️ nucléaire, 🎭 culture, 🏟️ stade)
 - name : nom spécifique en français (ex: "Université de Montréal", "Base navale de Halifax")
-- Si applicable=false : domestic_events=[], map_poi=null"""
+- Si applicable=false : domestic_events=[], map_poi=null
+
+Règles future_events (0-2 conséquences différées) :
+- Si l'action a des retombées logiques à moyen terme (1-4 mois plus tard), les lister ici
+- months_ahead : dans combien de mois cela surviendra (1 à 4)
+- stability_impact : -20 à +15 (conséquence sur la stabilité à terme)
+- economy_impact : -0.05 à +0.05
+- Exemples : retombées économiques d'un embargo, résultats d'un référendum, fin d'un chantier
+- Si pas de conséquences différées logiques : future_events=[]"""
 
     messages = [
         {"role": "system", "content": system},
@@ -346,12 +471,31 @@ Règles map_poi (null OU 1 objet si l'action crée une infrastructure physique t
     return _parse_action_json(raw, player_id)
 
 
+def _normalize_action_data(data: dict, raw: str) -> dict:
+    """Coerce any malformed fields in a parsed action response to safe types."""
+    if not isinstance(data.get("narrative"), str) or not data["narrative"].strip():
+        data["narrative"] = raw
+    if not isinstance(data.get("applicable"), bool):
+        data["applicable"] = True
+    if not isinstance(data.get("stability_delta"), (int, float)):
+        data["stability_delta"] = 0
+    if not isinstance(data.get("economy_delta"), (int, float)):
+        data["economy_delta"] = 0.0
+    if not isinstance(data.get("relation_changes"), dict):
+        data["relation_changes"] = {}
+    return data
+
+
 def _parse_action_json(raw: str, player_id: str) -> dict:
     import json, re
     try:
         match = re.search(r'\{.*\}', raw, re.DOTALL)
         if match:
             data = json.loads(match.group())
+            if not isinstance(data, dict):
+                raise ValueError("not a dict")
+            data = _normalize_action_data(data, raw)
+
             poi_data = data.get("map_poi")
             poi = None
             if poi_data and isinstance(poi_data, dict) and poi_data.get("name"):
@@ -366,33 +510,52 @@ def _parse_action_json(raw: str, player_id: str) -> dict:
             for de in (data.get("domestic_events") or [])[:2]:
                 if isinstance(de, dict) and de.get("title"):
                     domestic.append({
-                        "title": de.get("title", "Événement interne"),
-                        "description": de.get("description", ""),
-                        "type": de.get("type", "social"),
+                        "title": str(de.get("title", "Événement interne")),
+                        "description": str(de.get("description", "")),
+                        "type": str(de.get("type", "social")),
                         "severity": max(1, min(3, int(de.get("severity", 1)))),
                         "stability_impact": max(-15, min(10, int(de.get("stability_impact", 0)))),
                     })
-            raw_sd = data.get("stat_deltas") or {}
+            raw_sd = data.get("stat_deltas") if isinstance(data.get("stat_deltas"), dict) else {}
             stat_deltas = {
                 k: max(-10, min(10, int(raw_sd.get(k, 0))))
                 for k in ("sovereignty", "food_autonomy", "energy_autonomy", "economic_independence")
             }
+            rc = data.get("relation_changes", {})
+            safe_rc: dict = {}
+            if isinstance(rc, dict):
+                for cid, deltas in rc.items():
+                    if isinstance(deltas, dict):
+                        safe_rc[str(cid)] = {str(k): int(v) for k, v in deltas.items() if isinstance(v, (int, float))}
+            future_events = []
+            for fe in (data.get("future_events") or [])[:2]:
+                if isinstance(fe, dict) and fe.get("title") and isinstance(fe.get("months_ahead"), int):
+                    future_events.append({
+                        "title": str(fe["title"]),
+                        "description": str(fe.get("description", "")),
+                        "type": str(fe.get("type", "consequence")),
+                        "months_ahead": max(1, min(4, fe["months_ahead"])),
+                        "stability_impact": max(-20, min(15, int(fe.get("stability_impact", 0)))),
+                        "economy_impact": max(-0.05, min(0.05, float(fe.get("economy_impact", 0.0)))),
+                    })
             return {
-                "narrative": data.get("narrative", raw),
-                "applicable": bool(data.get("applicable", True)),
-                "relation_changes": data.get("relation_changes", {}),
-                "stability_delta": int(data.get("stability_delta", 0)),
-                "economy_delta": float(data.get("economy_delta", 0.0)),
+                "narrative": data["narrative"],
+                "applicable": data["applicable"],
+                "relation_changes": safe_rc,
+                "stability_delta": max(-30, min(30, int(data["stability_delta"]))),
+                "economy_delta": max(-0.1, min(0.1, float(data["economy_delta"]))),
                 "domestic_events": domestic,
                 "map_poi": poi,
                 "stat_deltas": stat_deltas,
+                "future_events": future_events,
             }
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.warning("Action JSON parse failed (%s). Raw: %.200s", exc, raw)
     return {
         "narrative": raw, "applicable": True, "relation_changes": {},
         "stability_delta": 0, "economy_delta": 0.0, "domestic_events": [], "map_poi": None,
         "stat_deltas": {"sovereignty": 0, "food_autonomy": 0, "energy_autonomy": 0, "economic_independence": 0},
+        "future_events": [],
     }
 
 
@@ -402,23 +565,47 @@ async def generate_turn_events(
     world_state: dict,
     player_country_id: str,
     config: AiConfig,
+    recent_player_actions: list[str] | None = None,
 ) -> list[dict]:
+    reactions_block = ""
+    if recent_player_actions:
+        actions_text = "\n".join(f"- {a}" for a in recent_player_actions[-3:])
+        reactions_block = f"""
+Actions récentes du joueur ({player_country_id}) :
+{actions_text}
+
+Génère 1-2 événements supplémentaires représentant les RÉACTIONS des pays voisins ou concernés à ces actions (type "reaction").
+Garde également 1-2 événements mondiaux indépendants."""
+
     system = f"""Tu es le moteur d'événements mondiaux de Phos.
 Nous sommes en {_format_date(year, month)}.
 
-Génère 2-3 événements mondiaux crédibles qui surviennent ce mois-ci, sans lien direct avec les actions du joueur.
-Ces événements doivent refléter la géopolitique réaliste de cette période.
+Génère 2-4 événements mondiaux crédibles qui surviennent ce mois-ci.
+Chaque événement doit avoir un type parmi : diplomatic, economic, military, humanitarian, political, natural, reaction, consequence.{reactions_block}
+
 Réponds UNIQUEMENT avec un JSON valide, sans texte autour :
 [
   {{
     "title": "Titre de l'événement",
     "description": "Description (2-3 phrases)",
     "affected_countries": ["USA", "RUS"],
-    "relation_changes": {{"USA": {{"RUS": -5}}}}
+    "relation_changes": {{"USA": {{"RUS": -5}}}},
+    "type": "diplomatic",
+    "stability_impact": 0,
+    "economy_impact": 0.0
   }}
-]"""
+]
 
-    messages = [{"role": "system", "content": system}]
+Règles stability_impact / economy_impact :
+- Ne renseigner que si le joueur ({player_country_id}) est dans affected_countries
+- stability_impact : entier de -30 à +10 (ex: séisme majeur = -15, crise économique = -8, accord régional = +3)
+- economy_impact : float de -0.08 à +0.05 (ex: séisme = -0.04, embargo régional = -0.02, boom commercial = +0.01)
+- Sinon laisser à 0 / 0.0"""
+
+    messages = [
+        {"role": "system", "content": system},
+        {"role": "user", "content": "Génère les événements mondiaux de ce mois."},
+    ]
     raw = await chat(messages, config)
     return _parse_events_json(raw)
 
@@ -428,10 +615,81 @@ def _parse_events_json(raw: str) -> list[dict]:
     try:
         match = re.search(r'\[.*\]', raw, re.DOTALL)
         if match:
-            return json.loads(match.group())
-    except Exception:
-        pass
+            events = json.loads(match.group())
+            if not isinstance(events, list):
+                return []
+            valid_types = {"diplomatic", "economic", "military", "humanitarian", "political", "natural", "reaction", "consequence", "general"}
+            valid = []
+            for e in events:
+                if not isinstance(e, dict):
+                    continue
+                if not isinstance(e.get("title"), str) or not isinstance(e.get("description"), str):
+                    continue
+                etype = e.get("type", "general")
+                if etype not in valid_types:
+                    etype = "general"
+                valid.append({
+                    "title": e["title"],
+                    "description": e["description"],
+                    "affected_countries": e.get("affected_countries", []) if isinstance(e.get("affected_countries"), list) else [],
+                    "relation_changes": e.get("relation_changes", {}) if isinstance(e.get("relation_changes"), dict) else {},
+                    "type": etype,
+                    "stability_impact": max(-30, min(10, int(e.get("stability_impact", 0)))) if isinstance(e.get("stability_impact"), (int, float)) else 0,
+                    "economy_impact": max(-0.08, min(0.05, float(e.get("economy_impact", 0.0)))) if isinstance(e.get("economy_impact"), (int, float)) else 0.0,
+                })
+            return valid
+    except Exception as exc:
+        logger.warning("Events JSON parse failed (%s). Raw: %.200s", exc, raw)
     return []
+
+
+async def generate_turn_summary(
+    player_country: dict,
+    year: int,
+    month: int,
+    recent_actions: list[dict],
+    recent_world_events: list[dict],
+    player_state: dict,
+    config: AiConfig,
+) -> AsyncGenerator[str, None]:
+    actions_text = "\n".join(
+        f"- Tour {a.get('month', '?')}/{a.get('year', year)}: {a.get('action', a.get('consequences', ''))}"
+        for a in recent_actions[-5:]
+    ) or "Aucune action récente."
+
+    events_text = "\n".join(
+        f"- {e.get('title', '')} ({e.get('type', 'général')}): {e.get('description', '')}"
+        for e in recent_world_events[-6:]
+    ) or "Aucun événement mondial."
+
+    stability = player_state.get("stability", 50)
+    at_war = player_state.get("at_war_with", [])
+
+    system = f"""Tu es le chroniqueur officiel de Phos, un jeu de simulation géopolitique.
+Rédige un résumé narratif immersif et journalistique des derniers tours de jeu pour {player_country['name']}.
+Nous sommes en {_format_date(year, month)}.
+
+État actuel :
+- Stabilité : {stability}/100
+- En guerre avec : {', '.join(at_war) if at_war else 'personne'}
+- PIB modifier : {player_state.get('economy_modifier', 1.0):.2f}x
+
+Actions du joueur (récentes) :
+{actions_text}
+
+Événements mondiaux récents :
+{events_text}
+
+Rédige un résumé narratif en 3-4 paragraphes, dans le style d'un rapport diplomatique ou d'une analyse géopolitique.
+Commence par une phrase d'accroche forte. Mentionne les événements marquants, l'évolution du pays, les défis et opportunités.
+Réponds en français uniquement."""
+
+    messages = [
+        {"role": "system", "content": system},
+        {"role": "user", "content": "Rédige le résumé des derniers tours."},
+    ]
+    async for chunk in stream_chat(messages, config):
+        yield chunk
 
 
 async def analyze_diplomatic_exchange(
@@ -476,26 +734,32 @@ def _parse_diplomatic_effect(raw: str) -> dict:
         match = re.search(r'\{.*\}', raw, re.DOTALL)
         if match:
             data = json.loads(match.group())
+            if not isinstance(data, dict):
+                raise ValueError("not a dict")
             domestic = []
             for de in (data.get("domestic_events") or [])[:1]:
                 if isinstance(de, dict) and de.get("title"):
                     domestic.append({
-                        "title": de.get("title", ""),
-                        "description": de.get("description", ""),
-                        "type": de.get("type", "diplomatic"),
+                        "title": str(de.get("title", "")),
+                        "description": str(de.get("description", "")),
+                        "type": str(de.get("type", "diplomatic")),
                         "severity": max(1, min(3, int(de.get("severity", 1)))),
                         "stability_impact": max(-15, min(10, int(de.get("stability_impact", 0)))),
                     })
+            agreement_reached = bool(data.get("agreement_reached", False))
+            agreement_type = data.get("agreement_type") if isinstance(data.get("agreement_type"), str) else None
+            if agreement_type == "null":
+                agreement_type = None
             return {
-                "agreement_reached": bool(data.get("agreement_reached", False)),
-                "agreement_type": data.get("agreement_type") or None,
-                "summary": data.get("summary") or None,
+                "agreement_reached": agreement_reached,
+                "agreement_type": agreement_type,
+                "summary": str(data["summary"]) if isinstance(data.get("summary"), str) else None,
                 "relation_delta": max(-10, min(20, int(data.get("relation_delta", 0)))),
                 "economy_delta": max(-0.02, min(0.03, float(data.get("economy_delta", 0.0)))),
                 "domestic_events": domestic,
             }
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.warning("Diplomatic effect JSON parse failed (%s). Raw: %.200s", exc, raw)
     return {
         "agreement_reached": False, "agreement_type": None, "summary": None,
         "relation_delta": 0, "economy_delta": 0.0, "domestic_events": [],

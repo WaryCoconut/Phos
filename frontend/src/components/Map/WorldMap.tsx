@@ -344,8 +344,17 @@ const WorldMap = memo(function WorldMap({
   initialTerritories = {},
 }: Props) {
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null)
-  const [zoom, setZoom] = useState(1)
-  const [center, setCenter] = useState<[number, number]>([10, 20])
+
+  // Focus on the player's capital on load
+  const playerCapital = CAPITALS[playerCountryId]
+  const LARGE_COUNTRIES = new Set(['RUS','CAN','USA','CHN','BRA','AUS'])
+  const MID_COUNTRIES   = new Set(['IND','KAZ','ARG','MEX','IDN','SAU','IRN','NGA','EGY'])
+  const initialZoom = LARGE_COUNTRIES.has(playerCountryId) ? 1.8
+                    : MID_COUNTRIES.has(playerCountryId)   ? 2.5
+                    : 3.5
+  const [zoom, setZoom] = useState(playerCapital ? initialZoom : 1)
+  const [center, setCenter] = useState<[number, number]>(playerCapital?.coords ?? [10, 20])
+
   const playerCountry = countries[playerCountryId]
 
   function getFillColor(numericId: string): string {
@@ -419,15 +428,19 @@ const WorldMap = memo(function WorldMap({
         projectionConfig={{ scale: 130, center: [10, 20] }}
         style={{ width: '100%', height: '100%' }}
       >
+        {/* react-simple-maps v3 removed onMoveEnd from types but the prop still works at runtime */}
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <ZoomableGroup
           zoom={zoom}
           center={center}
           minZoom={0.8}
           maxZoom={12}
-          onMoveEnd={({ zoom: z, coordinates }) => {
-            setZoom(z)
-            setCenter(coordinates as [number, number])
-          }}
+          {...({
+            onMoveEnd: ({ zoom: z, coordinates }: { zoom: number; coordinates: [number, number] }) => {
+              setZoom(z)
+              setCenter(coordinates)
+            },
+          } as any)}
         >
 
           {customMapUrl ? (
@@ -606,14 +619,14 @@ const WorldMap = memo(function WorldMap({
                 onMouseLeave={() => setTooltip(null)}
               >
                 <circle
-                  r={isPlayer ? 3.5 : 2}
+                  r={isPlayer ? 3.5 / zoom : 2 / zoom}
                   fill={isPlayer ? '#f59e0b' : 'white'}
                   stroke="#0f172a"
-                  strokeWidth={0.8}
+                  strokeWidth={0.8 / zoom}
                   opacity={0.85}
                 />
                 {isPlayer && (
-                  <circle r={6} fill="none" stroke="#f59e0b" strokeWidth={0.8} opacity={0.4} />
+                  <circle r={6 / zoom} fill="none" stroke="#f59e0b" strokeWidth={0.8 / zoom} opacity={0.4} />
                 )}
               </Marker>
             )
@@ -627,11 +640,11 @@ const WorldMap = memo(function WorldMap({
               onMouseEnter={(e) => setTooltip({ x: e.clientX, y: e.clientY, text: `${poi.icon} ${poi.name}` })}
               onMouseLeave={() => setTooltip(null)}
             >
-              <circle r={4} fill="#f59e0b" stroke="#0f172a" strokeWidth={1} opacity={0.9} />
+              <circle r={4 / zoom} fill="#f59e0b" stroke="#0f172a" strokeWidth={1 / zoom} opacity={0.9} />
               <text
                 textAnchor="middle"
-                y={-6}
-                style={{ fontSize: '10px', pointerEvents: 'none', userSelect: 'none' }}
+                y={-6 / zoom}
+                style={{ fontSize: `${10 / zoom}px`, pointerEvents: 'none', userSelect: 'none' }}
               >
                 {poi.icon}
               </text>

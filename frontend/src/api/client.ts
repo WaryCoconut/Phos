@@ -122,18 +122,19 @@ export const regionsApi = {
 
 export function streamSimulation(
   sessionId: string,
-  months: number,
+  duration: { months?: number; weeks?: number },
   onEvent: (event: import('@/types').SimEvent) => void,
-  onDone: () => void,
+  onDone: (doneEvent?: import('@/types').SimEvent) => void,
   onError?: (msg: string) => void,
 ): () => void {
   const ctrl = new AbortController()
+  const body = duration.weeks ? { weeks: duration.weeks, months: 0 } : { months: duration.months ?? 1, weeks: 0 }
   ;(async () => {
     try {
       const res = await fetch(`/api/game/${sessionId}/simulate`, {
         method: 'POST',
         headers: apiHeaders(),
-        body: JSON.stringify({ months }),
+        body: JSON.stringify(body),
         signal: ctrl.signal,
       })
       const reader = res.body!.getReader()
@@ -145,7 +146,7 @@ export function streamSimulation(
           if (!line.startsWith('data: ')) continue
           try {
             const event = JSON.parse(line.slice(6)) as SimEvent
-            if (event.type === 'done') { onDone(); return }
+            if (event.type === 'done') { onDone(event); return }
             if (event.type === 'error') { onError?.(event.message ?? 'Erreur') }
             onEvent(event)
           } catch { /* skip */ }
@@ -234,6 +235,22 @@ export function streamDiplomacy(
       if (!(e instanceof DOMException && e.name === 'AbortError')) onError?.('Connexion interrompue')
     }
   })().catch(() => {})
+  return () => ctrl.abort()
+}
+
+export function streamSummary(
+  sessionId: string,
+  onChunk: (text: string) => void,
+  onDone: () => void,
+  onError?: (msg: string) => void,
+): () => void {
+  const ctrl = new AbortController()
+  readSSEStream(
+    `/api/advisor/${sessionId}/summary`,
+    'POST',
+    {},
+    onChunk, onDone, ctrl.signal, onError,
+  ).catch(() => {})
   return () => ctrl.abort()
 }
 

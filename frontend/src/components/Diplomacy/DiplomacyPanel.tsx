@@ -58,7 +58,21 @@ export default function DiplomacyPanel({ gameState, targetCountry, onSelectTarge
   }, [messages])
 
   useEffect(() => {
-    setMessages([])
+    if (!targetCountry) {
+      setMessages([])
+      return
+    }
+    // Reload past exchanges from game state when switching country
+    const past = gameState.diplomatic_history.filter(m =>
+      (m.from_country === gameState.player_country.id && m.to_country === targetCountry.id) ||
+      (m.from_country === targetCountry.id && m.to_country === gameState.player_country.id)
+    )
+    const converted: Message[] = []
+    for (const m of past) {
+      if (m.content) converted.push({ role: 'player', content: m.content })
+      if (m.response) converted.push({ role: 'country', content: m.response })
+    }
+    setMessages(converted)
   }, [targetCountry?.id])
 
   function sendMessage() {
@@ -224,6 +238,11 @@ export default function DiplomacyPanel({ gameState, targetCountry, onSelectTarge
           <div className="text-xs text-slate-500 text-center py-8">
             Open a diplomatic dialogue with {targetCountry.name}.<br />
             Your messages will be handled by the AI representing this country.
+          </div>
+        )}
+        {messages.length > 0 && (
+          <div className="text-xs text-slate-600 text-center py-1 border-b border-pax-border/40 mb-2">
+            — Past exchanges —
           </div>
         )}
         {messages.map((msg, i) => (

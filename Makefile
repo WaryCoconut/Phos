@@ -4,13 +4,10 @@ build:
 	docker-compose build
 
 up:
-	@[ -f backend/.env ] || cp backend/.env.example backend/.env
+	@powershell -Command "if (-not (Test-Path 'backend\.env')) { Copy-Item 'backend\.env.example' 'backend\.env' }"
 	docker-compose up -d
-	@echo ""
-	@echo "  Frontend : http://localhost:5173"
-	@echo "  API docs : http://localhost:8000/docs"
-	@echo ""
-	@echo "  Configurez votre clé API depuis l'interface (bouton 'API' en haut à droite)"
+	@echo   Frontend : http://localhost:5173
+	@echo   API docs : http://localhost:8000/docs
 
 down:
 	docker-compose down
@@ -21,7 +18,7 @@ install:
 	cd frontend && npm install
 
 dev-backend:
-	@[ -f backend/.env ] || cp backend/.env.example backend/.env
+	@powershell -Command "if (-not (Test-Path 'backend\.env')) { Copy-Item 'backend\.env.example' 'backend\.env' }"
 	cd backend && uvicorn app.main:app --reload --port 8000
 
 dev-frontend:

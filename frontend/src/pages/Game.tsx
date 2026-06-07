@@ -2,20 +2,20 @@ import { useEffect, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   Globe, BookOpen, Newspaper, ArrowRight,
-  ChevronRight, Send, Loader2, LayoutDashboard, Settings, History, RotateCcw, Save, Swords, Map,
+  ChevronRight, Send, Loader2, LayoutDashboard, Settings, History, RotateCcw, Save, Swords,
+  FileText, AlertTriangle, MessageSquarePlus,
 } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import { useGameStore } from '@/store/gameStore'
-import { gameApi, streamSimulation } from '@/api/client'
-import type { SimEvent, SimDuration, MapPOI } from '@/types'
+import { gameApi, streamSimulation, streamSummary } from '@/api/client'
+import type { SimEvent, SimDuration, MapPOI, StatSnapshot } from '@/types'
 import WorldMap from '@/components/Map/WorldMap'
 import CountryDashboard from '@/components/Dashboard/CountryDashboard'
 import DiplomacyPanel from '@/components/Diplomacy/DiplomacyPanel'
 import AdvisorPanel from '@/components/Advisor/AdvisorPanel'
 import EventsFeed from '@/components/UI/EventsFeed'
-import RegionPanel from '@/components/Regions/RegionPanel'
 import SettingsModal from '@/components/UI/SettingsModal'
-import type { Country, PanelView } from '@/types'
+import type { Country, LeftPanel, RightPanel } from '@/types'
 
 interface Snapshot {
   turn: number
@@ -33,7 +33,8 @@ export default function Game() {
   const { sessionId } = useParams<{ sessionId: string }>()
   const navigate = useNavigate()
   const { gameState, isLoading, loadGame, error } = useGameStore()
-  const [activePanel, setActivePanel] = useState<PanelView>('actions')
+  const [leftPanel, setLeftPanel] = useState<LeftPanel>('actions')
+  const [rightPanel, setRightPanel] = useState<RightPanel>('advisor')
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null)
   const [mapView, setMapView] = useState<'relations' | 'stability' | 'ideology'>('relations')
   const [showSettings, setShowSettings] = useState(false)
@@ -47,7 +48,13 @@ export default function Game() {
   const [isSimulating, setIsSimulating] = useState(false)
   const [simDone, setSimDone] = useState(false)
   const [streamingPois, setStreamingPois] = useState<MapPOI[]>([])
+  const [preSimSnapshot, setPreSimSnapshot] = useState<StatSnapshot | null>(null)
+  const [donePayload, setDonePayload] = useState<SimEvent | null>(null)
+  const [statHistory, setStatHistory] = useState<StatSnapshot[]>([])
+  const [summaryText, setSummaryText] = useState('')
+  const [isSummarizing, setIsSummarizing] = useState(false)
   const stopSimRef = useRef<(() => void) | null>(null)
+  const stopSummaryRef = useRef<(() => void) | null>(null)
   const simBottomRef = useRef<HTMLDivElement>(null)
   const actionRef = useRef<HTMLTextAreaElement>(null)
 
@@ -63,6 +70,25 @@ export default function Game() {
       const t = setTimeout(() => setAutoSaved(false), 2000)
       return () => clearTimeout(t)
     }
+  }, [gameState?.turn])
+
+  // Record stat snapshots for sparkline charts
+  useEffect(() => {
+    if (!gameState) return
+    const ns = gameState.player_country.national_stats
+    const snap: StatSnapshot = {
+      turn: gameState.turn,
+      stability: gameState.player_country.stability,
+      economy_modifier: gameState.player_country.economy_modifier ?? 1.0,
+      sovereignty: ns?.sovereignty,
+      food_autonomy: ns?.food_autonomy,
+      energy_autonomy: ns?.energy_autonomy,
+      economic_independence: ns?.economic_independence,
+    }
+    setStatHistory(prev => {
+      if (prev.length > 0 && prev[prev.length - 1].turn === snap.turn) return prev
+      return [...prev.slice(-19), snap]
+    })
   }, [gameState?.turn])
 
   function openSnapshots() {
@@ -86,13 +112,13 @@ export default function Game() {
   }
 
   useEffect(() => {
-    if (selectedCountry && activePanel !== 'diplomacy') {
-      setActivePanel('dashboard')
+    if (selectedCountry) {
+      setRightPanel('dashboard')
     }
   }, [selectedCountry])
 
   const SIM_DURATIONS: SimDuration[] = [
-    { label: '1 week', months: 1 },
+    { label: '1 week', weeks: 1 },
     { label: '1 month', months: 1 },
     { label: '3 months', months: 3 },
     { label: '6 months', months: 6 },
@@ -112,16 +138,43 @@ export default function Game() {
     await useGameStore.getState().refreshState()
   }
 
-  function startSimulation(months: number) {
+  function startSummary() {
+    if (!sessionId || isSummarizing) return
+    setSummaryText('')
+    setIsSummarizing(true)
+    stopSummaryRef.current = streamSummary(
+      sessionId,
+      (chunk) => setSummaryText(prev => prev + chunk),
+      () => setIsSummarizing(false),
+      () => setIsSummarizing(false),
+    )
+  }
+
+  function startSimulation(duration: SimDuration) {
     if (!sessionId || isSimulating) return
+    // Snapshot state before simulation for end-of-turn diff
+    if (gameState) {
+      const ns = gameState.player_country.national_stats
+      setPreSimSnapshot({
+        turn: gameState.turn,
+        stability: gameState.player_country.stability,
+        economy_modifier: gameState.player_country.economy_modifier ?? 1.0,
+        sovereignty: ns?.sovereignty,
+        food_autonomy: ns?.food_autonomy,
+        energy_autonomy: ns?.energy_autonomy,
+        economic_independence: ns?.economic_independence,
+      })
+    }
     setSimEvents([])
     setSimDone(false)
+    setDonePayload(null)
     setStreamingPois([])
+    setSummaryText('')
     setIsSimulating(true)
 
     stopSimRef.current = streamSimulation(
       sessionId,
-      months,
+      { months: duration.months, weeks: duration.weeks },
       (event) => {
         setSimEvents((prev) => [...prev, event])
         if (event.type === 'poi_added' && event.poi_id && event.poi_coordinates) {
@@ -138,7 +191,8 @@ export default function Game() {
         }
         setTimeout(() => simBottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 50)
       },
-      async () => {
+      async (doneEvent) => {
+        setDonePayload(doneEvent ?? null)
         setSimDone(true)
         setIsSimulating(false)
         await useGameStore.getState().refreshState()
@@ -163,13 +217,13 @@ export default function Game() {
     const country = gameState?.countries[countryId]
     if (country) {
       setSelectedCountry(country)
-      setActivePanel('dashboard')
+      setRightPanel('dashboard')
     }
   }
 
   function handleDiplomacyTarget(country: Country) {
     setDiplomacyTarget(country)
-    setActivePanel('diplomacy')
+    setLeftPanel('diplomacy')
   }
 
   if (isLoading || !gameState) {
@@ -187,12 +241,14 @@ export default function Game() {
     ? gameState.countries[selectedCountry.id] || selectedCountry
     : gameState.player_country
 
-  const tabItems: { id: PanelView; icon: React.ElementType; label: string }[] = [
+  const leftTabs: { id: LeftPanel; icon: React.ElementType; label: string }[] = [
     { id: 'actions', icon: Swords, label: 'Actions' },
-    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { id: 'diplomacy', icon: Globe, label: 'Diplomacy' },
-    { id: 'regions', icon: Map, label: 'Regions' },
+  ]
+
+  const rightTabs: { id: RightPanel; icon: React.ElementType; label: string }[] = [
     { id: 'advisor', icon: BookOpen, label: 'Advisor' },
+    { id: 'dashboard', icon: LayoutDashboard, label: 'Stats' },
     { id: 'events', icon: Newspaper, label: 'News' },
   ]
 
@@ -302,7 +358,7 @@ export default function Game() {
           </button>
 
           <button
-            onClick={() => { setActivePanel('actions'); startSimulation(1) }}
+            onClick={() => { setLeftPanel('actions'); startSimulation({ label: '1 month', months: 1 }) }}
             disabled={isSimulating}
             className="btn-primary flex items-center gap-2 px-4"
           >
@@ -321,47 +377,28 @@ export default function Game() {
 
       {/* Main */}
       <div className="flex-1 flex overflow-hidden min-h-0">
-        {/* Map */}
-        <div className="flex-1 flex flex-col overflow-hidden min-h-0">
-          <div className="flex-1 relative min-h-0">
-            <WorldMap
-              countries={gameState.countries}
-              playerCountryId={gameState.player_country.id}
-              selectedCountryId={selectedCountry?.id}
-              onSelectCountry={handleCountryClick}
-              viewMode={mapView}
-              pois={[...(gameState.map_pois ?? []), ...streamingPois]}
-              regionState={gameState.region_state}
-              customMapUrl={gameState.custom_map_id ? `/api/maps/${gameState.custom_map_id}` : undefined}
-              featureIdProp={gameState.custom_map_feature_id_property}
-              initialTerritories={gameState.initial_territories}
-            />
-          </div>
-        </div>
 
-        {/* Side panel */}
-        <div className="w-80 xl:w-96 border-l border-pax-border flex flex-col overflow-hidden shrink-0 min-h-0">
-          {/* Tabs */}
+        {/* Left panel — Actions + Diplomacy */}
+        <div className="w-80 xl:w-96 border-r border-pax-border flex flex-col overflow-hidden shrink-0 min-h-0">
           <div className="flex border-b border-pax-border shrink-0">
-            {tabItems.map(({ id, icon: Icon, label }) => (
+            {leftTabs.map(({ id, icon: Icon, label }) => (
               <button
                 key={id}
-                onClick={() => setActivePanel(id)}
+                onClick={() => setLeftPanel(id)}
                 title={label}
-                className={`flex-1 py-2.5 flex items-center justify-center transition-colors ${
-                  activePanel === id
+                className={`flex-1 py-2.5 flex items-center justify-center gap-2 transition-colors text-sm ${
+                  leftPanel === id
                     ? 'text-pax-accent border-b-2 border-pax-accent bg-pax-accent/10'
                     : 'text-slate-500 hover:text-slate-300'
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="w-4 h-4" />{label}
               </button>
             ))}
           </div>
 
-          {/* Panel content */}
           <div className="flex-1 overflow-hidden">
-            {activePanel === 'actions' && (
+            {leftPanel === 'actions' && (
               <div className="h-full flex flex-col">
                 <div className="p-3 border-b border-pax-border shrink-0">
                   <h2 className="font-semibold text-white flex items-center gap-2 text-sm">
@@ -384,13 +421,66 @@ export default function Game() {
                     </div>
                   )}
 
+                  {/* End-of-turn summary */}
+                  {simDone && preSimSnapshot && donePayload && gameState && (() => {
+                    const finalStab = Math.round(donePayload.final_stability ?? gameState.player_country.stability)
+                    const finalEco = donePayload.final_economy_modifier ?? (gameState.player_country.economy_modifier ?? 1.0)
+                    const stabDelta = finalStab - Math.round(preSimSnapshot.stability)
+                    const ecoDelta = (finalEco - preSimSnapshot.economy_modifier) * 100
+                    const worldEvents = donePayload.world_event_count ?? simEvents.filter(e => e.type === 'world_event').length
+                    const actions = donePayload.action_count ?? simEvents.filter(e => e.type === 'action_result').length
+                    const treaties = (gameState.treaties ?? []).filter(t =>
+                      t.year > preSimSnapshot.turn || t.year === gameState.year
+                    ).length
+                    return (
+                      <div className="mx-3 mt-3 mb-1 rounded-lg border border-pax-accent/40 bg-pax-accent/5 p-3">
+                        <div className="text-xs font-semibold text-pax-accent mb-2 flex items-center gap-1.5">
+                          ✅ Turn complete
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 mb-2">
+                          <div>
+                            <div className="text-xs text-slate-400">Stability</div>
+                            <div className={`text-sm font-bold ${stabDelta >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                              {Math.round(preSimSnapshot.stability)} → {finalStab}
+                              <span className="text-xs font-normal ml-1">({stabDelta >= 0 ? '+' : ''}{stabDelta})</span>
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-slate-400">Economy</div>
+                            <div className={`text-sm font-bold ${ecoDelta >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                              {ecoDelta >= 0 ? '+' : ''}{ecoDelta.toFixed(2)}%
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-slate-400 mb-2">
+                          <span>🌍 {worldEvents} events</span>
+                          <span>⚡ {actions} actions</span>
+                          {treaties > 0 && <span>🤝 {treaties} treaties</span>}
+                        </div>
+                        <button
+                          onClick={startSummary}
+                          disabled={isSummarizing}
+                          className="w-full btn-secondary text-xs py-1.5 flex items-center justify-center gap-1.5"
+                        >
+                          {isSummarizing ? <Loader2 className="w-3 h-3 animate-spin" /> : <FileText className="w-3 h-3" />}
+                          {isSummarizing ? 'Generating summary…' : 'AI narrative summary'}
+                        </button>
+                        {summaryText && (
+                          <div className="mt-2 text-xs text-slate-300 bg-slate-800 rounded-lg p-2.5 prose prose-invert prose-xs max-w-none border border-pax-border">
+                            <ReactMarkdown>{summaryText}</ReactMarkdown>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })()}
+
                   {/* Simulation timeline */}
                   {simEvents.length > 0 && (
                     <div className="p-3 space-y-2 border-t border-pax-border">
                       <div className="text-xs text-slate-500 font-medium uppercase tracking-wide">Simulation log</div>
                       {simEvents.map((e, i) => (
                         <div key={i} className={`rounded-lg p-2.5 text-xs ${
-                          e.type === 'month_start' ? 'bg-pax-accent/10 border border-pax-accent/30 text-pax-accent font-semibold' :
+                          (e.type === 'month_start' || e.type === 'week_start') ? 'bg-pax-accent/10 border border-pax-accent/30 text-pax-accent font-semibold' :
                           e.type === 'action_result' ? 'bg-slate-800 border border-pax-gold/30' :
                           e.type === 'world_event' ? 'bg-slate-800 border border-pax-border' :
                           e.type === 'domestic_event' ? `bg-slate-800 border ${
@@ -401,12 +491,35 @@ export default function Game() {
                           e.type === 'poi_added' ? 'bg-pax-accent/5 border border-pax-accent/20' :
                           'bg-red-900/20 border border-red-700 text-red-300'
                         }`}>
-                          {e.type === 'month_start' && `📅 ${months[(e.month ?? 1) - 1]} ${e.year} — Turn ${e.turn}`}
+                          {(e.type === 'month_start' || e.type === 'week_start') && (
+                            e.type === 'week_start'
+                              ? `📅 Week — ${months[(e.month ?? 1) - 1]} ${e.year} (day ${e.day ?? 1}) — Turn ${e.turn}`
+                              : `📅 ${months[(e.month ?? 1) - 1]} ${e.year} — Turn ${e.turn}`
+                          )}
                           {e.type === 'world_event' && (
-                            <>
-                              <div className="text-slate-300 font-medium">🌍 {e.title}</div>
+                            <div>
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="text-slate-300 font-medium">
+                                  {e.event_type === 'diplomatic' ? '🤝' :
+                                   e.event_type === 'economic' ? '📈' :
+                                   e.event_type === 'military' ? '⚔️' :
+                                   e.event_type === 'humanitarian' ? '🏥' :
+                                   e.event_type === 'political' ? '🏛️' :
+                                   e.event_type === 'natural' ? '🌪️' :
+                                   e.event_type === 'reaction' ? '💬' :
+                                   e.event_type === 'consequence' ? '⏳' : '🌍'
+                                  } {e.title}
+                                </div>
+                                <button
+                                  onClick={() => setAction(`React to: ${e.title} — `)}
+                                  className="shrink-0 text-pax-accent/70 hover:text-pax-accent transition-colors"
+                                  title="Intervene in this event"
+                                >
+                                  <MessageSquarePlus className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
                               <div className="text-slate-400 mt-0.5">{e.description}</div>
-                            </>
+                            </div>
                           )}
                           {e.type === 'action_result' && (
                             <>
@@ -465,6 +578,14 @@ export default function Game() {
                   )}
                 </div>
 
+                {/* Stability warning */}
+                {gameState.player_country.stability < 20 && !isSimulating && (
+                  <div className="mx-3 mb-1 rounded-lg border border-red-700/60 bg-red-900/20 px-3 py-2 flex items-center gap-2 text-xs text-red-300">
+                    <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                    <span><strong>Critical stability ({gameState.player_country.stability}/100).</strong> Risk of coup. Prioritize order.</span>
+                  </div>
+                )}
+
                 {/* Input */}
                 <div className="p-3 border-t border-pax-border shrink-0 space-y-2">
                   <div className="flex gap-2">
@@ -476,7 +597,11 @@ export default function Game() {
                       placeholder={`e.g. "Sign a trade deal with Germany", "Increase military budget"...`}
                       rows={2}
                       disabled={isSimulating}
-                      className="flex-1 bg-slate-800 border border-pax-border rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 resize-none focus:outline-none focus:border-pax-accent disabled:opacity-50"
+                      className={`flex-1 bg-slate-800 border rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 resize-none focus:outline-none ${
+                        gameState.player_country.stability < 20
+                          ? 'border-red-700/50 focus:border-red-500'
+                          : 'border-pax-border focus:border-pax-accent'
+                      } disabled:opacity-50`}
                     />
                     <button
                       onClick={queueAction}
@@ -494,7 +619,7 @@ export default function Game() {
                       {SIM_DURATIONS.map((d) => (
                         <button
                           key={d.label}
-                          onClick={() => startSimulation(d.months)}
+                          onClick={() => startSimulation(d)}
                           className="btn-primary text-xs py-1.5 px-1 text-center leading-tight"
                           title={`Simulate ${d.label}`}
                         >
@@ -515,14 +640,63 @@ export default function Game() {
               </div>
             )}
 
-            {activePanel === 'dashboard' && (
+            {leftPanel === 'diplomacy' && (
+              <DiplomacyPanel
+                gameState={gameState}
+                targetCountry={diplomacyTarget}
+                onSelectTarget={(c) => setDiplomacyTarget(c)}
+              />
+            )}
+          </div>
+        </div>
+
+        {/* Map */}
+        <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+          <div className="flex-1 relative min-h-0">
+            <WorldMap
+              countries={gameState.countries}
+              playerCountryId={gameState.player_country.id}
+              selectedCountryId={selectedCountry?.id}
+              onSelectCountry={handleCountryClick}
+              viewMode={mapView}
+              pois={[...(gameState.map_pois ?? []), ...streamingPois]}
+              regionState={gameState.region_state}
+              customMapUrl={gameState.custom_map_id ? `/api/maps/${gameState.custom_map_id}` : undefined}
+              featureIdProp={gameState.custom_map_feature_id_property}
+              initialTerritories={gameState.initial_territories}
+            />
+          </div>
+        </div>
+
+        {/* Right panel — Advisor + Stats + News */}
+        <div className="w-80 xl:w-96 border-l border-pax-border flex flex-col overflow-hidden shrink-0 min-h-0">
+          <div className="flex border-b border-pax-border shrink-0">
+            {rightTabs.map(({ id, icon: Icon, label }) => (
+              <button
+                key={id}
+                onClick={() => setRightPanel(id)}
+                title={label}
+                className={`flex-1 py-2.5 flex items-center justify-center gap-2 transition-colors text-sm ${
+                  rightPanel === id
+                    ? 'text-pax-accent border-b-2 border-pax-accent bg-pax-accent/10'
+                    : 'text-slate-500 hover:text-slate-300'
+                }`}
+              >
+                <Icon className="w-4 h-4" />{label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex-1 overflow-hidden">
+            {rightPanel === 'advisor' && (
+              <AdvisorPanel gameState={gameState} />
+            )}
+
+            {rightPanel === 'dashboard' && (
               <div className="h-full overflow-y-auto">
                 {selectedCountry && selectedCountry.id !== gameState.player_country.id && (
                   <div className="px-4 pt-3 flex items-center gap-2">
-                    <button
-                      onClick={() => setSelectedCountry(null)}
-                      className="text-xs text-slate-400 hover:text-white"
-                    >
+                    <button onClick={() => setSelectedCountry(null)} className="text-xs text-slate-400 hover:text-white">
                       ← My country
                     </button>
                     <ChevronRight className="w-3 h-3 text-slate-600" />
@@ -539,31 +713,24 @@ export default function Game() {
                   country={displayCountry}
                   isPlayer={!selectedCountry || selectedCountry.id === gameState.player_country.id}
                   playerCountry={gameState.player_country}
+                  statHistory={(!selectedCountry || selectedCountry.id === gameState.player_country.id) ? statHistory : undefined}
+                  treaties={gameState.treaties}
+                  diplomaticHistory={selectedCountry && selectedCountry.id !== gameState.player_country.id
+                    ? gameState.diplomatic_history.filter(m =>
+                        (m.from_country === gameState.player_country.id && m.to_country === selectedCountry.id) ||
+                        (m.from_country === selectedCountry.id && m.to_country === gameState.player_country.id)
+                      )
+                    : undefined}
                 />
               </div>
             )}
 
-            {activePanel === 'diplomacy' && (
-              <DiplomacyPanel
-                gameState={gameState}
-                targetCountry={diplomacyTarget}
-                onSelectTarget={(c) => setDiplomacyTarget(c)}
-              />
-            )}
-
-            {activePanel === 'regions' && (
-              <RegionPanel gameState={gameState} />
-            )}
-
-            {activePanel === 'advisor' && (
-              <AdvisorPanel gameState={gameState} />
-            )}
-
-            {activePanel === 'events' && (
+            {rightPanel === 'events' && (
               <EventsFeed events={gameState.recent_events} />
             )}
           </div>
         </div>
+
       </div>
     </div>
   )
