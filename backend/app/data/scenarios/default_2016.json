@@ -1,7 +1,7 @@
 {
   "id": "default_2016",
   "name": "Monde en 2016",
-  "description": "Le monde tel qu'il était en janvier 2016. La crise ukrainienne, la guerre civile syrienne, la montée de l'État islamique et les tensions en mer de Chine méridionale définissent une période de grande instabilité géopolitique.",
+  "description": "The world as it was in January 2016. The Ukrainian crisis, the Syrian civil war, the rise of the Islamic State and tensions in the South China Sea define a period of great geopolitical instability.",
   "start_year": 2016,
   "start_month": 1,
   "map_style": "modern",

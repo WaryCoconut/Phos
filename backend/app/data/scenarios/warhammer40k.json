@@ -1,0 +1,592 @@
+{
+  "id": "warhammer40k",
+  "name": "Warhammer 40,000 — 999.M41",
+  "description": "The galaxy is at war. The Imperium of Man fights on a thousand fronts against Chaos, Orks, Tyranids and Necrons. In 999.M41, Abaddon's 13th Black Crusade threatens Cadia, Tyranid fleets surge from the Ghoul Stars, and the Necron Dynasties awaken from their millennial slumber.",
+  "start_year": 40999,
+  "start_month": 1,
+  "map_style": "custom",
+  "custom_map_id": "a40b0000-c000-4000-b000-000040000001",
+  "custom_map_feature_id_property": "id",
+  "initial_territories": {
+    "eye_of_terror": "CHAOS",
+    "segmentum_pacificus": "IMPERIUM",
+    "commorragh": "DRUKHARI",
+    "segmentum_obscurus": "IMPERIUM",
+    "segmentum_solar": "IMPERIUM",
+    "segmentum_tempestus_w": "IMPERIUM",
+    "maelstrom": "CHAOS",
+    "ultima_segmentum": "IMPERIUM",
+    "octarius": "ORKS",
+    "ultramar": "ULTRAMARINES",
+    "ghoul_stars": "TYRANID",
+    "tau_empire": "TAU",
+    "eastern_fringe": "ELDAR",
+    "necron_sautekh": "NECRON"
+  },
+  "custom": false,
+  "alliances": {
+    "IMPERIAL_SANCTUS": {
+      "id": "IMPERIAL_SANCTUS",
+      "name": "Coalition Impériale",
+      "type": "military",
+      "members": ["IMPERIUM", "ULTRAMARINES"],
+      "description": "L'Imperium de l'Homme et ses champions les Ultramarines, unis pour défendre l'humanité contre toutes les menaces.",
+      "color": "#003087"
+    },
+    "GREAT_CRUSADE": {
+      "id": "GREAT_CRUSADE",
+      "name": "Grande Bonne",
+      "type": "political",
+      "members": ["TAU"],
+      "description": "La philosophie du Bien Suprême guide l'expansion de l'Empire T'au vers un avenir de coexistence pacifique... sous leur tutelle.",
+      "color": "#4682B4"
+    }
+  },
+  "initial_events": [
+    {
+      "title": "13ème Croisade Noire",
+      "description": "Abaddon le Profanateur lance sa croisade dévastatrice depuis l'Œil de la Terreur. Des millions de vaisseaux Chaos déferlent sur le Couloir Cadien, menaçant de briser les défenses de Cadia pour la première fois depuis des millénaires.",
+      "year": 40999,
+      "month": 1,
+      "affected_countries": ["CHAOS", "IMPERIUM", "ULTRAMARINES"]
+    },
+    {
+      "title": "Hive Fleet Leviathan — Invasion du Sud",
+      "description": "La flotte Ruche Leviathan émerge des Étoiles Goules avec une ampleur inégalée. Des milliers de planètes du Segmentum Tempestus sont menacées de dévastation biomassique totale. La Hive Mind coordonne l'assaut avec une précision terrifiante.",
+      "year": 40999,
+      "month": 1,
+      "affected_countries": ["TYRANID", "IMPERIUM", "NECRON", "ORKS"]
+    },
+    {
+      "title": "L'Éveil de la Sautekh",
+      "description": "La Dynastie Nécrone Sautekh s'éveille de son sommeil de soixante millions d'années. L'Imotekh le Maître-des-Tempêtes revendique des millions de mondes-tombes et lance des attaques éclair contre les races qui ont osé coloniser ses anciens domaines.",
+      "year": 40999,
+      "month": 2,
+      "affected_countries": ["NECRON", "IMPERIUM", "ORKS", "ELDAR"]
+    }
+  ],
+  "countries": {
+    "IMPERIUM": {
+      "id": "IMPERIUM",
+      "name": "Imperium de l'Homme",
+      "flag": "⚔️",
+      "capital": "Terra — Segmentum Solar",
+      "continent": "Segmentum Solar",
+      "population": 100000000000000,
+      "government_type": "Oligarchie Théocratique",
+      "ideology": "Orthodoxie Impériale",
+      "leader": "Roboute Guilliman (Lord Commandant Suprême)",
+      "alliances": ["IMPERIAL_SANCTUS"],
+      "economy": {
+        "gdp": 9000000,
+        "gdp_per_capita": 90,
+        "gdp_growth": -1.5,
+        "inflation": 12.0,
+        "unemployment": 8.0,
+        "debt_pct_gdp": 180.0,
+        "budget_balance_pct_gdp": -8.0,
+        "currency": "Throne Gelts",
+        "main_sectors": ["Production de guerre", "Tithe impériale", "Mécanicum", "Culte Imperial"],
+        "sectors": {"guerre": 60.0, "industrie": 25.0, "agriculture": 15.0}
+      },
+      "military": {
+        "strength": 9,
+        "active_personnel": 5000000000,
+        "nuclear_weapons": true,
+        "defense_budget_pct": 60.0,
+        "equipment": {
+          "titan_engines": 10000,
+          "star_ships": 5000,
+          "astartes_chapters": 1000,
+          "guard_regiments": 500000
+        }
+      },
+      "national_stats": {
+        "sovereignty": 55.0,
+        "food_autonomy": 60.0,
+        "energy_autonomy": 70.0,
+        "economic_independence": 80.0,
+        "security": 40.0
+      },
+      "relations": {
+        "CHAOS": -100,
+        "ELDAR": -20,
+        "ORKS": -70,
+        "TAU": -30,
+        "TYRANID": -100,
+        "NECRON": -50,
+        "DRUKHARI": -60,
+        "ULTRAMARINES": 80
+      },
+      "personality_traits": ["dogmatique", "belliqueux", "autoritaire"],
+      "personality": "L'Imperium agit avec une foi inflexible en l'Empereur et une brutalité calculée face à ses ennemis. Il sacrifie volontiers des mondes entiers pour protéger le cœur de sa civilisation. Sa bureaucratie colossale et son dogmatisme ralentissent souvent ses réponses, mais sa ténacité est absolue.",
+      "description": "L'Imperium de l'Homme est la plus grande faction de la galaxie, gouvernant un million de mondes à travers l'Astronomican. Malgré sa puissance, il s'effondre lentement sous le poids de la guerre, de la corruption et du Chaos.",
+      "color": "#1a3a6e",
+      "initial_stability": 42
+    },
+    "CHAOS": {
+      "id": "CHAOS",
+      "name": "Forces du Chaos",
+      "flag": "☠️",
+      "capital": "Étranglefort — Œil de la Terreur",
+      "continent": "Œil de la Terreur",
+      "population": 8000000000,
+      "government_type": "Panthéon des Dieux du Chaos",
+      "ideology": "Guerre Éternelle / Corruption",
+      "leader": "Abaddon le Profanateur (Guerrier Élu d'Undivided)",
+      "alliances": [],
+      "economy": {
+        "gdp": 1500000,
+        "gdp_per_capita": 187,
+        "gdp_growth": 5.0,
+        "inflation": 80.0,
+        "unemployment": 0.0,
+        "debt_pct_gdp": 0.0,
+        "budget_balance_pct_gdp": 0.0,
+        "currency": "Âmes et Tributs",
+        "main_sectors": ["Pillage", "Corruption", "Cultes du Chaos", "Forges du Chaos"],
+        "sectors": {"guerre": 80.0, "cultes": 15.0, "pillage": 5.0}
+      },
+      "military": {
+        "strength": 8,
+        "active_personnel": 2000000000,
+        "nuclear_weapons": true,
+        "defense_budget_pct": 80.0,
+        "equipment": {
+          "legion_marines_du_chaos": 9,
+          "star_ships_renégats": 2000,
+          "daemon_engines": 50000,
+          "armées_corrompues": 100000
+        }
+      },
+      "national_stats": {
+        "sovereignty": 30.0,
+        "food_autonomy": 40.0,
+        "energy_autonomy": 60.0,
+        "economic_independence": 50.0,
+        "security": 15.0
+      },
+      "relations": {
+        "IMPERIUM": -100,
+        "ELDAR": -80,
+        "ORKS": -20,
+        "TAU": -80,
+        "TYRANID": -70,
+        "NECRON": -90,
+        "DRUKHARI": -50,
+        "ULTRAMARINES": -100
+      },
+      "personality_traits": ["agressif", "corrupteur", "imprévisible"],
+      "personality": "Le Chaos cherche à détruire tout ordre et à corrompre toute âme. Abaddon frappe avec une détermination implacable depuis l'Œil de la Terreur. Les dieux du Chaos — Khorne, Tzeentch, Nurgle et Slaanesh — ont chacun leurs agents et leurs agendas contradictoires.",
+      "description": "Les Forces du Chaos sont l'ennemi juré de l'humanité, nées de la corruption des Légions Astartes originelles. Depuis l'Œil de la Terreur, elles lancent des croisades noires pour plonger la galaxie dans la damnation éternelle.",
+      "color": "#8B0000",
+      "initial_stability": 18
+    },
+    "ELDAR": {
+      "id": "ELDAR",
+      "name": "Aeldari — Mondes-Vaisseaux",
+      "flag": "🌿",
+      "capital": "Craftworld Iyanden (Lisière Orientale)",
+      "continent": "Lisière Orientale",
+      "population": 400000000,
+      "government_type": "Conseil des Farseers",
+      "ideology": "Sagesse Ancienne / Survie",
+      "leader": "Eldrad Ulthran (Grand Farseer d'Ulthwé)",
+      "alliances": [],
+      "economy": {
+        "gdp": 800000,
+        "gdp_per_capita": 2000,
+        "gdp_growth": -2.0,
+        "inflation": 1.0,
+        "unemployment": 2.0,
+        "debt_pct_gdp": 10.0,
+        "budget_balance_pct_gdp": -1.0,
+        "currency": "Gemmes de Wraithbone",
+        "main_sectors": ["Artisanat runique", "Webway", "Psychisme", "Commerce interstellaire"],
+        "sectors": {"artisanat": 40.0, "psychisme": 35.0, "commerce": 25.0}
+      },
+      "military": {
+        "strength": 7,
+        "active_personnel": 50000000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 35.0,
+        "equipment": {
+          "artisans_guerriers": 1000000,
+          "gardiens": 20000000,
+          "titans_fantomes": 500,
+          "vaisseaux_craftworld": 300
+        }
+      },
+      "national_stats": {
+        "sovereignty": 80.0,
+        "food_autonomy": 70.0,
+        "energy_autonomy": 85.0,
+        "economic_independence": 75.0,
+        "security": 70.0
+      },
+      "relations": {
+        "IMPERIUM": -20,
+        "CHAOS": -90,
+        "ORKS": -40,
+        "TAU": 20,
+        "TYRANID": -90,
+        "NECRON": -60,
+        "DRUKHARI": -70,
+        "ULTRAMARINES": -10
+      },
+      "personality_traits": ["stratège", "prudent", "isolationniste"],
+      "personality": "Les Aeldari manipulent les événements à travers la prophétie et la ruse plutôt que la force brute. Ils sacrifient volontiers d'autres races pour protéger les leurs, ce qui les rend peu fiables mais redoutables alliés. Leur survie prime sur tout.",
+      "description": "Les Aeldari sont une race ancienne et mourante dont l'empire galactique s'est effondré il y a dix mille ans, donnant naissance au Dieu-Chaos Slaanesh. Ils survivent désormais sur leurs Mondes-Vaisseaux géants, guidés par leurs Farseers.",
+      "color": "#228B22",
+      "initial_stability": 62
+    },
+    "ORKS": {
+      "id": "ORKS",
+      "name": "Waaagh! Ghazghkull — Empire Ork",
+      "flag": "💀",
+      "capital": "Octarius (Secteur d'Octarius)",
+      "continent": "Secteur d'Octarius",
+      "population": 30000000000,
+      "government_type": "Règle du Warboss",
+      "ideology": "WAAAGH! / Guerre Éternelle",
+      "leader": "Ghazghkull Mag Uruk Thraka (Grand Warboss)",
+      "alliances": [],
+      "economy": {
+        "gdp": 500000,
+        "gdp_per_capita": 16,
+        "gdp_growth": 8.0,
+        "inflation": 200.0,
+        "unemployment": 0.0,
+        "debt_pct_gdp": 0.0,
+        "budget_balance_pct_gdp": 0.0,
+        "currency": "Teef (dents d'Ork)",
+        "main_sectors": ["Pillage", "Construction de guerre", "WAAAGH!", "Champignons"],
+        "sectors": {"guerre": 75.0, "pillage": 20.0, "champignons": 5.0}
+      },
+      "military": {
+        "strength": 8,
+        "active_personnel": 10000000000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 90.0,
+        "equipment": {
+          "stompas": 100000,
+          "kroozer_spatiaux": 3000,
+          "squigs_de_guerre": 500000,
+          "boyz": 5000000000
+        }
+      },
+      "national_stats": {
+        "sovereignty": 20.0,
+        "food_autonomy": 50.0,
+        "energy_autonomy": 30.0,
+        "economic_independence": 30.0,
+        "security": 10.0
+      },
+      "relations": {
+        "IMPERIUM": -60,
+        "CHAOS": -30,
+        "ELDAR": -50,
+        "TAU": -70,
+        "TYRANID": -50,
+        "NECRON": -60,
+        "DRUKHARI": -60,
+        "ULTRAMARINES": -60
+      },
+      "personality_traits": ["agressif", "belliqueux", "opportuniste"],
+      "personality": "Les Orks vivent pour le combat. Ils attaquent tout ce qui bouge avec une joie féroce. Ghazghkull mène la plus grande WAAAGH! de l'histoire, attirant des milliards d'Orks à sa bannière. Leur technologie est chaotique mais fonctionne par la foi collective des Orks en sa fiabilité.",
+      "description": "Les Orks sont la race la plus nombreuse et la plus belliqueuse de la galaxie. Champignons biopuissants capables de régénérer et reproduire leur espèce, ils se propagent comme une infection à travers les étoiles, cherchant toujours la prochaine grande bataille.",
+      "color": "#4a7c4e",
+      "initial_stability": 30
+    },
+    "TAU": {
+      "id": "TAU",
+      "name": "Empire T'au",
+      "flag": "🌐",
+      "capital": "T'au (Monde-Sphère Central)",
+      "continent": "Empire T'au",
+      "population": 100000000000,
+      "government_type": "Système de Castes (Éthérés)",
+      "ideology": "Le Bien Suprême (Por'o'va)",
+      "leader": "Aun'Va (Suprême Éthéré)",
+      "alliances": ["GREAT_CRUSADE"],
+      "economy": {
+        "gdp": 2000000,
+        "gdp_per_capita": 20,
+        "gdp_growth": 4.5,
+        "inflation": 3.0,
+        "unemployment": 3.0,
+        "debt_pct_gdp": 25.0,
+        "budget_balance_pct_gdp": 1.5,
+        "currency": "Crédits T'au",
+        "main_sectors": ["Technologie avancée", "Commerce inter-espèces", "Production militaire", "Agriculture hydroponique"],
+        "sectors": {"technologie": 45.0, "commerce": 30.0, "agriculture": 25.0}
+      },
+      "military": {
+        "strength": 6,
+        "active_personnel": 2000000000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 30.0,
+        "equipment": {
+          "costumes_crisis": 500000,
+          "chars_hammerhead": 200000,
+          "vaisseaux_kor": 800,
+          "drones": 10000000
+        }
+      },
+      "national_stats": {
+        "sovereignty": 75.0,
+        "food_autonomy": 65.0,
+        "energy_autonomy": 70.0,
+        "economic_independence": 80.0,
+        "security": 75.0
+      },
+      "relations": {
+        "IMPERIUM": -30,
+        "CHAOS": -80,
+        "ELDAR": 20,
+        "ORKS": -60,
+        "TYRANID": -90,
+        "NECRON": -20,
+        "DRUKHARI": -50,
+        "ULTRAMARINES": -30
+      },
+      "personality_traits": ["diplomatique", "expansionniste", "pragmatique"],
+      "personality": "Les T'au préfèrent la diplomatie et la persuasion avant d'engager la force. Leur philosophie du Bien Suprême leur permet d'intégrer d'autres espèces dans leur empire. En cas de guerre, ils utilisent des tactiques de frappe rapide et de supériorité technologique plutôt que le nombre.",
+      "description": "L'Empire T'au est la puissance montante la plus dynamique de la galaxie. La plus jeune des grandes races stellaires, ils compensent leur manque d'histoire par une technologie avancée et une diplomatie habile. Leurs Sphères d'Expansion repoussent constamment leurs frontières.",
+      "color": "#4682B4",
+      "initial_stability": 72
+    },
+    "TYRANID": {
+      "id": "TYRANID",
+      "name": "Flottes Ruche Tyranides",
+      "flag": "🦑",
+      "capital": "Essaim Extra-galactique (Flottes Ruche)",
+      "continent": "Étoiles Goules",
+      "population": 999000000000000,
+      "government_type": "Esprit-Ruche",
+      "ideology": "Consommation / Assimilation Totale",
+      "leader": "L'Esprit-Ruche (Synaptic Gestalt)",
+      "alliances": [],
+      "economy": {
+        "gdp": 0,
+        "gdp_per_capita": 0,
+        "gdp_growth": 15.0,
+        "inflation": 0.0,
+        "unemployment": 0.0,
+        "debt_pct_gdp": 0.0,
+        "budget_balance_pct_gdp": 0.0,
+        "currency": "Biomasse",
+        "main_sectors": ["Consommation planétaire", "Évolution adaptative", "Propagation des essaims"],
+        "sectors": {"biomasse": 100.0}
+      },
+      "military": {
+        "strength": 10,
+        "active_personnel": 100000000000000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 100.0,
+        "equipment": {
+          "vaisseaux_ruche": 10000,
+          "essaim_carnifex": 10000000,
+          "synapse_creatures": 1000000,
+          "gants_du_hive": 100000000000
+        }
+      },
+      "national_stats": {
+        "sovereignty": 100.0,
+        "food_autonomy": 100.0,
+        "energy_autonomy": 100.0,
+        "economic_independence": 100.0,
+        "security": 100.0
+      },
+      "relations": {
+        "IMPERIUM": -100,
+        "CHAOS": -100,
+        "ELDAR": -100,
+        "ORKS": -100,
+        "TAU": -100,
+        "NECRON": -100,
+        "DRUKHARI": -100,
+        "ULTRAMARINES": -100
+      },
+      "personality_traits": ["agressif", "impitoyable", "expansionniste"],
+      "personality": "Les Tyranides ne négocient pas. Leur seul but est de consommer toute biomasse disponible pour nourrir et faire évoluer les Flottes Ruche. L'Esprit-Ruche adapte constamment sa stratégie aux défenses rencontrées, rendant chaque invasion plus dévastatrice que la précédente.",
+      "description": "Les Tyranides viennent d'au-delà de la galaxie, chassant quelque chose d'encore plus terrible qu'eux-mêmes dans le vide intergalactique. Trois Flottes Ruche majeures ont déjà frappé la galaxie — Béhémoth, Kraken, et Leviathan — chacune plus grande que la précédente.",
+      "color": "#6B21A8",
+      "initial_stability": 85
+    },
+    "NECRON": {
+      "id": "NECRON",
+      "name": "Dynasties Nécrontes",
+      "flag": "⚡",
+      "capital": "Mandragora (Dynasties Sautekh)",
+      "continent": "Dynasties Nécrontes",
+      "population": 30000000000000,
+      "government_type": "Dynasties Féodales",
+      "ideology": "Domination / Réclamation de la Galaxie",
+      "leader": "Imotekh le Maître-des-Tempêtes (Phéron Sautekh)",
+      "alliances": [],
+      "economy": {
+        "gdp": 5000000,
+        "gdp_per_capita": 166,
+        "gdp_growth": 3.0,
+        "inflation": 0.0,
+        "unemployment": 0.0,
+        "debt_pct_gdp": 0.0,
+        "budget_balance_pct_gdp": 5.0,
+        "currency": "Cristaux d'Énergie",
+        "main_sectors": ["Technologies stellaires", "Mondes-Tombes", "Artéfacts anciens", "Production de gauss"],
+        "sectors": {"technologie": 50.0, "materiaux": 30.0, "defenses": 20.0}
+      },
+      "military": {
+        "strength": 8,
+        "active_personnel": 10000000000000,
+        "nuclear_weapons": true,
+        "defense_budget_pct": 40.0,
+        "equipment": {
+          "monolithes": 100000,
+          "vaisseaux_necron": 2000,
+          "triarchs_praetorians": 100000,
+          "guerriers_necrons": 5000000000000
+        }
+      },
+      "national_stats": {
+        "sovereignty": 85.0,
+        "food_autonomy": 90.0,
+        "energy_autonomy": 95.0,
+        "economic_independence": 90.0,
+        "security": 85.0
+      },
+      "relations": {
+        "IMPERIUM": -50,
+        "CHAOS": -90,
+        "ELDAR": -60,
+        "ORKS": -70,
+        "TAU": -20,
+        "TYRANID": -80,
+        "DRUKHARI": -60,
+        "ULTRAMARINES": -50
+      },
+      "personality_traits": ["stratège", "dogmatique", "impitoyable"],
+      "personality": "Les Nécrons agissent avec la patience de créatures ayant dormi soixante millions d'années. Imotekh planifie sur des siècles, préférant isoler et détruire ses ennemis méthodiquement plutôt que de s'engager dans des conflits prolongés. Ils considèrent toutes les races organiques comme des parasites temporaires.",
+      "description": "Les Nécrons sont d'anciens êtres cybernétiques qui s'éveillent de leur sommeil millénaire pour récupérer leur empire galactique. Autrefois une race organique les Nécrontyr, ils ont sacrifié leur chair pour devenir des machines immortelles au service des C'tan, les Dieux-Étoiles.",
+      "color": "#1a6e4a",
+      "initial_stability": 76
+    },
+    "DRUKHARI": {
+      "id": "DRUKHARI",
+      "name": "Drukhari — Cité de Commorragh",
+      "flag": "🗡️",
+      "capital": "Commorragh (Cité du Webway)",
+      "continent": "Commorragh",
+      "population": 3000000000000,
+      "government_type": "Structure Kabal (Kabale du Poison Suprême)",
+      "ideology": "Hédonisme / Razzia / Souffrance",
+      "leader": "Asdrubael Vect (Suprême Seigneur de Commorragh)",
+      "alliances": [],
+      "economy": {
+        "gdp": 700000,
+        "gdp_per_capita": 233,
+        "gdp_growth": 2.0,
+        "inflation": 15.0,
+        "unemployment": 0.0,
+        "debt_pct_gdp": 0.0,
+        "budget_balance_pct_gdp": 3.0,
+        "currency": "Esclaves et Agonies",
+        "main_sectors": ["Razzias interstellaires", "Commerce d'esclaves", "Artisanat de torture", "Technologie Drukhari"],
+        "sectors": {"razzias": 60.0, "commerce": 25.0, "artisanat": 15.0}
+      },
+      "military": {
+        "strength": 6,
+        "active_personnel": 500000000,
+        "nuclear_weapons": false,
+        "defense_budget_pct": 45.0,
+        "equipment": {
+          "raiders": 200000,
+          "ravagers": 50000,
+          "arcvaisseaux": 500,
+          "bêtes_de_razzia": 10000000
+        }
+      },
+      "national_stats": {
+        "sovereignty": 60.0,
+        "food_autonomy": 20.0,
+        "energy_autonomy": 50.0,
+        "economic_independence": 70.0,
+        "security": 35.0
+      },
+      "relations": {
+        "IMPERIUM": -60,
+        "CHAOS": -70,
+        "ELDAR": -70,
+        "ORKS": -60,
+        "TAU": -50,
+        "TYRANID": -80,
+        "NECRON": -60,
+        "ULTRAMARINES": -60
+      },
+      "personality_traits": ["opportuniste", "agressif", "belliqueux"],
+      "personality": "Les Drukhari frapppent vite et disparaissent avant que leurs ennemis puissent réagir. Asdrubael Vect est un maître manipulateur qui a survécu à des millénaires d'intrigues politiques sanglantes. Les Drukhari ne font aucune confiance à personne et considèrent toute interaction comme une opportunité d'exploitation.",
+      "description": "Les Drukhari sont les cousins déchus des Aeldari, ayant embrassé l'excès et la cruauté plutôt que la retenue spirituelle. Depuis la Cité du Webway de Commorragh, ils razzient la galaxie pour le plaisir et pour se nourrir de la souffrance qui maintient Slaanesh à distance de leurs âmes.",
+      "color": "#800080",
+      "initial_stability": 38
+    },
+    "ULTRAMARINES": {
+      "id": "ULTRAMARINES",
+      "name": "Ultramarines — Adeptus Astartes",
+      "flag": "🛡️",
+      "capital": "Macragge (Ultramar)",
+      "continent": "Ultramar",
+      "population": 1000000000,
+      "government_type": "Hiérarchie de Chapitre",
+      "ideology": "Codex Astartes / Service Impérial",
+      "leader": "Roboute Guilliman (Primarque Ressuscité)",
+      "alliances": ["IMPERIAL_SANCTUS"],
+      "economy": {
+        "gdp": 3000000,
+        "gdp_per_capita": 3000,
+        "gdp_growth": 2.0,
+        "inflation": 2.0,
+        "unemployment": 1.0,
+        "debt_pct_gdp": 15.0,
+        "budget_balance_pct_gdp": 2.0,
+        "currency": "Throne Gelts (Ultramar)",
+        "main_sectors": ["Production d'armes Astartes", "Défense Ultramar", "Croisade Indomitus", "Commerce Ultramar"],
+        "sectors": {"guerre": 55.0, "industrie": 30.0, "commerce": 15.0}
+      },
+      "military": {
+        "strength": 9,
+        "active_personnel": 5000000,
+        "nuclear_weapons": true,
+        "defense_budget_pct": 55.0,
+        "equipment": {
+          "space_marines_primaris": 2000000,
+          "croiseurs_astartes": 500,
+          "thunderhawk": 10000,
+          "chapitres_successeurs": 50
+        }
+      },
+      "national_stats": {
+        "sovereignty": 85.0,
+        "food_autonomy": 80.0,
+        "energy_autonomy": 85.0,
+        "economic_independence": 80.0,
+        "security": 90.0
+      },
+      "relations": {
+        "IMPERIUM": 80,
+        "CHAOS": -100,
+        "ELDAR": -10,
+        "ORKS": -70,
+        "TAU": -20,
+        "TYRANID": -90,
+        "NECRON": -50,
+        "DRUKHARI": -60
+      },
+      "personality_traits": ["stratège", "belliqueux", "dogmatique"],
+      "personality": "Sous la direction de leur Primarque ressuscité, les Ultramarines mènent la Croisade Indomitus pour repousser les ténèbres. Guilliman dirige avec une précision tactique et une vision stratégique inégalée. Il est à la fois Lord Commandant Suprême de l'Imperium et chef de son Chapitre.",
+      "description": "Les Ultramarines sont le Chapitre Astartes par excellence, maîtres de la doctrine militaire du Codex Astartes. Depuis Macragge, ils défendent l'espace Ultramar tout en menant la Croisade Indomitus pour sécuriser les espaces perdus pendant la Rift Cicatrix.",
+      "color": "#1E4BD2",
+      "initial_stability": 80
+    }
+  }
+}

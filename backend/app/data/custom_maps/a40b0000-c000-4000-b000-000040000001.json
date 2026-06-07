@@ -1,0 +1,117 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "id": "eye_of_terror", "name": "Œil de la Terreur" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-170, 70], [-100, 70], [-100, 20], [-170, 20], [-170, 70]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "segmentum_pacificus", "name": "Segmentum Pacificus" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-170, 20], [-100, 20], [-100, -35], [-170, -35], [-170, 20]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "commorragh", "name": "Commorragh" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-170, -35], [-100, -35], [-100, -70], [-170, -70], [-170, -35]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "segmentum_obscurus", "name": "Segmentum Obscurus" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-100, 70], [0, 70], [0, 20], [-100, 20], [-100, 70]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "segmentum_solar", "name": "Segmentum Solar" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-100, 20], [0, 20], [0, -35], [-100, -35], [-100, 20]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "segmentum_tempestus_w", "name": "Segmentum Tempestus" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-100, -35], [0, -35], [0, -70], [-100, -70], [-100, -35]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "maelstrom", "name": "Le Maelstrom" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[0, 70], [100, 70], [100, 20], [0, 20], [0, 70]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "ultima_segmentum", "name": "Ultima Segmentum" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[0, 20], [100, 20], [100, -35], [0, -35], [0, 20]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "octarius", "name": "Secteur d'Octarius" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[0, -35], [100, -35], [100, -70], [0, -70], [0, -35]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "ultramar", "name": "Ultramar" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[100, 70], [155, 70], [155, 20], [100, 20], [100, 70]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "ghoul_stars", "name": "Étoiles Goules" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[155, 70], [175, 70], [175, 20], [155, 20], [155, 70]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "tau_empire", "name": "Empire T'au" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[100, 20], [155, 20], [155, -35], [100, -35], [100, 20]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "eastern_fringe", "name": "Lisière Orientale" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[155, 20], [175, 20], [175, -70], [155, -70], [155, 20]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "necron_sautekh", "name": "Dynasties Nécrontes" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[100, -35], [155, -35], [155, -70], [100, -70], [100, -35]]]
+      }
+    }
+  ]
+}

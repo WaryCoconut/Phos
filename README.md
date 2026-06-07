@@ -4,8 +4,19 @@ OpenSource game inspired by the game Pax Historia
 
 AI-powered geopolitical narrative simulation. Play as a nation, make political decisions, engage in real-time diplomacy with other countries through AI agents, and consult your political advisor.
 
+<div align="center">
+  <img src="docs/benin1.png" width="800" alt="World map view" />
+  <br/>
+  <img src="docs/benin2.png" width="400" />
+  <img src="docs/haiti1.png" width="400" />
+</div>
 
-> Compatible with **[socle.ai](https://socle.ai)** by default (OpenAI-compatible API). Works with any OpenAI-compatible endpoint.
+> Compatible with **[socle.ai](https://socle.ai)** by default (OpenAI-compatible API) and **[ollama](https://ollama.com/)**
+Works with any OpenAI-compatible endpoint.
+
+You can create your own world and scenario (warhammer 40k in preparation)
+
+
 
 ## Features
 
