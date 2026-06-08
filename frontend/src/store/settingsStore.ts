@@ -29,7 +29,11 @@ export const useSettingsStore = create<SettingsStore>()(
       update: (patch) =>
         set((s) => ({ settings: { ...s.settings, ...patch } })),
       reset: () => set({ settings: DEFAULTS }),
-      isConfigured: () => Boolean(get().settings.apiKey.trim()),
+      isConfigured: () => {
+        const s = get().settings
+        if (s.provider === 'ollama') return Boolean(s.apiBaseUrl.trim())
+        return Boolean(s.apiKey.trim())
+      },
     }),
     { name: 'pax-api-settings' }
   )
