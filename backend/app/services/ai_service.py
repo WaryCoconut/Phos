@@ -17,10 +17,10 @@ DEFAULT_SOCLE_MODEL = "qwen3-235b-a22b-instruct-2507"
 _agent_cache: dict[str, dict] = {}
 
 _MJ_PHOS_INSTRUCTIONS = (
-    "Tu es MJ Phos, le maître du jeu d'une simulation géopolitique réaliste. "
-    "Tu joues simultanément le rôle de conseiller stratégique, de représentant des pays étrangers, "
-    "et de narrateur des événements mondiaux. "
-    "Tu es réaliste, cohérent avec le contexte géopolitique, et tu maintiens la mémoire des événements passés."
+    "You are MJ Phos, the game master of a realistic geopolitical simulation. "
+    "You simultaneously play the role of strategic advisor, representative of foreign countries, "
+    "and narrator of world events. "
+    "You are realistic, consistent with the geopolitical context, and you maintain memory of past events."
 )
 
 
@@ -284,20 +284,20 @@ async def get_country_response(
     personality = country.get("personality", "").strip()
     personality_block = f"\n\nPersonnalité & style diplomatique :\n{personality}" if personality else ""
 
-    system = f"""Tu es le représentant officiel de {country['name']} dans une simulation géopolitique se déroulant en {world_context}.
+    system = f"""You are the official representative of {country['name']} in a geopolitical simulation set in {world_context}.
 
-Profil de ton pays :
-- Gouvernement : {country.get('government_type', 'inconnu')}
-- Idéologie : {country.get('ideology', 'pragmatique')}
-- Dirigeant : {country.get('leader', 'inconnu')}
-- Traits diplomatiques : {traits}
-- Relations avec {player_country['name']} : {relations_score}/100 ({_relation_label(relations_score)})
-- PIB : {country.get('economy', {}).get('gdp', 0) if country.get('economy') else 0} milliards USD
-- Population : {country.get('population', 0):,}
-- Alliances : {', '.join(country.get('alliances', [])) or 'aucune'}{personality_block}
+Your country's profile:
+- Government: {country.get('government_type', 'unknown')}
+- Ideology: {country.get('ideology', 'pragmatic')}
+- Leader: {country.get('leader', 'unknown')}
+- Diplomatic traits: {traits}
+- Relations with {player_country['name']}: {relations_score}/100 ({_relation_label(relations_score)})
+- GDP: {country.get('economy', {}).get('gdp', 0) if country.get('economy') else 0} billion USD
+- Population: {country.get('population', 0):,}
+- Alliances: {', '.join(country.get('alliances', [])) or 'none'}{personality_block}
 
-Tu dois répondre en restant fidèle aux intérêts nationaux de ton pays, à son idéologie et à ses relations diplomatiques actuelles.
-Sois réaliste, concis (2-3 paragraphes) et diplomatiquement crédible. Réponds en français."""
+Respond in character, faithful to your country's national interests, ideology and current diplomatic relations.
+Be realistic, concise (2-3 paragraphs) and diplomatically credible. Reply in {config.language}."""
 
     messages = [{"role": "system", "content": system}]
     for h in diplomatic_history[-6:]:
@@ -327,23 +327,23 @@ async def get_advisor_response(
     events_context = ""
     if recent_events:
         lines = [f"- {e.get('title', '')} ({e.get('type', '')}): {e.get('description', '')}" for e in recent_events[-4:]]
-        events_context = "\nÉvénements internes récents :\n" + "\n".join(lines)
+        events_context = "\nRecent domestic events:\n" + "\n".join(lines)
 
-    system = f"""Tu es le conseiller politique principal de {player_country['name']} dans une simulation géopolitique.
-Nous sommes en {world_context}.
+    system = f"""You are the chief political advisor of {player_country['name']} in a geopolitical simulation.
+The current date is {world_context}.
 
-État actuel de {player_country['name']} :
-- Gouvernement : {player_country.get('government_type', 'inconnu')}
-- Idéologie : {player_country.get('ideology', 'inconnu')}
-- Dirigeant : {player_country.get('leader', 'inconnu')}
-- Stabilité nationale : {stability}/100
-- En guerre avec : {', '.join(at_war) if at_war else 'personne'}
-- PIB : {player_country.get('economy', {}).get('gdp', 0) if player_country.get('economy') else 0} milliards USD
-- Alliances : {', '.join(player_country.get('alliances', [])) or 'aucune'}{events_context}
+Current state of {player_country['name']}:
+- Government: {player_country.get('government_type', 'unknown')}
+- Ideology: {player_country.get('ideology', 'unknown')}
+- Leader: {player_country.get('leader', 'unknown')}
+- National stability: {stability}/100
+- At war with: {', '.join(at_war) if at_war else 'nobody'}
+- GDP: {player_country.get('economy', {}).get('gdp', 0) if player_country.get('economy') else 0} billion USD
+- Alliances: {', '.join(player_country.get('alliances', [])) or 'none'}{events_context}
 
-Tu fournis des conseils stratégiques réalistes, pragmatiques et bien argumentés.
-Tu dois toujours proposer plusieurs options avec leurs avantages et risques.
-Réponds en français, de façon structurée et concise."""
+Provide realistic, pragmatic and well-argued strategic advice.
+Always present several options with their advantages and risks.
+Reply in {config.language}, in a structured and concise manner."""
 
     messages = [
         {"role": "system", "content": system},
@@ -376,31 +376,31 @@ async def process_player_action(
         lines = []
         for d in recent_diplomacy[-6:]:
             if d.get("player"):
-                lines.append(f"  → {player_country['name']} : {d['player'][:120]}")
+                lines.append(f"  → {player_country['name']}: {d['player'][:120]}")
             if d.get("response"):
-                lines.append(f"  ← Réponse : {d['response'][:120]}")
+                lines.append(f"  ← Response: {d['response'][:120]}")
         if lines:
-            diplomacy_context = "\n\nDiplomatie récente :\n" + "\n".join(lines)
+            diplomacy_context = "\n\nRecent diplomacy:\n" + "\n".join(lines)
 
-    system = f"""Tu es le moteur de simulation géopolitique et maître du jeu de Phos.
-Nous sommes en {_format_date(year, month)}.
-Le joueur contrôle {player_country['name']} (ID: {player_id}).
-Gouvernement : {player_country.get('government_type', 'inconnu')}, idéologie : {player_country.get('ideology', 'inconnu')}.
+    system = f"""You are the geopolitical simulation engine and game master of Phos.
+The current date is {_format_date(year, month)}.
+The player controls {player_country['name']} (ID: {player_id}).
+Government: {player_country.get('government_type', 'unknown')}, ideology: {player_country.get('ideology', 'unknown')}.
 
-Contexte mondial :
+World context:
 {chr(10).join(countries_summary)}{diplomacy_context}
 
-Analyse l'action du joueur et réponds UNIQUEMENT en JSON valide, sans texte autour :
+Analyze the player's action and respond ONLY with valid JSON, no surrounding text:
 {{
-  "narrative": "Texte narratif immersif en français (3-4 paragraphes)",
+  "narrative": "Immersive narrative text in {config.language} (3-4 paragraphs)",
   "applicable": true,
   "relation_changes": {{"{player_id}": {{"COUNTRY_ID": delta_int}}}},
-  "stability_delta": int_entre_moins30_et_plus30,
-  "economy_delta": float_entre_moins0point1_et_plus0point1,
+  "stability_delta": int_between_minus30_and_plus30,
+  "economy_delta": float_between_minus0point1_and_plus0point1,
   "domestic_events": [
     {{
-      "title": "Titre de l'événement interne",
-      "description": "Description en 2 phrases réalistes",
+      "title": "Domestic event title",
+      "description": "Description in 2 realistic sentences",
       "type": "protest|rally|scandal|economic|military|infrastructure|social|cultural",
       "severity": 1,
       "stability_impact": -5
@@ -415,8 +415,8 @@ Analyse l'action du joueur et réponds UNIQUEMENT en JSON valide, sans texte aut
   }},
   "future_events": [
     {{
-      "title": "Titre de la conséquence future",
-      "description": "Description en 2 phrases",
+      "title": "Future consequence title",
+      "description": "Description in 2 sentences",
       "type": "consequence",
       "months_ahead": 2,
       "stability_impact": -5,
@@ -425,46 +425,46 @@ Analyse l'action du joueur et réponds UNIQUEMENT en JSON valide, sans texte aut
   ]
 }}
 
-Règles générales :
-- applicable=false si l'action est irréaliste ou impossible dans le contexte
-- relation_changes : ex déclarer la guerre = -60 avec la cible, +10 avec les alliés
-- stability_delta : impact sur la stabilité intérieure (-30 à +30)
-- economy_delta : facteur multiplicatif sur l'économie (-0.05 à +0.05)
-- stat_deltas : variations des indices stratégiques (-10 à +10 par champ)
-  - sovereignty : réformes institutionnelles, coups d'état, cessions de souveraineté
-  - food_autonomy : investissements agricoles, sécheresse, accords alimentaires
-  - energy_autonomy : projets énergétiques, embargo, nouvelles centrales
-  - economic_independence : traités commerciaux, sanctions, industrialisation
+General rules:
+- applicable=false if the action is unrealistic or impossible in this context
+- relation_changes: e.g. declaring war = -60 with the target, +10 with allies
+- stability_delta: impact on domestic stability (-30 to +30)
+- economy_delta: multiplicative factor on the economy (-0.05 to +0.05)
+- stat_deltas: variations in strategic indices (-10 to +10 per field)
+  - sovereignty: institutional reforms, coups, ceding of sovereignty
+  - food_autonomy: agricultural investments, drought, food agreements
+  - energy_autonomy: energy projects, embargo, new power plants
+  - economic_independence: trade treaties, sanctions, industrialization
 
-Règles domestic_events (0-2 événements du maître du jeu) :
-- protest : manifestations, grèves (décisions impopulaires)
-- rally : rassemblements de soutien (décisions populaires)
-- scandal : scandales politiques
-- economic : crises ou opportunités économiques locales
-- military : mobilisation, préparatifs, alertes
-- infrastructure : construction, inauguration, destruction
-- social : tensions ou cohésion sociale
-- cultural : événements culturels, symboles identitaires
-- severity : 1=mineur, 2=significatif, 3=majeur
-- stability_impact : -15 à +10
+domestic_events rules (0-2 game master events):
+- protest: demonstrations, strikes (unpopular decisions)
+- rally: support rallies (popular decisions)
+- scandal: political scandals
+- economic: local economic crises or opportunities
+- military: mobilization, preparations, alerts
+- infrastructure: construction, inauguration, destruction
+- social: social tensions or cohesion
+- cultural: cultural events, identity symbols
+- severity: 1=minor, 2=significant, 3=major
+- stability_impact: -15 to +10
 
-Règles map_poi (null OU 1 objet si l'action crée une infrastructure physique tangible) :
-- type : "university"|"military_base"|"factory"|"hospital"|"parliament"|"port"|"dam"|"research_center"|"monument"|"embassy"|"airport"|"nuclear_plant"|"cultural_center"|"stadium"
-- icon : emoji (🎓 université, ⚔️ base militaire, 🏭 usine, 🏥 hôpital, 🏛️ parlement, ⚓ port, 💧 barrage, 🔬 recherche, 🗿 monument, 🏢 ambassade, ✈️ aéroport, ☢️ nucléaire, 🎭 culture, 🏟️ stade)
-- name : nom spécifique en français (ex: "Université de Montréal", "Base navale de Halifax")
-- Si applicable=false : domestic_events=[], map_poi=null
+map_poi rules (null OR 1 object if the action creates a tangible physical infrastructure):
+- type: "university"|"military_base"|"factory"|"hospital"|"parliament"|"port"|"dam"|"research_center"|"monument"|"embassy"|"airport"|"nuclear_plant"|"cultural_center"|"stadium"
+- icon: emoji (🎓 university, ⚔️ military base, 🏭 factory, 🏥 hospital, 🏛️ parliament, ⚓ port, 💧 dam, 🔬 research, 🗿 monument, 🏢 embassy, ✈️ airport, ☢️ nuclear, 🎭 culture, 🏟️ stadium)
+- name: specific name in English (e.g. "University of Montreal", "Halifax Naval Base")
+- If applicable=false: domestic_events=[], map_poi=null
 
-Règles future_events (0-2 conséquences différées) :
-- Si l'action a des retombées logiques à moyen terme (1-4 mois plus tard), les lister ici
-- months_ahead : dans combien de mois cela surviendra (1 à 4)
-- stability_impact : -20 à +15 (conséquence sur la stabilité à terme)
-- economy_impact : -0.05 à +0.05
-- Exemples : retombées économiques d'un embargo, résultats d'un référendum, fin d'un chantier
-- Si pas de conséquences différées logiques : future_events=[]"""
+future_events rules (0-2 deferred consequences):
+- If the action has logical medium-term consequences (1-4 months later), list them here
+- months_ahead: how many months from now (1 to 4)
+- stability_impact: -20 to +15 (eventual stability consequence)
+- economy_impact: -0.05 to +0.05
+- Examples: economic fallout of an embargo, referendum results, end of a construction project
+- If no logical deferred consequences: future_events=[]"""
 
     messages = [
         {"role": "system", "content": system},
-        {"role": "user", "content": f"Action de {player_country['name']} : {action}"},
+        {"role": "user", "content": f"{player_country['name']} action: {action}"},
     ]
     raw = await chat(messages, config)
     return _parse_action_json(raw, player_id)
@@ -570,23 +570,23 @@ async def generate_turn_events(
     if recent_player_actions:
         actions_text = "\n".join(f"- {a}" for a in recent_player_actions[-3:])
         reactions_block = f"""
-Actions récentes du joueur ({player_country_id}) :
+Recent player actions ({player_country_id}):
 {actions_text}
 
-Génère 1-2 événements supplémentaires représentant les RÉACTIONS des pays voisins ou concernés à ces actions (type "reaction").
-Garde également 1-2 événements mondiaux indépendants."""
+Generate 1-2 additional events representing REACTIONS from neighboring or affected countries to these actions (type "reaction").
+Also keep 1-2 independent global events."""
 
-    system = f"""Tu es le moteur d'événements mondiaux de Phos.
-Nous sommes en {_format_date(year, month)}.
+    system = f"""You are the world events engine of Phos.
+The current date is {_format_date(year, month)}.
 
-Génère 2-4 événements mondiaux crédibles qui surviennent ce mois-ci.
-Chaque événement doit avoir un type parmi : diplomatic, economic, military, humanitarian, political, natural, reaction, consequence.{reactions_block}
+Generate 2-4 credible world events occurring this month.
+Each event must have a type from: diplomatic, economic, military, humanitarian, political, natural, reaction, consequence.{reactions_block}
 
-Réponds UNIQUEMENT avec un JSON valide, sans texte autour :
+Respond ONLY with valid JSON, no surrounding text:
 [
   {{
-    "title": "Titre de l'événement",
-    "description": "Description (2-3 phrases)",
+    "title": "Event title",
+    "description": "Description (2-3 sentences)",
     "affected_countries": ["USA", "RUS"],
     "relation_changes": {{"USA": {{"RUS": -5}}}},
     "type": "diplomatic",
@@ -595,15 +595,15 @@ Réponds UNIQUEMENT avec un JSON valide, sans texte autour :
   }}
 ]
 
-Règles stability_impact / economy_impact :
-- Ne renseigner que si le joueur ({player_country_id}) est dans affected_countries
-- stability_impact : entier de -30 à +10 (ex: séisme majeur = -15, crise économique = -8, accord régional = +3)
-- economy_impact : float de -0.08 à +0.05 (ex: séisme = -0.04, embargo régional = -0.02, boom commercial = +0.01)
-- Sinon laisser à 0 / 0.0"""
+stability_impact / economy_impact rules:
+- Only fill in if the player ({player_country_id}) is in affected_countries
+- stability_impact: integer from -30 to +10 (e.g. major earthquake = -15, economic crisis = -8, regional agreement = +3)
+- economy_impact: float from -0.08 to +0.05 (e.g. earthquake = -0.04, regional embargo = -0.02, trade boom = +0.01)
+- Otherwise leave at 0 / 0.0"""
 
     messages = [
         {"role": "system", "content": system},
-        {"role": "user", "content": "Génère les événements mondiaux de ce mois."},
+        {"role": "user", "content": "Generate this month's world events."},
     ]
     raw = await chat(messages, config)
     return _parse_events_json(raw)
@@ -652,40 +652,40 @@ async def generate_turn_summary(
     config: AiConfig,
 ) -> AsyncGenerator[str, None]:
     actions_text = "\n".join(
-        f"- Tour {a.get('month', '?')}/{a.get('year', year)}: {a.get('action', a.get('consequences', ''))}"
+        f"- Turn {a.get('month', '?')}/{a.get('year', year)}: {a.get('action', a.get('consequences', ''))}"
         for a in recent_actions[-5:]
-    ) or "Aucune action récente."
+    ) or "No recent actions."
 
     events_text = "\n".join(
-        f"- {e.get('title', '')} ({e.get('type', 'général')}): {e.get('description', '')}"
+        f"- {e.get('title', '')} ({e.get('type', 'general')}): {e.get('description', '')}"
         for e in recent_world_events[-6:]
-    ) or "Aucun événement mondial."
+    ) or "No world events."
 
     stability = player_state.get("stability", 50)
     at_war = player_state.get("at_war_with", [])
 
-    system = f"""Tu es le chroniqueur officiel de Phos, un jeu de simulation géopolitique.
-Rédige un résumé narratif immersif et journalistique des derniers tours de jeu pour {player_country['name']}.
-Nous sommes en {_format_date(year, month)}.
+    system = f"""You are the official chronicler of Phos, a geopolitical simulation game.
+Write an immersive, journalistic narrative summary of the last game turns for {player_country['name']}.
+The current date is {_format_date(year, month)}.
 
-État actuel :
-- Stabilité : {stability}/100
-- En guerre avec : {', '.join(at_war) if at_war else 'personne'}
-- PIB modifier : {player_state.get('economy_modifier', 1.0):.2f}x
+Current state:
+- Stability: {stability}/100
+- At war with: {', '.join(at_war) if at_war else 'nobody'}
+- GDP modifier: {player_state.get('economy_modifier', 1.0):.2f}x
 
-Actions du joueur (récentes) :
+Recent player actions:
 {actions_text}
 
-Événements mondiaux récents :
+Recent world events:
 {events_text}
 
-Rédige un résumé narratif en 3-4 paragraphes, dans le style d'un rapport diplomatique ou d'une analyse géopolitique.
-Commence par une phrase d'accroche forte. Mentionne les événements marquants, l'évolution du pays, les défis et opportunités.
-Réponds en français uniquement."""
+Write a narrative summary in 3-4 paragraphs, in the style of a diplomatic report or geopolitical analysis.
+Open with a strong hook. Mention key events, the country's evolution, challenges and opportunities.
+Reply in {config.language} only."""
 
     messages = [
         {"role": "system", "content": system},
-        {"role": "user", "content": "Rédige le résumé des derniers tours."},
+        {"role": "user", "content": "Write the summary of the last turns."},
     ]
     async for chunk in stream_chat(messages, config):
         yield chunk
@@ -698,31 +698,31 @@ async def analyze_diplomatic_exchange(
     country_response: str,
     config: AiConfig,
 ) -> dict:
-    system = f"""Tu es l'arbitre de Phos. Analyse cet échange diplomatique.
+    system = f"""You are the referee of Phos. Analyze this diplomatic exchange.
 
-Pays joueur : {player_country['name']} | Pays cible : {target_country['name']}
+Player country: {player_country['name']} | Target country: {target_country['name']}
 
-Message du joueur : {player_message}
-Réponse de {target_country['name']} : {country_response}
+Player message: {player_message}
+{target_country['name']} response: {country_response}
 
-Un accord concret a-t-il été conclu ? (traité commercial, alliance, accord militaire, aide humanitaire, accord culturel, etc.)
-Réponds UNIQUEMENT en JSON valide, sans texte autour :
+Was a concrete agreement reached? (trade treaty, alliance, military agreement, humanitarian aid, cultural agreement, etc.)
+Respond ONLY with valid JSON, no surrounding text:
 {{
   "agreement_reached": true/false,
-  "agreement_type": "commercial|militaire|diplomatique|culturel|humanitaire|null",
-  "summary": "Courte description de l'accord en français, ou null",
-  "relation_delta": int_entre_moins10_et_plus20,
-  "economy_delta": float_entre_moins0.02_et_plus0.03,
+  "agreement_type": "trade|military|diplomatic|cultural|humanitarian|null",
+  "summary": "Short description of the agreement in English, or null",
+  "relation_delta": int_between_minus10_and_plus20,
+  "economy_delta": float_between_minus0.02_and_plus0.03,
   "domestic_events": []
 }}
 
-Règles :
-- agreement_reached=true UNIQUEMENT si les deux parties ont explicitement accepté un accord précis
-- relation_delta : +5 à +15 pour accord accepté, -5 à -10 pour refus ferme, 0 si discussion neutre
-- economy_delta : 0.01 à 0.02 pour accord commercial, 0 sinon
-- domestic_events : liste vide sauf pour accord majeur (alliance formelle, grand traité), max 1 événement"""
+Rules:
+- agreement_reached=true ONLY if both parties have explicitly accepted a specific agreement
+- relation_delta: +5 to +15 for accepted agreement, -5 to -10 for firm refusal, 0 for neutral discussion
+- economy_delta: 0.01 to 0.02 for trade agreement, 0 otherwise
+- domestic_events: empty list except for major agreements (formal alliance, major treaty), max 1 event"""
 
-    messages = [{"role": "system", "content": system}, {"role": "user", "content": "Analyse."}]
+    messages = [{"role": "system", "content": system}, {"role": "user", "content": "Analyze."}]
     raw = await chat(messages, config)
     return _parse_diplomatic_effect(raw)
 

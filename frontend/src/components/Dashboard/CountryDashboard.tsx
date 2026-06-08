@@ -438,7 +438,7 @@ export default function CountryDashboard({ country, isPlayer = false, playerCoun
                     <span className="text-slate-400 line-clamp-3">{msg.response}</span>
                   </div>
                 )}
-                <div className="text-xs text-slate-600">{new Date(msg.timestamp).toLocaleDateString('fr-FR')}</div>
+                <div className="text-xs text-slate-600">{new Date(msg.timestamp).toLocaleDateString('en-US')}</div>
               </div>
             ))}
           </div>

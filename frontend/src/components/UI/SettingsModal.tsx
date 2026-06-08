@@ -7,6 +7,19 @@ const PRESETS = [
   { label: 'Ollama (local)', baseUrl: 'http://host.docker.internal:11434/v1', model: 'llama3.2' },
 ]
 
+const LANGUAGES = [
+  { code: 'English',    label: 'English' },
+  { code: 'French',     label: 'Français' },
+  { code: 'Spanish',    label: 'Español' },
+  { code: 'German',     label: 'Deutsch' },
+  { code: 'Portuguese', label: 'Português' },
+  { code: 'Italian',    label: 'Italiano' },
+  { code: 'Arabic',     label: 'العربية' },
+  { code: 'Chinese',    label: '中文' },
+  { code: 'Japanese',   label: '日本語' },
+  { code: 'Russian',    label: 'Русский' },
+]
+
 
 function isSocle(url: string) {
   return url.includes('socle.ai')
@@ -85,8 +98,8 @@ export default function SettingsModal({ open, onClose, required = false }: Props
             <div className="bg-yellow-900/20 border border-yellow-700 rounded-lg p-3 flex items-start gap-2 text-sm text-yellow-300">
               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
               {isSocle(form.apiBaseUrl)
-                ? 'Une clé API Socle est requise pour jouer.'
-                : 'Configure le modèle et l\'URL Ollama, puis sauvegarde.'}
+                ? 'A Socle API key is required to play.'
+                : 'Configure the model and Ollama URL, then save.'}
             </div>
           )}
 
@@ -116,14 +129,14 @@ export default function SettingsModal({ open, onClose, required = false }: Props
           {/* API Key */}
           <div>
             <label className="stat-label block mb-1.5">
-              API Key {!socle && <span className="text-slate-500 font-normal">(optionnel avec Ollama)</span>}
+              API Key {!socle && <span className="text-slate-500 font-normal">(optional with Ollama)</span>}
             </label>
             <div className="relative">
               <input
                 type={showKey ? 'text' : 'password'}
                 value={form.apiKey}
                 onChange={(e) => setForm((f) => ({ ...f, apiKey: e.target.value }))}
-                placeholder={socle ? 'sk-...' : 'ollama (laisser vide)'}
+                placeholder={socle ? 'sk-...' : 'ollama (leave blank)'}
                 className="w-full bg-slate-800 border border-pax-border rounded-lg px-3 py-2.5 pr-10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-pax-accent"
               />
               <button
@@ -133,7 +146,7 @@ export default function SettingsModal({ open, onClose, required = false }: Props
                 {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
-            <p className="text-xs text-slate-500 mt-1">Stockée uniquement dans ton navigateur (localStorage)</p>
+            <p className="text-xs text-slate-500 mt-1">Stored only in your browser (localStorage)</p>
           </div>
 
           {/* Base URL */}
@@ -149,7 +162,7 @@ export default function SettingsModal({ open, onClose, required = false }: Props
 
           {/* Model */}
           <div>
-            <label className="stat-label block mb-1.5">Modèle</label>
+            <label className="stat-label block mb-1.5">Model</label>
             <input
               type="text"
               value={form.model}
@@ -161,7 +174,7 @@ export default function SettingsModal({ open, onClose, required = false }: Props
               <div className="mt-2 flex items-start gap-1.5 text-xs text-slate-400 bg-slate-800/60 border border-pax-border rounded-lg px-3 py-2">
                 <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-pax-accent" />
                 <span>
-                  L'agent <span className="text-white font-medium">MJ Phos</span> sera créé ou mis à jour automatiquement sur ton instance Socle.
+                  The <span className="text-white font-medium">MJ Phos</span> agent will be created or updated automatically on your Socle instance.
                 </span>
               </div>
             ) : (
@@ -169,19 +182,33 @@ export default function SettingsModal({ open, onClose, required = false }: Props
                 <div className="flex items-start gap-1.5 text-xs text-slate-400 bg-slate-800/60 border border-pax-border rounded-lg px-3 py-2">
                   <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-yellow-400" />
                   <span>
-                    Recommandé : <span className="text-white font-medium">llama3.2</span>, <span className="text-white font-medium">mistral</span>, <span className="text-white font-medium">qwen2.5</span> (≥ 7B).
-                    Les petits modèles peuvent produire du JSON invalide.
+                    Recommended: <span className="text-white font-medium">llama3.2</span>, <span className="text-white font-medium">mistral</span>, <span className="text-white font-medium">qwen2.5</span> (≥ 7B).
+                    Small models may produce invalid JSON.
                   </span>
                 </div>
                 <div className="flex items-start gap-1.5 text-xs text-slate-400 bg-slate-800/60 border border-pax-border rounded-lg px-3 py-2">
                   <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-slate-500" />
                   <span>
-                    URL depuis Docker : <span className="text-white font-mono text-xs">host.docker.internal:11434</span>.
-                    La mémoire de conversation entre tours n'est pas disponible en local (pas de Responses API).
+                    Docker URL: <span className="text-white font-mono text-xs">host.docker.internal:11434</span>.
+                    Conversation memory between turns is not available locally (no Responses API).
                   </span>
                 </div>
               </div>
             )}
+          </div>
+
+          {/* Language */}
+          <div>
+            <label className="stat-label block mb-1.5">Response Language</label>
+            <select
+              value={form.language ?? 'English'}
+              onChange={(e) => setForm((f) => ({ ...f, language: e.target.value }))}
+              className="w-full bg-slate-800 border border-pax-border rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-pax-accent"
+            >
+              {LANGUAGES.map((l) => (
+                <option key={l.code} value={l.code}>{l.label}</option>
+              ))}
+            </select>
           </div>
         </div>
 

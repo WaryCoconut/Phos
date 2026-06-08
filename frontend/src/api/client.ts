@@ -5,21 +5,23 @@ import { useSettingsStore } from '@/store/settingsStore'
 const api = axios.create({ baseURL: '/api' })
 
 api.interceptors.request.use((config) => {
-  const { apiKey, apiBaseUrl, model, provider } = useSettingsStore.getState().settings
+  const { apiKey, apiBaseUrl, model, provider, language } = useSettingsStore.getState().settings
   if (apiKey) config.headers['x-api-key'] = apiKey
   if (apiBaseUrl) config.headers['x-api-base-url'] = apiBaseUrl
   if (model) config.headers['x-api-model'] = model
   config.headers['x-api-provider'] = provider ?? 'socle'
+  config.headers['x-api-language'] = language ?? 'English'
   return config
 })
 
 function apiHeaders(): Record<string, string> {
-  const { apiKey, apiBaseUrl, model, provider } = useSettingsStore.getState().settings
+  const { apiKey, apiBaseUrl, model, provider, language } = useSettingsStore.getState().settings
   const h: Record<string, string> = { 'Content-Type': 'application/json' }
   if (apiKey) h['x-api-key'] = apiKey
   if (apiBaseUrl) h['x-api-base-url'] = apiBaseUrl
   if (model) h['x-api-model'] = model
   h['x-api-provider'] = provider ?? 'socle'
+  h['x-api-language'] = language ?? 'English'
   return h
 }
 
@@ -79,8 +81,8 @@ export const mapsApi = {
     form.append('file', file)
     const res = await fetch('/api/maps/upload', { method: 'POST', headers, body: form })
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: 'Upload échoué' }))
-      throw new Error(err.detail ?? 'Upload échoué')
+      const err = await res.json().catch(() => ({ detail: 'Upload failed' }))
+      throw new Error(err.detail ?? 'Upload failed')
     }
     return res.json()
   },
@@ -149,7 +151,7 @@ export function streamSimulation(
           try {
             const event = JSON.parse(line.slice(6)) as SimEvent
             if (event.type === 'done') { onDone(event); return }
-            if (event.type === 'error') { onError?.(event.message ?? 'Erreur') }
+            if (event.type === 'error') { onError?.(event.message ?? 'Error') }
             onEvent(event)
           } catch { /* skip */ }
         }
@@ -234,7 +236,7 @@ export function streamDiplomacy(
         }
       }
     } catch (e) {
-      if (!(e instanceof DOMException && e.name === 'AbortError')) onError?.('Connexion interrompue')
+      if (!(e instanceof DOMException && e.name === 'AbortError')) onError?.('Connection lost')
     }
   })().catch(() => {})
   return () => ctrl.abort()

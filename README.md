@@ -11,12 +11,9 @@ AI-powered geopolitical narrative simulation. Play as a nation, make political d
   <img src="doc/haiti1.jpg" width="400" />
 </div>
 
-> Compatible with **[socle.ai](https://socle.ai)** by default (OpenAI-compatible API) and **[ollama](https://ollama.com/)**
-Works with any OpenAI-compatible endpoint.
+> Compatible with **[socle.ai](https://socle.ai)** (default) and **[Ollama](https://ollama.com/)** — works with any OpenAI-compatible endpoint. The API is configured directly in the app, no `.env` required.
 
-You can create your own world and scenario (warhammer 40k in preparation)
-
-
+You can create your own world and scenario (Warhammer 40k in preparation)
 
 ## Features
 
@@ -28,73 +25,79 @@ You can create your own world and scenario (warhammer 40k in preparation)
 - **Turn simulation** — the AI generates world events each turn (1 month)
 - **Custom scenarios** — build your own maps and factions from scratch (LotR, Star Wars, Warhammer 40k, Napoleonic Wars…)
 
-## Quick start (development)
+---
 
-### Prerequisites
-- Python 3.11+
-- Node.js 20+
-- An API key for socle.ai or any OpenAI-compatible provider
+## Quick start
 
-### 1. Backend (FastAPI)
+### With Docker (recommended)
 
 ```bash
-cd backend
-
-# Copy the config template
-cp .env.example .env
-# → Edit .env: set PAX_API_KEY and optionally PAX_MODEL
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Start the server
-uvicorn app.main:app --reload --port 8000
+make up
 ```
 
-### 2. Frontend (React + Vite)
+Then open **http://localhost:5173** and configure your API in the app (top-right button).
+
+### Local development (without Docker)
 
 ```bash
-cd frontend
+# Install dependencies
+make install
 
-npm install
-npm run dev
+# Start backend + frontend in parallel
+make dev
 ```
 
 Open **http://localhost:5173**
 
 ---
 
-## Docker
+## API Configuration
 
-```bash
-# Copy and configure .env
-cp backend/.env.example backend/.env
-# → Set PAX_API_KEY in backend/.env
+The API is configured at runtime via the **Configure API** button in the app. Nothing to set up beforehand.
 
-docker-compose up --build
-```
+### Socle (default)
 
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:8000
-- API docs: http://localhost:8000/docs
+Get a free key at [socle.ai](https://socle.ai), then enter it in the app:
+- **Base URL:** `https://app.socle.ai/api/v1`
+- **API Key:** your key
+
+### Ollama (local, free)
+
+1. [Install Ollama](https://ollama.com/) and pull a model:
+   ```bash
+   ollama pull llama3.2
+   ```
+2. In the app, select **Ollama (local)** — the URL is pre-filled automatically:
+   - **Base URL:** `http://host.docker.internal:11434/v1`
+   - **API Key:** leave empty
+   - **Model:** the name of your pulled model (e.g. `llama3.2`, `mistral`, `gemma4`)
+
+> Recommended models: **llama3.2**, **mistral**, **qwen2.5** (≥ 7B). Smaller models may produce invalid JSON.
+
+### Other providers
+
+Any OpenAI-compatible endpoint works — just set the Base URL and API key:
+
+| Provider | Base URL |
+|----------|----------|
+| OpenAI | `https://api.openai.com/v1` |
+| Groq | `https://api.groq.com/openai/v1` |
+| Ollama | `http://host.docker.internal:11434/v1` |
 
 ---
 
-## Configuration
+## Makefile reference
 
-`backend/.env` (copied from `.env.example`):
-
-```env
-# AI API — OpenAI-compatible (socle.ai by default)
-PAX_API_BASE_URL=https://api.socle.ai/v1
-PAX_API_KEY=sk-your-api-key-here
-PAX_MODEL=gpt-4o
-
-# Other compatible providers:
-# OpenAI official : PAX_API_BASE_URL=https://api.openai.com/v1
-# Local Ollama    : PAX_API_BASE_URL=http://localhost:11434/v1  PAX_API_KEY=ollama
-# Groq            : PAX_API_BASE_URL=https://api.groq.com/openai/v1
-```
+| Command | Description |
+|---------|-------------|
+| `make up` | Build and start with Docker |
+| `make down` | Stop containers |
+| `make restart` | Restart containers |
+| `make logs` | Follow container logs |
+| `make install` | Install backend + frontend dependencies (local dev) |
+| `make dev` | Start backend + frontend locally (no Docker) |
+| `make dev-backend` | Start backend only |
+| `make dev-frontend` | Start frontend only |
 
 ---
 

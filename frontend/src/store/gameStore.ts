@@ -43,7 +43,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       const state = await gameApi.getState(sessionId)
       set({ gameState: state, isLoading: false })
     } catch {
-      set({ error: 'Impossible de charger la partie', isLoading: false })
+      set({ error: 'Failed to load game', isLoading: false })
     }
   },
 
@@ -56,7 +56,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       const state = await gameApi.getState(sessionId)
       set({ gameState: state, isEndingTurn: false })
     } catch {
-      set({ error: 'Erreur lors du passage au tour suivant', isEndingTurn: false })
+      set({ error: 'Failed to advance turn', isEndingTurn: false })
     }
   },
 
