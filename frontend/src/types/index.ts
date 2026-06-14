@@ -3,6 +3,7 @@ export interface CountryNationalStats {
   food_autonomy: number
   energy_autonomy: number
   economic_independence: number
+  security?: number
 }
 
 export interface CountryEconomy {
@@ -60,6 +61,12 @@ export interface Alliance {
   members: string[]
   description: string
   color: string
+}
+
+export interface CustomGroup {
+  id: string
+  name: string
+  members: string[]
 }
 
 export interface WorldEvent {
@@ -132,6 +139,10 @@ export interface SimEvent {
   narrative?: string
   relation_changes?: Record<string, Record<string, number>>
   stability_delta?: number
+  economy_delta?: number
+  military_delta?: number
+  stat_deltas?: Record<string, number>
+  equipment_changes?: Record<string, number>
   message?: string
   // domestic_event + world_event type field
   event_type?: string
@@ -147,6 +158,7 @@ export interface SimEvent {
   // done event summary fields
   final_stability?: number
   final_economy_modifier?: number
+  final_military_modifier?: number
   world_event_count?: number
   action_count?: number
   treaty_count?: number
@@ -198,6 +210,7 @@ export interface GameState {
   pending_actions?: PendingAction[]
   region_state?: RegionState
   treaties?: Treaty[]
+  custom_groups?: CustomGroup[]
   custom_map_id?: string
   custom_map_feature_id_property?: string
   initial_territories?: Record<string, string>
@@ -237,10 +250,14 @@ export interface StatSnapshot {
   turn: number
   stability: number
   economy_modifier: number
+  gdp?: number
+  military_modifier?: number
   sovereignty?: number
   food_autonomy?: number
   energy_autonomy?: number
   economic_independence?: number
+  security?: number
+  equipment?: Record<string, number>
 }
 
 export type LeftPanel = 'actions' | 'diplomacy'

@@ -94,9 +94,16 @@ class PendingConsequence(BaseModel):
     economy_impact: float = 0.0
 
 
+class CustomGroup(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    members: List[str]
+
+
 class GameSession(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     scenario_id: str
+    custom_groups: List[CustomGroup] = []
     player_country_id: str
     year: int
     month: int

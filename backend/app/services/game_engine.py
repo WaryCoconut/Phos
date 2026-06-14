@@ -129,7 +129,7 @@ def get_game_state(session_id: str) -> Optional[dict]:
 
     # Merge scenario countries
     countries: dict = {
-        cid: _merge_country(scenario.countries.get(cid), state)
+        cid: merge_country(scenario.countries.get(cid), state)
         for cid, state in session.country_states.items()
     }
     # Overlay dynamic countries (created from independent regions)
@@ -143,6 +143,11 @@ def get_game_state(session_id: str) -> Optional[dict]:
         merged["at_war_with"] = dyn_state.get("at_war_with", [])
         merged["sanctions_by"] = dyn_state.get("sanctions_by", [])
         merged["active_events"] = dyn_state.get("active_events", [])
+        # Overlay dynamic economy stats
+        if "economy" in merged and merged["economy"]:
+            merged["economy"]["gdp"] = dyn_state.get("gdp", merged["economy"]["gdp"])
+            merged["economy"]["gdp_growth"] = dyn_state.get("gdp_growth", merged["economy"]["gdp_growth"])
+            merged["economy"]["gdp_per_capita"] = dyn_state.get("gdp_per_capita", merged["economy"]["gdp_per_capita"])
         countries[cid] = merged
 
     return {
@@ -151,9 +156,10 @@ def get_game_state(session_id: str) -> Optional[dict]:
         "year": session.year,
         "month": session.month,
         "turn": session.turn,
-        "player_country": _merge_country(player_country, player_state),
+        "player_country": merge_country(player_country, player_state),
         "countries": countries,
         "alliances": {k: v.model_dump() for k, v in scenario.alliances.items()},
+        "custom_groups": [g.model_dump(mode="json") for g in session.custom_groups],
         "recent_events": [e.model_dump(mode="json") for e in session.world_events[-10:]],
         "domestic_events": [e.model_dump(mode="json") for e in session.domestic_events[-20:]],
         "map_pois": [p.model_dump(mode="json") for p in session.map_pois],
@@ -218,9 +224,13 @@ def apply_action_result_to_session(session: GameSession, action_result: dict, sa
     player_state = session.country_states.get(session.player_country_id, {})
     stab = player_state.get("stability", 50) + action_result.get("stability_delta", 0) * scale
     player_state["stability"] = max(0, min(100, round(stab)))
-    eco = player_state.get("economy_modifier", 1.0) * (1 + action_result.get("economy_delta", 0.0) * scale)
-    player_state["economy_modifier"] = round(eco, 4)
+    mil = player_state.get("military_modifier", 1.0) * (1 + action_result.get("military_delta", 0.0) * scale)
+    player_state["military_modifier"] = round(mil, 4)
     session.country_states[session.player_country_id] = player_state
+
+    economy_delta = action_result.get("economy_delta", 0.0)
+    if economy_delta:
+        _apply_economy_delta(session, session.player_country_id, economy_delta, scale=scale)
 
     for de_data in action_result.get("domestic_events", []):
         if not isinstance(de_data, dict) or not de_data.get("title"):
@@ -245,14 +255,30 @@ def apply_action_result_to_session(session: GameSession, action_result: dict, sa
         scenario = load_scenario(session.scenario_id)
         base_country = scenario.countries.get(session.player_country_id) if scenario else None
         base_ns = (base_country.national_stats.model_dump() if base_country and base_country.national_stats
-                   else {"sovereignty": 50, "food_autonomy": 50, "energy_autonomy": 50, "economic_independence": 50})
+                   else {"sovereignty": 50, "food_autonomy": 50, "energy_autonomy": 50, "economic_independence": 50, "security": 50})
         ps = session.country_states.get(session.player_country_id, {})
         current_ns = ps.get("national_stats") or dict(base_ns)
-        for key in ("sovereignty", "food_autonomy", "energy_autonomy", "economic_independence"):
+        for key in ("sovereignty", "food_autonomy", "energy_autonomy", "economic_independence", "security"):
             delta = stat_deltas.get(key, 0)
             if delta:
                 current_ns[key] = round(max(0, min(120, current_ns.get(key, base_ns.get(key, 50)) + delta)), 1)
         ps["national_stats"] = current_ns
+        session.country_states[session.player_country_id] = ps
+
+    equipment_changes = action_result.get("equipment_changes", {})
+    if equipment_changes:
+        scenario = load_scenario(session.scenario_id)
+        base_country = scenario.countries.get(session.player_country_id) if scenario else None
+        base_eq = (base_country.military.equipment if base_country and base_country.military and base_country.military.equipment
+                   else {})
+        ps = session.country_states.get(session.player_country_id, {})
+        current_eq = ps.get("equipment")
+        if current_eq is None:
+            current_eq = dict(base_eq) if base_eq else {}
+        for key, delta in equipment_changes.items():
+            if delta:
+                current_eq[key] = max(0, current_eq.get(key, 0) + delta)
+        ps["equipment"] = current_eq
         session.country_states[session.player_country_id] = ps
 
     poi_data = action_result.get("map_poi")
@@ -335,9 +361,7 @@ def apply_simulation_unit(
                 ps["stability"] = max(0, min(100, round(ps.get("stability", 50) + event.stability_impact)))
                 session.country_states[player_id] = ps
             if event.economy_impact:
-                ps = session.country_states.get(player_id, {})
-                ps["economy_modifier"] = round(ps.get("economy_modifier", 1.0) * (1 + event.economy_impact), 4)
-                session.country_states[player_id] = ps
+                _apply_economy_delta(session, player_id, event.economy_impact, scale=scale)
 
     if action_result:
         apply_action_result_to_session(session, action_result, save=False, scale=scale)
@@ -481,6 +505,58 @@ def add_treaty(session_id: str, treaty: Treaty) -> None:
     _save_session(session)
 
 
+def create_custom_group(session_id: str, name: str, members: list[str]):
+    from app.models.game import CustomGroup
+    session = get_session(session_id)
+    if not session:
+        return None
+    # Check if a group with the same name already exists
+    for existing in session.custom_groups:
+        if existing.name.lower() == name.lower():
+            existing.members = list(members)
+            session.updated_at = datetime.utcnow()
+            _save_session(session)
+            return existing
+    new_group = CustomGroup(name=name, members=list(members))
+    session.custom_groups.append(new_group)
+    session.updated_at = datetime.utcnow()
+    _save_session(session)
+    return new_group
+
+
+def _apply_economy_delta(session: GameSession, country_id: str, delta: float, scale: float = 1.0):
+    """Applies an economy change delta (e.g. 0.02 for +2%) to both GDP value and growth rate relatively."""
+    state = session.country_states.get(country_id)
+    if not state:
+        return
+    scenario = load_scenario(session.scenario_id)
+    country = scenario.countries.get(country_id)
+    if not country:
+        dyn = session.dynamic_countries.get(country_id)
+        if dyn:
+            from app.models.scenario import Country as ScenarioCountry
+            country = ScenarioCountry(**dyn)
+    if not country or not country.economy:
+        return
+        
+    if "gdp_growth" not in state:
+        state["gdp_growth"] = country.economy.gdp_growth
+    if "gdp" not in state:
+        state["gdp"] = country.economy.gdp
+    if "gdp_per_capita" not in state:
+        state["gdp_per_capita"] = country.economy.gdp_per_capita
+        
+    effective_delta = delta * scale
+    
+    # Grow the GDP value and GDP/capita directly
+    state["gdp"] = round(state["gdp"] * (1 + effective_delta), 2)
+    state["gdp_per_capita"] = int(state["gdp_per_capita"] * (1 + effective_delta))
+    
+    # Grow the yearly growth rate relatively (e.g., 7.1% * 1.02 = 7.24%)
+    state["gdp_growth"] = round(state["gdp_growth"] * (1 + effective_delta), 2)
+    session.country_states[country_id] = state
+
+
 def _apply_treaty_effects(session: GameSession) -> None:
     """Apply monthly economy and relation bonuses from active treaties."""
     player_id = session.player_country_id
@@ -521,10 +597,7 @@ def apply_diplomatic_effects(
 
     eco_delta = effect.get("economy_delta", 0.0)
     if eco_delta:
-        ps = session.country_states.get(player_country_id, {})
-        eco = ps.get("economy_modifier", 1.0) * (1 + eco_delta)
-        ps["economy_modifier"] = round(eco, 4)
-        session.country_states[player_country_id] = ps
+        _apply_economy_delta(session, player_country_id, eco_delta)
 
     for de_data in effect.get("domestic_events", [])[:1]:
         if isinstance(de_data, dict) and de_data.get("title"):
@@ -598,10 +671,10 @@ def list_sessions() -> list[dict]:
 
 # ─── Internals ──────────────────────────────────────────────────────────────────
 
-def _merge_country(country, state: dict) -> dict:
+def merge_country(country, state: dict) -> dict:
     if not country:
         return {}
-    d = country.model_dump()
+    d = country.model_dump() if hasattr(country, "model_dump") else dict(country)
     if state:
         d["stability"] = state.get("stability", 50)
         d["economy_modifier"] = state.get("economy_modifier", 1.0)
@@ -617,6 +690,11 @@ def _merge_country(country, state: dict) -> dict:
             d["economy"]["sectors"] = state["sectors"]
         if state.get("equipment") and d.get("military"):
             d["military"]["equipment"] = state["equipment"]
+        # Overlay dynamic economy stats
+        if d.get("economy"):
+            d["economy"]["gdp"] = state.get("gdp", d["economy"]["gdp"])
+            d["economy"]["gdp_growth"] = state.get("gdp_growth", d["economy"]["gdp_growth"])
+            d["economy"]["gdp_per_capita"] = state.get("gdp_per_capita", d["economy"]["gdp_per_capita"])
     return d
 
 
@@ -634,12 +712,33 @@ def _simulate_economic_tick(session: GameSession, scale: float = 1.0):
     scenario = load_scenario(session.scenario_id)
     if not scenario:
         return
+    
+    is_quarter = session.month in (3, 6, 9, 12)
+    
     for cid, state in session.country_states.items():
         country = scenario.countries.get(cid)
+        if not country:
+            dyn = session.dynamic_countries.get(cid)
+            if dyn:
+                from app.models.scenario import Country as ScenarioCountry
+                country = ScenarioCountry(**dyn)
         if not country or not country.economy:
             continue
-        growth = country.economy.gdp_growth / 100 / 12 * scale
-        state["economy_modifier"] = round(state.get("economy_modifier", 1.0) * (1 + growth), 4)
+            
+        # Ensure dynamic economy stats are initialized in the state
+        if "gdp" not in state:
+            state["gdp"] = country.economy.gdp
+        if "gdp_growth" not in state:
+            state["gdp_growth"] = country.economy.gdp_growth
+        if "gdp_per_capita" not in state:
+            state["gdp_per_capita"] = country.economy.gdp_per_capita
+            
+        # Apply quarterly growth to GDP and GDP per capita
+        if is_quarter and state.get("last_gdp_update_turn") != session.turn:
+            quarterly_growth = (state["gdp_growth"] / 4) / 100
+            state["gdp"] = round(state["gdp"] * (1 + quarterly_growth * scale), 2)
+            state["gdp_per_capita"] = int(state["gdp_per_capita"] * (1 + quarterly_growth * scale))
+            state["last_gdp_update_turn"] = session.turn
 
 
 def _fire_pending_consequences(session: GameSession) -> None:
@@ -665,9 +764,7 @@ def _fire_pending_consequences(session: GameSession) -> None:
                 ps["stability"] = max(0, min(100, round(ps.get("stability", 50) + pc.stability_impact)))
                 session.country_states[session.player_country_id] = ps
             if pc.economy_impact:
-                ps = session.country_states.get(session.player_country_id, {})
-                ps["economy_modifier"] = round(ps.get("economy_modifier", 1.0) * (1 + pc.economy_impact), 4)
-                session.country_states[session.player_country_id] = ps
+                _apply_economy_delta(session, session.player_country_id, pc.economy_impact)
             fired_ids.append(pc.id)
 
     session.pending_consequences = [pc for pc in session.pending_consequences if pc.id not in fired_ids]

@@ -49,8 +49,9 @@ async def submit_action(
     if not player_country:
         raise HTTPException(status_code=400, detail="Pays du joueur introuvable")
 
+    player_country_data = game_engine.merge_country(player_country, session.country_states.get(session.player_country_id))
     consequences = await ai_service.process_player_action(
-        player_country=player_country.model_dump(),
+        player_country=player_country_data,
         action=action.content,
         year=session.year,
         month=session.month,
@@ -84,6 +85,20 @@ async def remove_queued_action(session_id: str, index: int):
         return {"queue": queue}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+from pydantic import BaseModel
+class CreateCustomGroupRequest(BaseModel):
+    name: str
+    members: list[str]
+
+
+@router.post("/{session_id}/custom-group")
+async def create_custom_group(session_id: str, req: CreateCustomGroupRequest):
+    group = game_engine.create_custom_group(session_id, req.name, req.members)
+    if not group:
+        raise HTTPException(status_code=404, detail="Session introuvable")
+    return group.model_dump(mode="json")
 
 
 @router.post("/{session_id}/simulate")
@@ -156,8 +171,9 @@ async def simulate(
             action_results = []
             for action_content in unit_actions:
                 try:
+                    player_country_data = game_engine.merge_country(player_country, session.country_states.get(session.player_country_id))
                     result_data = await ai_service.process_player_action(
-                        player_country=player_country.model_dump(),
+                        player_country=player_country_data,
                         action=action_content,
                         year=session.year,
                         month=session.month,
@@ -177,6 +193,7 @@ async def simulate(
                         "domestic_events": [],
                         "map_poi": None,
                         "stat_deltas": {"sovereignty": 0, "food_autonomy": 0, "energy_autonomy": 0, "economic_independence": 0},
+                        "equipment_changes": {},
                         "future_events": [],
                     })
 
@@ -208,7 +225,17 @@ async def simulate(
 
             for ar in action_results:
                 if ar.get("applicable", True):
-                    yield f"data: {json.dumps({'type': 'action_result', 'action': ar['action'], 'narrative': ar.get('narrative', ''), 'relation_changes': ar.get('relation_changes', {}), 'stability_delta': ar.get('stability_delta', 0)})}\n\n"
+                    yield f"data: {json.dumps({
+                        'type': 'action_result',
+                        'action': ar['action'],
+                        'narrative': ar.get('narrative', ''),
+                        'relation_changes': ar.get('relation_changes', {}),
+                        'stability_delta': ar.get('stability_delta', 0),
+                        'economy_delta': ar.get('economy_delta', 0.0),
+                        'military_delta': ar.get('military_delta', 0.0),
+                        'stat_deltas': ar.get('stat_deltas', {}),
+                        'equipment_changes': ar.get('equipment_changes', {}),
+                    })}\n\n"
 
             for de in new_domestic:
                 yield f"data: {json.dumps({'type': 'domestic_event', 'title': de.title, 'description': de.description, 'event_type': de.type, 'severity': de.severity, 'stability_impact': de.stability_impact})}\n\n"
@@ -218,7 +245,7 @@ async def simulate(
 
         game_engine._save_snapshot(session)
         final_ps = session.country_states.get(session.player_country_id, {})
-        yield f"data: {json.dumps({'type': 'done', 'final_stability': final_ps.get('stability', 50), 'final_economy_modifier': final_ps.get('economy_modifier', 1.0), 'world_event_count': total_world_events, 'action_count': total_actions_processed, 'treaty_count': len(session.treaties)})}\n\n"
+        yield f"data: {json.dumps({'type': 'done', 'final_stability': final_ps.get('stability', 50), 'final_economy_modifier': final_ps.get('economy_modifier', 1.0), 'final_military_modifier': final_ps.get('military_modifier', 1.0), 'world_event_count': total_world_events, 'action_count': total_actions_processed, 'treaty_count': len(session.treaties)})}\n\n"
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 

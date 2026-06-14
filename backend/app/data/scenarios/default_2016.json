@@ -254,7 +254,8 @@
           "navires_guerre": 273,
           "sous_marins": 72,
           "helicopteres": 5760,
-          "artillerie": 1934
+          "artillerie": 1934,
+          "drones": 600
         }
       },
       "relations": {
@@ -350,7 +351,8 @@
           "navires_guerre": 75,
           "sous_marins": 68,
           "helicopteres": 912,
-          "artillerie": 5971
+          "artillerie": 5971,
+          "drones": 450
         }
       },
       "relations": {
@@ -442,7 +444,8 @@
           "navires_guerre": 48,
           "sous_marins": 63,
           "helicopteres": 1543,
-          "artillerie": 6083
+          "artillerie": 6083,
+          "drones": 300
         }
       },
       "relations": {
@@ -534,7 +537,8 @@
           "navires_guerre": 20,
           "sous_marins": 6,
           "helicopteres": 226,
-          "artillerie": 185
+          "artillerie": 185,
+          "drones": 60
         }
       },
       "relations": {
@@ -620,7 +624,8 @@
           "navires_guerre": 22,
           "sous_marins": 10,
           "helicopteres": 408,
-          "artillerie": 262
+          "artillerie": 262,
+          "drones": 120
         }
       },
       "relations": {
@@ -709,7 +714,8 @@
           "navires_guerre": 19,
           "sous_marins": 10,
           "helicopteres": 354,
-          "artillerie": 184
+          "artillerie": 184,
+          "drones": 150
         }
       },
       "relations": {
@@ -791,7 +797,8 @@
           "navires_guerre": 48,
           "sous_marins": 17,
           "helicopteres": 658,
-          "artillerie": 616
+          "artillerie": 616,
+          "drones": 50
         }
       },
       "relations": {
@@ -873,7 +880,8 @@
           "navires_guerre": 25,
           "sous_marins": 13,
           "helicopteres": 722,
-          "artillerie": 9719
+          "artillerie": 9719,
+          "drones": 80
         }
       },
       "relations": {
@@ -955,7 +963,8 @@
           "navires_guerre": 15,
           "sous_marins": 5,
           "helicopteres": 456,
-          "artillerie": 436
+          "artillerie": 436,
+          "drones": 5
         }
       },
       "relations": {
@@ -1040,7 +1049,8 @@
           "navires_guerre": 13,
           "sous_marins": 4,
           "helicopteres": 363,
-          "artillerie": 24
+          "artillerie": 24,
+          "drones": 20
         }
       },
       "relations": {
@@ -1117,7 +1127,8 @@
           "navires_guerre": 13,
           "sous_marins": 6,
           "helicopteres": 196,
-          "artillerie": 72
+          "artillerie": 72,
+          "drones": 15
         }
       },
       "relations": {
@@ -1194,7 +1205,8 @@
           "navires_guerre": 23,
           "sous_marins": 22,
           "helicopteres": 695,
-          "artillerie": 11038
+          "artillerie": 11038,
+          "drones": 40
         }
       },
       "relations": {
@@ -1270,7 +1282,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 57,
-          "artillerie": 283
+          "artillerie": 283,
+          "drones": 5
         }
       },
       "relations": {
@@ -1348,7 +1361,8 @@
           "navires_guerre": 3,
           "sous_marins": 1,
           "helicopteres": 66,
-          "artillerie": 328
+          "artillerie": 328,
+          "drones": 5
         }
       },
       "relations": {
@@ -1424,7 +1438,8 @@
           "navires_guerre": 8,
           "sous_marins": 0,
           "helicopteres": 285,
-          "artillerie": 516
+          "artillerie": 516,
+          "drones": 5
         }
       },
       "relations": {
@@ -1508,7 +1523,8 @@
           "navires_guerre": 16,
           "sous_marins": 12,
           "helicopteres": 469,
-          "artillerie": 1748
+          "artillerie": 1748,
+          "drones": 140
         }
       },
       "relations": {
@@ -1593,7 +1609,8 @@
           "navires_guerre": 20,
           "sous_marins": 6,
           "helicopteres": 244,
-          "artillerie": 176
+          "artillerie": 176,
+          "drones": 30
         }
       },
       "relations": {
@@ -1671,7 +1688,8 @@
           "navires_guerre": 23,
           "sous_marins": 3,
           "helicopteres": 157,
-          "artillerie": 306
+          "artillerie": 306,
+          "drones": 20
         }
       },
       "relations": {
@@ -1752,7 +1770,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -1831,7 +1850,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -1908,7 +1928,8 @@
           "navires_guerre": 8,
           "sous_marins": 21,
           "helicopteres": 129,
-          "artillerie": 1900
+          "artillerie": 1900,
+          "drones": 5
         }
       },
       "relations": {
@@ -1990,7 +2011,8 @@
           "navires_guerre": 8,
           "sous_marins": 5,
           "helicopteres": 146,
-          "artillerie": 586
+          "artillerie": 586,
+          "drones": 180
         }
       },
       "relations": {
@@ -2070,7 +2092,8 @@
           "navires_guerre": 8,
           "sous_marins": 70,
           "helicopteres": 202,
-          "artillerie": 21000
+          "artillerie": 21000,
+          "drones": 5
         }
       },
       "relations": {
@@ -2146,7 +2169,8 @@
           "navires_guerre": 10,
           "sous_marins": 1,
           "helicopteres": 149,
-          "artillerie": 2260
+          "artillerie": 2260,
+          "drones": 5
         }
       },
       "relations": {
@@ -2223,7 +2247,8 @@
           "navires_guerre": 5,
           "sous_marins": 5,
           "helicopteres": 248,
-          "artillerie": 862
+          "artillerie": 862,
+          "drones": 5
         }
       },
       "relations": {
@@ -2300,7 +2325,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 41,
-          "artillerie": 207
+          "artillerie": 207,
+          "drones": 5
         }
       },
       "relations": {
@@ -2374,7 +2400,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -2450,7 +2477,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 34,
-          "artillerie": 168
+          "artillerie": 168,
+          "drones": 5
         }
       },
       "relations": {
@@ -2525,7 +2553,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 33,
-          "artillerie": 167
+          "artillerie": 167,
+          "drones": 5
         }
       },
       "relations": {
@@ -2600,7 +2629,8 @@
           "navires_guerre": 10,
           "sous_marins": 8,
           "helicopteres": 323,
-          "artillerie": 3278
+          "artillerie": 3278,
+          "drones": 5
         }
       },
       "relations": {
@@ -2677,7 +2707,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -2754,7 +2785,8 @@
           "navires_guerre": 10,
           "sous_marins": 4,
           "helicopteres": 381,
-          "artillerie": 3855
+          "artillerie": 3855,
+          "drones": 5
         }
       },
       "relations": {
@@ -2833,7 +2865,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 51,
-          "artillerie": 253
+          "artillerie": 253,
+          "drones": 5
         }
       },
       "relations": {
@@ -2909,7 +2942,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -2984,7 +3018,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 44,
-          "artillerie": 219
+          "artillerie": 219,
+          "drones": 5
         }
       },
       "relations": {
@@ -3057,7 +3092,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -3129,7 +3165,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 44,
-          "artillerie": 219
+          "artillerie": 219,
+          "drones": 5
         }
       },
       "relations": {
@@ -3198,7 +3235,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -3276,7 +3314,8 @@
           "navires_guerre": 4,
           "sous_marins": 2,
           "helicopteres": 101,
-          "artillerie": 504
+          "artillerie": 504,
+          "drones": 5
         }
       },
       "relations": {
@@ -3354,7 +3393,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -3430,7 +3470,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -3509,7 +3550,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -3583,7 +3625,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 56,
-          "artillerie": 280
+          "artillerie": 280,
+          "drones": 5
         }
       },
       "relations": {
@@ -3661,7 +3704,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -3737,7 +3781,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -3813,7 +3858,8 @@
           "navires_guerre": 13,
           "sous_marins": 11,
           "helicopteres": 205,
-          "artillerie": 1920
+          "artillerie": 1920,
+          "drones": 5
         }
       },
       "relations": {
@@ -3890,7 +3936,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -3966,7 +4013,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -4044,7 +4092,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -4120,7 +4169,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -4201,7 +4251,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -4282,7 +4333,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -4361,7 +4413,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -4440,7 +4493,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -4520,7 +4574,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -4600,7 +4655,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -4677,7 +4733,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -4752,7 +4809,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -4830,7 +4888,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -4905,7 +4964,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -4980,7 +5040,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -5055,7 +5116,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -5133,7 +5195,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -5211,7 +5274,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -5289,7 +5353,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -5369,7 +5434,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -5449,7 +5515,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -5526,7 +5593,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -5601,7 +5669,8 @@
           "navires_guerre": 3,
           "sous_marins": 1,
           "helicopteres": 70,
-          "artillerie": 348
+          "artillerie": 348,
+          "drones": 5
         }
       },
       "relations": {
@@ -5679,7 +5748,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -5757,7 +5827,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -5829,7 +5900,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -5904,7 +5976,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -5979,7 +6052,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -6054,7 +6128,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -6129,7 +6204,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -6204,7 +6280,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -6279,7 +6356,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -6354,7 +6432,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -6429,7 +6508,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -6504,7 +6584,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -6579,7 +6660,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -6654,7 +6736,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -6729,7 +6812,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -6804,7 +6888,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -6879,7 +6964,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -6954,7 +7040,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -7029,7 +7116,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -7104,7 +7192,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -7179,7 +7268,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -7254,7 +7344,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -7329,7 +7420,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -7404,7 +7496,8 @@
           "navires_guerre": 5,
           "sous_marins": 2,
           "helicopteres": 121,
-          "artillerie": 579
+          "artillerie": 579,
+          "drones": 5
         }
       },
       "relations": {
@@ -7479,7 +7572,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -7556,7 +7650,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -7631,7 +7726,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -7708,7 +7804,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -7783,7 +7880,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -7858,7 +7956,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -7935,7 +8034,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -8012,7 +8112,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 39,
-          "artillerie": 196
+          "artillerie": 196,
+          "drones": 5
         }
       },
       "relations": {
@@ -8085,7 +8186,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -8160,7 +8262,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -8237,7 +8340,8 @@
           "navires_guerre": 2,
           "sous_marins": 1,
           "helicopteres": 32,
-          "artillerie": 158
+          "artillerie": 158,
+          "drones": 5
         }
       },
       "relations": {
@@ -8312,7 +8416,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "relations": {
@@ -8387,7 +8492,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 16,
-          "artillerie": 63
+          "artillerie": 63,
+          "drones": 5
         }
       },
       "relations": {
@@ -8461,7 +8567,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 12
+          "artillerie": 12,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -8531,7 +8638,8 @@
           "navires_guerre": 2,
           "sous_marins": 0,
           "helicopteres": 8,
-          "artillerie": 16
+          "artillerie": 16,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -8602,7 +8710,8 @@
           "navires_guerre": 4,
           "sous_marins": 0,
           "helicopteres": 12,
-          "artillerie": 30
+          "artillerie": 30,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -8673,7 +8782,8 @@
           "navires_guerre": 3,
           "sous_marins": 0,
           "helicopteres": 4,
-          "artillerie": 8
+          "artillerie": 8,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -8743,7 +8853,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 4,
-          "artillerie": 10
+          "artillerie": 10,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -8814,7 +8925,8 @@
           "navires_guerre": 2,
           "sous_marins": 0,
           "helicopteres": 6,
-          "artillerie": 20
+          "artillerie": 20,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -8885,7 +8997,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 5,
-          "artillerie": 15
+          "artillerie": 15,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -8955,7 +9068,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9026,7 +9140,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9097,7 +9212,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9170,7 +9286,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9242,7 +9359,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9314,7 +9432,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9386,7 +9505,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9459,7 +9579,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 13,
-          "artillerie": 67
+          "artillerie": 67,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9532,7 +9653,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9604,7 +9726,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 2,
-          "artillerie": 7
+          "artillerie": 7,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9674,7 +9797,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 2,
-          "artillerie": 7
+          "artillerie": 7,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9743,7 +9867,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 2,
-          "artillerie": 7
+          "artillerie": 7,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9812,7 +9937,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 2,
-          "artillerie": 7
+          "artillerie": 7,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9882,7 +10008,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -9953,7 +10080,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 2,
-          "artillerie": 7
+          "artillerie": 7,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10024,7 +10152,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 2,
-          "artillerie": 7
+          "artillerie": 7,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10096,7 +10225,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 13,
-          "artillerie": 67
+          "artillerie": 67,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10170,7 +10300,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10240,7 +10371,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 2,
-          "artillerie": 7
+          "artillerie": 7,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10311,7 +10443,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10381,7 +10514,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10453,7 +10587,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 13,
-          "artillerie": 67
+          "artillerie": 67,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10525,7 +10660,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 13,
-          "artillerie": 67
+          "artillerie": 67,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10596,7 +10732,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10665,7 +10802,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 17,
-          "artillerie": 84
+          "artillerie": 84,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10735,7 +10873,8 @@
           "navires_guerre": 1,
           "sous_marins": 0,
           "helicopteres": 13,
-          "artillerie": 67
+          "artillerie": 67,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10805,7 +10944,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 2,
-          "artillerie": 7
+          "artillerie": 7,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10876,7 +11016,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -10948,7 +11089,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 2,
-          "artillerie": 7
+          "artillerie": 7,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -11020,7 +11162,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 2,
-          "artillerie": 7
+          "artillerie": 7,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -11092,7 +11235,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -11163,7 +11307,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 7,
-          "artillerie": 22
+          "artillerie": 22,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -11234,7 +11379,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 2,
-          "artillerie": 7
+          "artillerie": 7,
+          "drones": 5
         }
       },
       "national_stats": {
@@ -11302,7 +11448,8 @@
           "navires_guerre": 0,
           "sous_marins": 0,
           "helicopteres": 2,
-          "artillerie": 7
+          "artillerie": 7,
+          "drones": 5
         }
       },
       "national_stats": {

@@ -5,7 +5,7 @@ export interface ApiSettings {
   apiKey: string
   apiBaseUrl: string
   model: string
-  provider: 'socle' | 'ollama'
+  provider: 'socle' | 'ollama' | 'deepseek'
   language: string
 }
 

@@ -80,10 +80,12 @@ export default function Game() {
       turn: gameState.turn,
       stability: gameState.player_country.stability,
       economy_modifier: gameState.player_country.economy_modifier ?? 1.0,
+      gdp: gameState.player_country.economy?.gdp,
       sovereignty: ns?.sovereignty,
       food_autonomy: ns?.food_autonomy,
       energy_autonomy: ns?.energy_autonomy,
       economic_independence: ns?.economic_independence,
+      security: ns?.security,
     }
     setStatHistory(prev => {
       if (prev.length > 0 && prev[prev.length - 1].turn === snap.turn) return prev
@@ -155,14 +157,18 @@ export default function Game() {
     // Snapshot state before simulation for end-of-turn diff
     if (gameState) {
       const ns = gameState.player_country.national_stats
+      const mil = gameState.player_country.military
       setPreSimSnapshot({
         turn: gameState.turn,
         stability: gameState.player_country.stability,
         economy_modifier: gameState.player_country.economy_modifier ?? 1.0,
+        military_modifier: gameState.player_country.military_modifier ?? 1.0,
         sovereignty: ns?.sovereignty,
         food_autonomy: ns?.food_autonomy,
         energy_autonomy: ns?.energy_autonomy,
         economic_independence: ns?.economic_independence,
+        security: ns?.security,
+        equipment: mil?.equipment ? { ...mil.equipment } : undefined,
       })
     }
     setSimEvents([])
@@ -425,19 +431,44 @@ export default function Game() {
                   {simDone && preSimSnapshot && donePayload && gameState && (() => {
                     const finalStab = Math.round(donePayload.final_stability ?? gameState.player_country.stability)
                     const finalEco = donePayload.final_economy_modifier ?? (gameState.player_country.economy_modifier ?? 1.0)
+                    const finalMil = donePayload.final_military_modifier ?? (gameState.player_country.military_modifier ?? 1.0)
+                    
                     const stabDelta = finalStab - Math.round(preSimSnapshot.stability)
                     const ecoDelta = (finalEco - preSimSnapshot.economy_modifier) * 100
+                    const milDelta = (finalMil - (preSimSnapshot.military_modifier ?? 1.0)) * 100
+                    
                     const worldEvents = donePayload.world_event_count ?? simEvents.filter(e => e.type === 'world_event').length
                     const actions = donePayload.action_count ?? simEvents.filter(e => e.type === 'action_result').length
                     const treaties = (gameState.treaties ?? []).filter(t =>
                       t.year > preSimSnapshot.turn || t.year === gameState.year
                     ).length
+                    
+                    const ns = gameState.player_country.national_stats
+                    const idxChanges: string[] = []
+                    if (ns && preSimSnapshot) {
+                      const keys: { key: keyof typeof ns; label: string }[] = [
+                        { key: 'sovereignty', label: 'Sovereignty' },
+                        { key: 'food_autonomy', label: 'Food autonomy' },
+                        { key: 'energy_autonomy', label: 'Energy autonomy' },
+                        { key: 'economic_independence', label: 'Economic independence' },
+                        { key: 'security', label: 'Internal security' },
+                      ]
+                      for (const k of keys) {
+                        const pre = preSimSnapshot[k.key] ?? 50
+                        const post = ns[k.key] ?? 50
+                        const diff = post - pre
+                        if (Math.abs(diff) > 0.01) {
+                          idxChanges.push(`${k.label}: ${pre.toFixed(0)}% → ${post.toFixed(0)}% (${diff >= 0 ? '+' : ''}${diff.toFixed(0)}%)`)
+                        }
+                      }
+                    }
+                    
                     return (
                       <div className="mx-3 mt-3 mb-1 rounded-lg border border-pax-accent/40 bg-pax-accent/5 p-3">
                         <div className="text-xs font-semibold text-pax-accent mb-2 flex items-center gap-1.5">
                           ✅ Turn complete
                         </div>
-                        <div className="grid grid-cols-2 gap-2 mb-2">
+                        <div className="grid grid-cols-3 gap-2 mb-2">
                           <div>
                             <div className="text-xs text-slate-400">Stability</div>
                             <div className={`text-sm font-bold ${stabDelta >= 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -448,10 +479,62 @@ export default function Game() {
                           <div>
                             <div className="text-xs text-slate-400">Economy</div>
                             <div className={`text-sm font-bold ${ecoDelta >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                              {ecoDelta >= 0 ? '+' : ''}{ecoDelta.toFixed(2)}%
+                              {ecoDelta >= 0 ? '+' : ''}{ecoDelta.toFixed(1)}%
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-slate-400">Military</div>
+                            <div className={`text-sm font-bold ${milDelta >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                              {milDelta >= 0 ? '+' : ''}{milDelta.toFixed(1)}%
                             </div>
                           </div>
                         </div>
+                        {idxChanges.length > 0 && (
+                          <div className="text-[11px] border-t border-pax-border/30 pt-1.5 mt-1.5 mb-2 space-y-0.5">
+                            <div className="text-[9px] text-slate-500 font-medium uppercase tracking-wider">Strategic Indices Updates</div>
+                            {idxChanges.map((change, idx) => (
+                              <div key={idx} className="text-slate-300">📈 {change}</div>
+                            ))}
+                          </div>
+                        )}
+                        {(() => {
+                          const preEq = preSimSnapshot.equipment || {}
+                          const postEq = gameState.player_country.military?.equipment || {}
+                          const eqChanges: string[] = []
+                          
+                          const equipmentLabels: Record<string, { label: string; icon: string }> = {
+                            chars_combat: { label: 'Battle tanks', icon: '🛡️' },
+                            avions_chasse: { label: 'Fighter jets', icon: '✈️' },
+                            navires_guerre: { label: 'Warships', icon: '⚓' },
+                            sous_marins: { label: 'Submarines', icon: '🌊' },
+                            helicopteres: { label: 'Military helicopters', icon: '🚁' },
+                            artillerie: { label: 'Artillery pieces', icon: '💣' },
+                            drones: { label: 'Military drones', icon: '🛸' },
+                          }
+                          
+                          const allKeys = Array.from(new Set([...Object.keys(preEq), ...Object.keys(postEq)]))
+                          for (const k of allKeys) {
+                            const preVal = preEq[k] ?? 0
+                            const postVal = postEq[k] ?? 0
+                            const diff = postVal - preVal
+                            if (diff !== 0) {
+                              const meta = equipmentLabels[k]
+                              const labelName = meta ? `${meta.icon} ${meta.label}` : k.replace(/_/g, ' ')
+                              eqChanges.push(`${labelName}: ${preVal.toLocaleString()} → ${postVal.toLocaleString()} (${diff >= 0 ? '+' : ''}${diff.toLocaleString()})`)
+                            }
+                          }
+                          
+                          if (eqChanges.length === 0) return null
+                          
+                          return (
+                            <div className="text-[11px] border-t border-pax-border/30 pt-1.5 mt-1.5 mb-2 space-y-0.5">
+                              <div className="text-[9px] text-slate-500 font-medium uppercase tracking-wider">Arsenal Updates</div>
+                              {eqChanges.map((change, idx) => (
+                                <div key={idx} className="text-slate-300">{change}</div>
+                              ))}
+                            </div>
+                          )
+                        })()}
                         <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-slate-400 mb-2">
                           <span>🌍 {worldEvents} events</span>
                           <span>⚡ {actions} actions</span>
@@ -527,11 +610,65 @@ export default function Game() {
                               <div className="text-slate-300 mt-0.5 prose prose-invert prose-xs max-w-none">
                                 <ReactMarkdown>{e.narrative ?? ''}</ReactMarkdown>
                               </div>
-                              {(e.stability_delta ?? 0) !== 0 && (
-                                <div className={`mt-1 font-medium ${(e.stability_delta ?? 0) > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                  Stability: {(e.stability_delta ?? 0) > 0 ? '+' : ''}{e.stability_delta}
-                                </div>
-                              )}
+                              <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs">
+                                {(e.stability_delta ?? 0) !== 0 && (
+                                  <span className={`font-semibold ${(e.stability_delta ?? 0) > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    Stability: {(e.stability_delta ?? 0) > 0 ? '+' : ''}{e.stability_delta}
+                                  </span>
+                                )}
+                                {(e.economy_delta ?? 0) !== 0 && (
+                                  <span className={`font-semibold ${(e.economy_delta ?? 0) > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    Economy: {(e.economy_delta ?? 0) > 0 ? '+' : ''}{(e.economy_delta! * 100).toFixed(1)}%
+                                  </span>
+                                )}
+                                {(e.military_delta ?? 0) !== 0 && (
+                                  <span className={`font-semibold ${(e.military_delta ?? 0) > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    Military: {(e.military_delta ?? 0) > 0 ? '+' : ''}{(e.military_delta! * 100).toFixed(1)}%
+                                  </span>
+                                )}
+                              </div>
+                              {e.stat_deltas && Object.values(e.stat_deltas).some(v => v !== 0) && (() => {
+                                const labels: Record<string, string> = {
+                                  sovereignty: 'Sovereignty',
+                                  food_autonomy: 'Food autonomy',
+                                  energy_autonomy: 'Energy autonomy',
+                                  economic_independence: 'Economic independence',
+                                  security: 'Internal security',
+                                }
+                                return (
+                                  <div className="mt-1.5 flex flex-wrap gap-x-2 gap-y-0.5 text-[11px] text-slate-400 bg-slate-900/40 rounded px-2 py-1 border border-pax-border/30">
+                                    {Object.entries(e.stat_deltas).filter(([, v]) => v !== 0).map(([k, v]) => (
+                                      <span key={k}>
+                                        {labels[k] ?? k}: <strong className={v > 0 ? 'text-green-400' : 'text-red-400'}>{v > 0 ? '+' : ''}{v}%</strong>
+                                      </span>
+                                    ))}
+                                  </div>
+                                )
+                              })()}
+                              {e.equipment_changes && Object.values(e.equipment_changes).some(v => v !== 0) && (() => {
+                                const labels: Record<string, { label: string; icon: string }> = {
+                                  chars_combat: { label: 'Battle tanks', icon: '🛡️' },
+                                  avions_chasse: { label: 'Fighter jets', icon: '✈️' },
+                                  navires_guerre: { label: 'Warships', icon: '⚓' },
+                                  sous_marins: { label: 'Submarines', icon: '🌊' },
+                                  helicopteres: { label: 'Military helicopters', icon: '🚁' },
+                                  artillerie: { label: 'Artillery pieces', icon: '💣' },
+                                  drones: { label: 'Military drones', icon: '🛸' },
+                                }
+                                return (
+                                  <div className="mt-1.5 flex flex-wrap gap-x-2 gap-y-0.5 text-[11px] text-slate-400 bg-slate-900/40 rounded px-2 py-1 border border-pax-border/30">
+                                    {Object.entries(e.equipment_changes).filter(([, v]) => v !== 0).map(([k, v]) => {
+                                      const meta = labels[k]
+                                      const displayName = meta ? `${meta.icon} ${meta.label}` : k.replace(/_/g, ' ')
+                                      return (
+                                        <span key={k}>
+                                          {displayName}: <strong className={v > 0 ? 'text-green-400' : 'text-red-400'}>{v > 0 ? '+' : ''}{v.toLocaleString()}</strong>
+                                        </span>
+                                      )
+                                    })}
+                                  </div>
+                                )
+                              })()}
                             </>
                           )}
                           {e.type === 'domestic_event' && (

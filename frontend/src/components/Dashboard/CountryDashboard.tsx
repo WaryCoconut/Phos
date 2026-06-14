@@ -155,6 +155,7 @@ const EQUIPMENT_META: { key: string; label: string; icon: string }[] = [
   { key: 'sous_marins',    label: 'Submarines',            icon: '🌊' },
   { key: 'helicopteres',   label: 'Military helicopters',  icon: '🚁' },
   { key: 'artillerie',     label: 'Artillery pieces',      icon: '💣' },
+  { key: 'drones',         label: 'Military drones',       icon: '🛸' },
 ]
 
 export default function CountryDashboard({ country, isPlayer = false, playerCountry, statHistory, treaties, diplomaticHistory }: Props) {
@@ -252,7 +253,7 @@ export default function CountryDashboard({ country, isPlayer = false, playerCoun
                 </div>
                 {statHistory && statHistory.length >= 2 && (
                   <Sparkline
-                    data={statHistory.map(s => s.economy_modifier * eco.gdp)}
+                    data={statHistory.map(s => s.gdp !== undefined ? s.gdp * s.economy_modifier : s.economy_modifier * eco.gdp)}
                     color={eco.gdp_growth >= 0 ? '#22c55e' : '#ef4444'}
                   />
                 )}
@@ -312,8 +313,8 @@ export default function CountryDashboard({ country, isPlayer = false, playerCoun
             <StatBlock
               icon={Shield}
               label="Power"
-              value={`${mil.strength}/10`}
-              sub={`${mil.defense_budget_pct}% of GDP`}
+              value={`${(mil.strength * (country.military_modifier ?? 1.0)).toFixed(1)}/10`}
+              sub={`${mil.defense_budget_pct}% of GDP · x${(country.military_modifier ?? 1.0).toFixed(2)}`}
             />
             <StatBlock
               icon={Users}

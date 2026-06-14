@@ -279,10 +279,12 @@ async def get_country_response(
     session_id: str = "",
 ) -> AsyncGenerator[str, None]:
     relations_score = country.get("relations", {}).get(player_country["id"], 0)
-    traits = ", ".join(country.get("personality_traits", ["diplomatique"]))
+    default_trait = "diplomatique" if config.language.lower() == "french" else "diplomatic"
+    traits = ", ".join(country.get("personality_traits", [default_trait]))
 
     personality = country.get("personality", "").strip()
-    personality_block = f"\n\nPersonnalité & style diplomatique :\n{personality}" if personality else ""
+    personality_label = "Personnalité & style diplomatique" if config.language.lower() == "french" else "Personality & diplomatic style"
+    personality_block = f"\n\n{personality_label} :\n{personality}" if personality else ""
 
     system = f"""You are the official representative of {country['name']} in a geopolitical simulation set in {world_context}.
 
@@ -291,13 +293,14 @@ Your country's profile:
 - Ideology: {country.get('ideology', 'pragmatic')}
 - Leader: {country.get('leader', 'unknown')}
 - Diplomatic traits: {traits}
-- Relations with {player_country['name']}: {relations_score}/100 ({_relation_label(relations_score)})
+- Relations with {player_country['name']}: {relations_score}/100 ({_relation_label(relations_score, config.language)})
 - GDP: {country.get('economy', {}).get('gdp', 0) if country.get('economy') else 0} billion USD
 - Population: {country.get('population', 0):,}
 - Alliances: {', '.join(country.get('alliances', [])) or 'none'}{personality_block}
 
 Respond in character, faithful to your country's national interests, ideology and current diplomatic relations.
-Be realistic, concise (2-3 paragraphs) and diplomatically credible. Reply in {config.language}."""
+Be realistic, concise (2-3 paragraphs) and diplomatically credible.
+CRITICAL: You MUST write your response entirely in {config.language}. Do not write in French unless the target language is French."""
 
     messages = [{"role": "system", "content": system}]
     for h in diplomatic_history[-6:]:
@@ -305,9 +308,64 @@ Be realistic, concise (2-3 paragraphs) and diplomatically credible. Reply in {co
             messages.append({"role": "user", "content": h["player"]})
         if h.get("response"):
             messages.append({"role": "assistant", "content": h["response"]})
-    messages.append({"role": "user", "content": f"Message de {player_country['name']} : {player_message}"})
+    user_prefix = "Message de" if config.language.lower() == "french" else "Message from"
+    messages.append({"role": "user", "content": f"{user_prefix} {player_country['name']} : {player_message}"})
 
     memory_key = f"diplomacy:{session_id}:{country['id']}" if session_id else None
+    async for chunk in stream_chat(messages, config, memory_key):
+        yield chunk
+
+
+async def get_group_member_response(
+    country: dict,
+    player_country: dict,
+    player_message: str,
+    group_name: str,
+    group_members: list[str],
+    world_context: str,
+    diplomatic_history: list[dict],
+    config: AiConfig,
+    session_id: str = "",
+) -> AsyncGenerator[str, None]:
+    relations_score = country.get("relations", {}).get(player_country["id"], 0)
+    default_trait = "diplomatique" if config.language.lower() == "french" else "diplomatic"
+    traits = ", ".join(country.get("personality_traits", [default_trait]))
+
+    personality = country.get("personality", "").strip()
+    personality_block = f"\n\nPersonality & style:\n{personality}" if personality else ""
+
+    system = f"""You are the official representative of {country['name']} in a geopolitical simulation set in {world_context}.
+You are currently participating in a group chat named "{group_name}".
+The members of this group chat are: {', '.join(group_members)}.
+The player controls {player_country['name']}.
+
+Your country's profile:
+- Government: {country.get('government_type', 'unknown')}
+- Ideology: {country.get('ideology', 'pragmatic')}
+- Leader: {country.get('leader', 'unknown')}
+- Relations with {player_country['name']}: {relations_score}/100 ({_relation_label(relations_score, config.language)}){personality_block}
+
+Respond in character, faithful to your country's national interests, ideology and relations.
+Be realistic, concise (1-2 short paragraphs) and diplomatically credible.
+Address the player's message in the context of this group. You may also address or refer to other members of the group.
+CRITICAL: You MUST write your response entirely in {config.language}. Do not write in French unless the target language is French."""
+
+    messages = [{"role": "system", "content": system}]
+    for h in diplomatic_history[-10:]:
+        if h.get("player"):
+            messages.append({"role": "user", "content": h["player"]})
+        if h.get("response"):
+            resp = h["response"]
+            prefix = f"[{country['id']}]:"
+            if resp.startswith(prefix):
+                messages.append({"role": "assistant", "content": resp[len(prefix):].strip()})
+            else:
+                messages.append({"role": "user", "content": resp})
+
+    user_prefix = "Message dans" if config.language.lower() == "french" else "Message in"
+    messages.append({"role": "user", "content": f"{user_prefix} {group_name} de {player_country['name']}: {player_message}"})
+
+    memory_key = f"diplomacy:{session_id}:{country['id']}:{group_name.replace(' ', '_')}" if session_id else None
     async for chunk in stream_chat(messages, config, memory_key):
         yield chunk
 
@@ -343,7 +401,7 @@ Current state of {player_country['name']}:
 
 Provide realistic, pragmatic and well-argued strategic advice.
 Always present several options with their advantages and risks.
-Reply in {config.language}, in a structured and concise manner."""
+CRITICAL: You MUST write your response entirely in {config.language}. Do not write in French unless the target language is French. Reply in a structured and concise manner."""
 
     messages = [
         {"role": "system", "content": system},
@@ -366,8 +424,9 @@ async def process_player_action(
 ) -> dict:
     """Returns structured dict including Game Master domestic events and optional map POI."""
     player_id = player_country["id"]
+    stability_word = "stabilité" if config.language.lower() == "french" else "stability"
     countries_summary = [
-        f"- {cid}: stabilité {cs.get('stability', 50)}/100"
+        f"- {cid}: {stability_word} {cs.get('stability', 50)}/100"
         for cid, cs in list(world_state.items())[:12]
     ]
 
@@ -382,28 +441,28 @@ async def process_player_action(
         if lines:
             diplomacy_context = "\n\nRecent diplomacy:\n" + "\n".join(lines)
 
-    system = f"""You are the geopolitical simulation engine and game master of Phos.
-The current date is {_format_date(year, month)}.
-The player controls {player_country['name']} (ID: {player_id}).
-Government: {player_country.get('government_type', 'unknown')}, ideology: {player_country.get('ideology', 'unknown')}.
+    system = f"""You are the geopolitical simulation engine and game master of Phos, a realistic geopolitical simulator.
 
-World context:
-{chr(10).join(countries_summary)}{diplomacy_context}
+Analyze the player's action and respond ONLY with a single valid JSON block, with no surrounding text.
 
-Analyze the player's action and respond ONLY with valid JSON, no surrounding text:
+CRITICAL: The 'narrative' field, all event titles, and all event descriptions MUST be written entirely in {config.language}. Do not use French unless the target language is French.
+CRITICAL: Do NOT leave all stat_deltas, economy_delta, and military_delta at 0 / 0.0. If the player's action logically affects the economy, military power, or any of the strategic indices (sovereignty, food autonomy, energy autonomy, economic independence, security), you MUST set appropriate positive or negative values (e.g., +2, -4, +0.02) to reflect the consequences.
+
+JSON Format Template:
 {{
-  "narrative": "Immersive narrative text in {config.language} (3-4 paragraphs)",
+  "narrative": "Immersive narrative text in {config.language} (3-4 paragraphs) describing the immediate results and context.",
   "applicable": true,
-  "relation_changes": {{"{player_id}": {{"COUNTRY_ID": delta_int}}}},
-  "stability_delta": int_between_minus30_and_plus30,
-  "economy_delta": float_between_minus0point1_and_plus0point1,
+  "relation_changes": {{"{player_id}": {{"COUNTRY_ID": 0}}}},
+  "stability_delta": 0,
+  "economy_delta": 0.0,
+  "military_delta": 0.0,
   "domestic_events": [
     {{
       "title": "Domestic event title",
       "description": "Description in 2 realistic sentences",
       "type": "protest|rally|scandal|economic|military|infrastructure|social|cultural",
       "severity": 1,
-      "stability_impact": -5
+      "stability_impact": 0
     }}
   ],
   "map_poi": null,
@@ -411,7 +470,17 @@ Analyze the player's action and respond ONLY with valid JSON, no surrounding tex
     "sovereignty": 0,
     "food_autonomy": 0,
     "energy_autonomy": 0,
-    "economic_independence": 0
+    "economic_independence": 0,
+    "security": 0
+  }},
+  "equipment_changes": {{
+    "chars_combat": 0,
+    "avions_chasse": 0,
+    "navires_guerre": 0,
+    "sous_marins": 0,
+    "helicopteres": 0,
+    "artillerie": 0,
+    "drones": 0
   }},
   "future_events": [
     {{
@@ -419,7 +488,7 @@ Analyze the player's action and respond ONLY with valid JSON, no surrounding tex
       "description": "Description in 2 sentences",
       "type": "consequence",
       "months_ahead": 2,
-      "stability_impact": -5,
+      "stability_impact": 0,
       "economy_impact": 0.0
     }}
   ]
@@ -430,11 +499,30 @@ General rules:
 - relation_changes: e.g. declaring war = -60 with the target, +10 with allies
 - stability_delta: impact on domestic stability (-30 to +30)
 - economy_delta: multiplicative factor on the economy (-0.05 to +0.05)
+- military_delta: multiplicative factor on military power (-0.05 to +0.05)
 - stat_deltas: variations in strategic indices (-10 to +10 per field)
   - sovereignty: institutional reforms, coups, ceding of sovereignty
   - food_autonomy: agricultural investments, drought, food agreements
   - energy_autonomy: energy projects, embargo, new power plants
   - economic_independence: trade treaties, sanctions, industrialization
+  - security: police forces, order public, protest suppression, crime control
+
+Military Equipment & Arsenal Rules (drones, tanks, artillery, etc.):
+- You MUST populate "equipment_changes" with non-zero integer deltas (e.g. +50, -15) whenever the player's action logically changes the quantity of military units.
+- Supported equipment keys:
+  - chars_combat: Battle tanks
+  - avions_chasse: Fighter jets
+  - navires_guerre: Warships
+  - sous_marins: Submarines
+  - helicopteres: Military helicopters
+  - artillerie: Artillery pieces
+  - drones: Military combat drones / UAVs
+- Examples of modifications:
+  - If player orders production/procurement of drones, set "drones": +20 or +50, etc.
+  - If player decommissions old tanks, set "chars_combat": -10 or -30.
+  - If player loses equipment in combat, set corresponding keys to negative values.
+  - If player imports artillery pieces or receives military aid, set "artillerie" to a positive value.
+- NEVER default all military equipment changes to 0 if the action relates to military buildup, procurement, disarmament, or warfare.
 
 domestic_events rules (0-2 game master events):
 - protest: demonstrations, strikes (unpopular decisions)
@@ -460,7 +548,15 @@ future_events rules (0-2 deferred consequences):
 - stability_impact: -20 to +15 (eventual stability consequence)
 - economy_impact: -0.05 to +0.05
 - Examples: economic fallout of an embargo, referendum results, end of a construction project
-- If no logical deferred consequences: future_events=[]"""
+- If no logical deferred consequences: future_events=[]
+
+
+[Geopolitical Simulation Context]
+- Current Date: {_format_date(year, month, config.language)}
+- Player Country: {player_country['name']} (ID: {player_id})
+- Government: {player_country.get('government_type', 'unknown')}, Ideology: {player_country.get('ideology', 'unknown')}.
+- Other Countries:
+{chr(10).join(countries_summary)}{diplomacy_context}"""
 
     messages = [
         {"role": "system", "content": system},
@@ -480,8 +576,12 @@ def _normalize_action_data(data: dict, raw: str) -> dict:
         data["stability_delta"] = 0
     if not isinstance(data.get("economy_delta"), (int, float)):
         data["economy_delta"] = 0.0
+    if not isinstance(data.get("military_delta"), (int, float)):
+        data["military_delta"] = 0.0
     if not isinstance(data.get("relation_changes"), dict):
         data["relation_changes"] = {}
+    if not isinstance(data.get("equipment_changes"), dict):
+        data["equipment_changes"] = {}
     return data
 
 
@@ -518,7 +618,13 @@ def _parse_action_json(raw: str, player_id: str) -> dict:
             raw_sd = data.get("stat_deltas") if isinstance(data.get("stat_deltas"), dict) else {}
             stat_deltas = {
                 k: max(-10, min(10, int(raw_sd.get(k, 0))))
-                for k in ("sovereignty", "food_autonomy", "energy_autonomy", "economic_independence")
+                for k in ("sovereignty", "food_autonomy", "energy_autonomy", "economic_independence", "security")
+            }
+            raw_eq = data.get("equipment_changes") if isinstance(data.get("equipment_changes"), dict) else {}
+            equipment_changes = {
+                str(k): int(v)
+                for k, v in raw_eq.items()
+                if isinstance(v, (int, float))
             }
             rc = data.get("relation_changes", {})
             safe_rc: dict = {}
@@ -543,17 +649,20 @@ def _parse_action_json(raw: str, player_id: str) -> dict:
                 "relation_changes": safe_rc,
                 "stability_delta": max(-30, min(30, int(data["stability_delta"]))),
                 "economy_delta": max(-0.1, min(0.1, float(data["economy_delta"]))),
+                "military_delta": max(-0.1, min(0.1, float(data.get("military_delta", 0.0)))),
                 "domestic_events": domestic,
                 "map_poi": poi,
                 "stat_deltas": stat_deltas,
+                "equipment_changes": equipment_changes,
                 "future_events": future_events,
             }
     except Exception as exc:
         logger.warning("Action JSON parse failed (%s). Raw: %.200s", exc, raw)
     return {
         "narrative": raw, "applicable": True, "relation_changes": {},
-        "stability_delta": 0, "economy_delta": 0.0, "domestic_events": [], "map_poi": None,
-        "stat_deltas": {"sovereignty": 0, "food_autonomy": 0, "energy_autonomy": 0, "economic_independence": 0},
+        "stability_delta": 0, "economy_delta": 0.0, "military_delta": 0.0, "domestic_events": [], "map_poi": None,
+        "stat_deltas": {"sovereignty": 0, "food_autonomy": 0, "energy_autonomy": 0, "economic_independence": 0, "security": 0},
+        "equipment_changes": {},
         "future_events": [],
     }
 
@@ -577,12 +686,15 @@ Generate 1-2 additional events representing REACTIONS from neighboring or affect
 Also keep 1-2 independent global events."""
 
     system = f"""You are the world events engine of Phos.
-The current date is {_format_date(year, month)}.
+The current date is {_format_date(year, month, config.language)}.
 
 Generate 2-4 credible world events occurring this month.
 Each event must have a type from: diplomatic, economic, military, humanitarian, political, natural, reaction, consequence.{reactions_block}
 
-Respond ONLY with valid JSON, no surrounding text:
+Respond ONLY with valid JSON, no surrounding text.
+CRITICAL: All event titles and descriptions MUST be written entirely in {config.language}. Do not use French unless the target language is French.
+
+JSON Format:
 [
   {{
     "title": "Event title",
@@ -666,7 +778,7 @@ async def generate_turn_summary(
 
     system = f"""You are the official chronicler of Phos, a geopolitical simulation game.
 Write an immersive, journalistic narrative summary of the last game turns for {player_country['name']}.
-The current date is {_format_date(year, month)}.
+The current date is {_format_date(year, month, config.language)}.
 
 Current state:
 - Stability: {stability}/100
@@ -681,7 +793,7 @@ Recent world events:
 
 Write a narrative summary in 3-4 paragraphs, in the style of a diplomatic report or geopolitical analysis.
 Open with a strong hook. Mention key events, the country's evolution, challenges and opportunities.
-Reply in {config.language} only."""
+CRITICAL: You MUST write your response entirely in {config.language}. Do not write in French unless the target language is French."""
 
     messages = [
         {"role": "system", "content": system},
@@ -706,11 +818,14 @@ Player message: {player_message}
 {target_country['name']} response: {country_response}
 
 Was a concrete agreement reached? (trade treaty, alliance, military agreement, humanitarian aid, cultural agreement, etc.)
-Respond ONLY with valid JSON, no surrounding text:
+Respond ONLY with valid JSON, no surrounding text.
+CRITICAL: The 'summary' field MUST be written in {config.language}. Do not use French unless the target language is French.
+
+JSON Format:
 {{
   "agreement_reached": true/false,
   "agreement_type": "trade|military|diplomatic|cultural|humanitarian|null",
-  "summary": "Short description of the agreement in English, or null",
+  "summary": "Short description of the agreement in {config.language}, or null",
   "relation_delta": int_between_minus10_and_plus20,
   "economy_delta": float_between_minus0.02_and_plus0.03,
   "domestic_events": []
@@ -765,17 +880,31 @@ def _parse_diplomatic_effect(raw: str) -> dict:
     }
 
 
-def _relation_label(score: int) -> str:
-    if score >= 70: return "allié"
-    if score >= 30: return "ami"
-    if score >= -10: return "neutre"
-    if score >= -50: return "hostile"
-    return "ennemi"
+def _relation_label(score: int, language: str = "English") -> str:
+    if language.lower() == "french":
+        if score >= 70: return "allié"
+        if score >= 30: return "ami"
+        if score >= -10: return "neutre"
+        if score >= -50: return "hostile"
+        return "ennemi"
+    else:
+        if score >= 70: return "allied"
+        if score >= 30: return "friendly"
+        if score >= -10: return "neutral"
+        if score >= -50: return "hostile"
+        return "enemy"
 
 
-def _format_date(year: int, month: int) -> str:
-    months = [
-        "janvier", "février", "mars", "avril", "mai", "juin",
-        "juillet", "août", "septembre", "octobre", "novembre", "décembre",
-    ]
-    return f"{months[month - 1]} {year}"
+def _format_date(year: int, month: int, language: str = "English") -> str:
+    if language.lower() == "french":
+        months = [
+            "janvier", "février", "mars", "avril", "mai", "juin",
+            "juillet", "août", "septembre", "octobre", "novembre", "décembre",
+        ]
+        return f"{months[month - 1]} {year}"
+    else:
+        months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December",
+        ]
+        return f"{months[month - 1]} {year}"

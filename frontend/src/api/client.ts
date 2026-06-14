@@ -68,6 +68,9 @@ export const gameApi = {
 
   removeQueuedAction: (sessionId: string, index: number) =>
     api.delete(`/game/${sessionId}/queue/${index}`).then((r) => r.data),
+
+  createCustomGroup: (sessionId: string, name: string, members: string[]) =>
+    api.post(`/game/${sessionId}/custom-group`, { name, members }).then((r) => r.data),
 }
 
 export const mapsApi = {
@@ -202,7 +205,7 @@ export function streamDiplomacy(
   sessionId: string,
   targetCountryId: string,
   message: string,
-  onChunk: (text: string) => void,
+  onChunk: (text: string, senderId?: string) => void,
   onDone: () => void,
   onError?: (msg: string) => void,
   onGameEffect?: (effect: DiplomaticEffect) => void,
@@ -225,7 +228,7 @@ export function streamDiplomacy(
           if (!line.startsWith('data: ')) continue
           try {
             const data = JSON.parse(line.slice(6))
-            if (data.chunk) onChunk(data.chunk)
+            if (data.chunk) onChunk(data.chunk, data.sender_id)
             if (data.error) { onError?.(data.error); onDone(); return }
             if (data.done) {
               if (data.game_effect) onGameEffect?.(data.game_effect as DiplomaticEffect)

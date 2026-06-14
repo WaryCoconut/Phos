@@ -4,6 +4,7 @@ import { useSettingsStore, type ApiSettings } from '@/store/settingsStore'
 
 const PRESETS = [
   { label: 'Socle', baseUrl: 'https://app.socle.ai/api/v1', model: 'qwen3-235b-a22b-instruct-2507' },
+  { label: 'DeepSeek', baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-v4-flash' },
   { label: 'Ollama (local)', baseUrl: 'http://host.docker.internal:11434/v1', model: 'llama3.2' },
 ]
 
@@ -51,12 +52,12 @@ export default function SettingsModal({ open, onClose, required = false }: Props
   const [form, setForm] = useState<ApiSettings>({ ...settings })
   const [showKey, setShowKey] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [provider, setProvider] = useState<'socle' | 'ollama'>(settings.provider ?? 'socle')
+  const [provider, setProvider] = useState<'socle' | 'ollama' | 'deepseek'>(settings.provider ?? 'socle')
 
   if (!open) return null
 
   function applyPreset(p: typeof PRESETS[number]) {
-    const prov = p.label === 'Socle' ? 'socle' : 'ollama'
+    const prov = p.label === 'Socle' ? 'socle' : p.label === 'DeepSeek' ? 'deepseek' : 'ollama'
     setProvider(prov)
     setForm((f) => ({ ...f, apiBaseUrl: p.baseUrl, model: p.model, provider: prov }))
   }
@@ -74,7 +75,9 @@ export default function SettingsModal({ open, onClose, required = false }: Props
   }
 
   const socle = provider === 'socle'
-  const isValid = !socle || Boolean(form.apiKey.trim())
+  const deepseek = provider === 'deepseek'
+  const requiresKey = socle || deepseek
+  const isValid = !requiresKey || Boolean(form.apiKey.trim())
   const canClose = !required || isValid
 
   return (
@@ -106,9 +109,9 @@ export default function SettingsModal({ open, onClose, required = false }: Props
           {/* Presets */}
           <div>
             <label className="stat-label block mb-2">Provider</label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {PRESETS.map((p) => {
-                const prov = p.label === 'Socle' ? 'socle' : 'ollama'
+                const prov = p.label === 'Socle' ? 'socle' : p.label === 'DeepSeek' ? 'deepseek' : 'ollama'
                 return (
                   <button
                     key={p.label}
@@ -129,14 +132,14 @@ export default function SettingsModal({ open, onClose, required = false }: Props
           {/* API Key */}
           <div>
             <label className="stat-label block mb-1.5">
-              API Key {!socle && <span className="text-slate-500 font-normal">(optional with Ollama)</span>}
+              API Key {requiresKey ? '' : <span className="text-slate-500 font-normal">(optional with Ollama)</span>}
             </label>
             <div className="relative">
               <input
                 type={showKey ? 'text' : 'password'}
                 value={form.apiKey}
                 onChange={(e) => setForm((f) => ({ ...f, apiKey: e.target.value }))}
-                placeholder={socle ? 'sk-...' : 'ollama (leave blank)'}
+                placeholder={requiresKey ? 'sk-...' : 'ollama (leave blank)'}
                 className="w-full bg-slate-800 border border-pax-border rounded-lg px-3 py-2.5 pr-10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-pax-accent"
               />
               <button
@@ -167,7 +170,7 @@ export default function SettingsModal({ open, onClose, required = false }: Props
               type="text"
               value={form.model}
               onChange={(e) => setForm((f) => ({ ...f, model: e.target.value }))}
-              placeholder={socle ? 'qwen3-235b-a22b-instruct-2507' : 'llama3.2'}
+              placeholder={socle ? 'qwen3-235b-a22b-instruct-2507' : deepseek ? 'deepseek-v4-flash' : 'llama3.2'}
               className="w-full bg-slate-800 border border-pax-border rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-pax-accent"
             />
             {socle ? (
@@ -175,6 +178,13 @@ export default function SettingsModal({ open, onClose, required = false }: Props
                 <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-pax-accent" />
                 <span>
                   The <span className="text-white font-medium">MJ Phos</span> agent will be created or updated automatically on your Socle instance.
+                </span>
+              </div>
+            ) : deepseek ? (
+              <div className="mt-2 flex items-start gap-1.5 text-xs text-slate-400 bg-slate-800/60 border border-pax-border rounded-lg px-3 py-2">
+                <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-pax-accent" />
+                <span>
+                  Recommended: <span className="text-white font-medium">deepseek-v4-flash</span> or <span className="text-white font-medium">deepseek-chat</span>.
                 </span>
               </div>
             ) : (
