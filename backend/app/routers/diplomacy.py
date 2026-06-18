@@ -1,10 +1,12 @@
+import json
+import random
+
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from app.models.game import DiplomacyRequest, DiplomaticMessage
 from app.services import game_engine, ai_service
 from app.services.scenario_loader import load_scenario
 from app.dependencies import AiConfig, get_ai_config
-import json
 
 router = APIRouter(prefix="/diplomacy", tags=["diplomacy"])
 
@@ -59,8 +61,6 @@ async def send_diplomatic_message(
         if not members_to_respond:
             raise HTTPException(status_code=400, detail="Aucun autre membre dans ce groupe")
 
-        # Pick 1 or 2 responders
-        import random
         responders = random.sample(members_to_respond, min(2, len(members_to_respond)))
 
         # Load group diplomatic history
@@ -95,10 +95,6 @@ async def send_diplomatic_message(
                     if not rep_country:
                         continue
 
-                    # Relations score with player
-                    rel_state = session.country_states.get(rep_id, {})
-                    relations_score = rel_state.get("relations", {}).get(session.player_country_id, 0)
-                    
                     rep_country_data = game_engine.merge_country(rep_country, session.country_states.get(rep_id))
                     player_country_data = game_engine.merge_country(player_country, session.country_states.get(session.player_country_id))
                     

@@ -157,5 +157,10 @@ class DiplomacyRequest(BaseModel):
     message: str
 
 
+class CreateCustomGroupRequest(BaseModel):
+    name: str
+    members: List[str]
+
+
 class AdvisorRequest(BaseModel):
     question: str

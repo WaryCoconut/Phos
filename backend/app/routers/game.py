@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import StreamingResponse
-from app.models.game import CreateGameRequest, PlayerAction, ActionResult, QueueActionRequest, SimulateRequest
+from app.models.game import CreateGameRequest, PlayerAction, ActionResult, QueueActionRequest, SimulateRequest, CreateCustomGroupRequest
 from app.services import game_engine, ai_service
 from app.services.scenario_loader import load_scenario
 from app.dependencies import AiConfig, get_ai_config
@@ -87,17 +87,22 @@ async def remove_queued_action(session_id: str, index: int):
         raise HTTPException(status_code=404, detail=str(e))
 
 
-from pydantic import BaseModel
-class CreateCustomGroupRequest(BaseModel):
-    name: str
-    members: list[str]
-
-
 @router.post("/{session_id}/custom-group")
 async def create_custom_group(session_id: str, req: CreateCustomGroupRequest):
-    group = game_engine.create_custom_group(session_id, req.name, req.members)
-    if not group:
+    session = game_engine.get_session(session_id)
+    if not session:
         raise HTTPException(status_code=404, detail="Session introuvable")
+
+    scenario = load_scenario(session.scenario_id)
+    valid_ids = set(scenario.countries.keys()) if scenario else set()
+    valid_ids |= set(session.dynamic_countries.keys())
+    invalid = [m for m in req.members if m not in valid_ids]
+    if invalid:
+        raise HTTPException(status_code=400, detail=f"Pays inconnus : {', '.join(invalid)}")
+    if len(req.members) < 2:
+        raise HTTPException(status_code=400, detail="Un groupe doit contenir au moins 2 membres")
+
+    group = game_engine.create_custom_group(session_id, req.name, req.members)
     return group.model_dump(mode="json")
 
 
