@@ -230,17 +230,8 @@ async def simulate(
 
             for ar in action_results:
                 if ar.get("applicable", True):
-                    yield f"data: {json.dumps({
-                        'type': 'action_result',
-                        'action': ar['action'],
-                        'narrative': ar.get('narrative', ''),
-                        'relation_changes': ar.get('relation_changes', {}),
-                        'stability_delta': ar.get('stability_delta', 0),
-                        'economy_delta': ar.get('economy_delta', 0.0),
-                        'military_delta': ar.get('military_delta', 0.0),
-                        'stat_deltas': ar.get('stat_deltas', {}),
-                        'equipment_changes': ar.get('equipment_changes', {}),
-                    })}\n\n"
+                    ar_payload = {'type': 'action_result', 'action': ar['action'], 'narrative': ar.get('narrative', ''), 'relation_changes': ar.get('relation_changes', {}), 'stability_delta': ar.get('stability_delta', 0), 'economy_delta': ar.get('economy_delta', 0.0), 'military_delta': ar.get('military_delta', 0.0), 'stat_deltas': ar.get('stat_deltas', {}), 'equipment_changes': ar.get('equipment_changes', {})}
+                    yield f"data: {json.dumps(ar_payload)}\n\n"
 
             for de in new_domestic:
                 yield f"data: {json.dumps({'type': 'domestic_event', 'title': de.title, 'description': de.description, 'event_type': de.type, 'severity': de.severity, 'stability_impact': de.stability_impact})}\n\n"
