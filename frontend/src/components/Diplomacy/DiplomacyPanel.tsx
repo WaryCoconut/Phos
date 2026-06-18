@@ -470,6 +470,16 @@ export default function DiplomacyPanel({ gameState, targetCountry, onSelectTarge
             </div>
           )
         })}
+        {isSending && messages[messages.length - 1]?.role === 'player' && (
+          <div className="flex gap-2 justify-start">
+            <span className="text-xl self-start mt-1">{targetCountry.flag || '🏳️'}</span>
+            <div className="bg-slate-800 border border-pax-border rounded-lg px-4 py-2.5 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+            </div>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
 

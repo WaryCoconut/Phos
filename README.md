@@ -11,15 +11,15 @@ AI-powered geopolitical narrative simulation. Play as a nation, make political d
   <img src="doc/haiti1.jpg" width="400" />
 </div>
 
-> Compatible with **[socle.ai](https://socle.ai)** (default) and **[Ollama](https://ollama.com/)** — works with any OpenAI-compatible endpoint. The API is configured directly in the app, no `.env` required.
+> Compatible with **[socle.ai](https://socle.ai)** (default), **[Ollama](https://ollama.com/)**, **[text-generation-webui](https://github.com/oobabooga/text-generation-webui)**, **[DeepSeek](https://deepseek.com/)** — works with any OpenAI-compatible endpoint. The API is configured directly in the app, no `.env` required.
 
 You can create your own world and scenario (Warhammer 40k in preparation)
 
 ## Features
 
 - **Interactive world map** — visualize diplomatic relations, stability, and ideology across countries
-- **Included 2016 scenario** — 45+ countries with realistic data (GDP, military, ideology, relations)
-- **AI diplomacy** — negotiate in natural language with any country, streamed in real time
+- **Included 2016 scenario** — 147 countries with realistic data (GDP, military, ideology, relations, nation briefs)
+- **AI diplomacy** — negotiate in natural language with any country or group, streamed in real time
 - **AI political advisor** — get strategic analyses and recommendations
 - **Free actions** — submit any political action, the AI simulates its consequences
 - **Turn simulation** — the AI generates world events each turn (1 month)
@@ -74,6 +74,26 @@ Get a free key at [socle.ai](https://socle.ai), then enter it in the app:
 
 > Recommended models: **llama3.2**, **mistral**, **qwen2.5** (≥ 7B). Smaller models may produce invalid JSON.
 
+### TextGen / text-generation-webui (local, free)
+
+1. [Install text-generation-webui](https://github.com/oobabooga/text-generation-webui) and load a model
+2. Launch with the OpenAI-compatible API enabled:
+   ```bash
+   python server.py --api --listen
+   ```
+3. In the app, select **TextGen (local)**:
+   - **Base URL:** `http://host.docker.internal:5000/v1`
+   - **API Key:** leave empty
+   - **Model:** `default` (or the name of the loaded model)
+
+### DeepSeek
+
+1. Get an API key at [deepseek.com](https://platform.deepseek.com/)
+2. In the app, select **DeepSeek**:
+   - **Base URL:** `https://api.deepseek.com/v1`
+   - **API Key:** your key
+   - **Model:** `deepseek-v4-flash` or `deepseek-chat`
+
 ### Other providers
 
 Any OpenAI-compatible endpoint works — just set the Base URL and API key:
@@ -81,8 +101,10 @@ Any OpenAI-compatible endpoint works — just set the Base URL and API key:
 | Provider | Base URL |
 |----------|----------|
 | OpenAI | `https://api.openai.com/v1` |
+| DeepSeek | `https://api.deepseek.com/v1` |
 | Groq | `https://api.groq.com/openai/v1` |
 | Ollama | `http://host.docker.internal:11434/v1` |
+| TextGen | `http://host.docker.internal:5000/v1` |
 
 ---
 
@@ -117,7 +139,7 @@ phos/
 │   │   │   └── scenario_loader.py
 │   │   └── data/
 │   │       └── scenarios/
-│   │           └── default_2016.json  # World 2016 scenario (45+ countries)
+│   │           └── default_2016.json  # World 2016 scenario (147 countries)
 │   ├── Dockerfile
 │   └── requirements.txt
 │

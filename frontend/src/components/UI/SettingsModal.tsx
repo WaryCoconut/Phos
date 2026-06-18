@@ -6,6 +6,7 @@ const PRESETS = [
   { label: 'Socle', baseUrl: 'https://app.socle.ai/api/v1', model: 'qwen3-235b-a22b-instruct-2507' },
   { label: 'DeepSeek', baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-v4-flash' },
   { label: 'Ollama (local)', baseUrl: 'http://host.docker.internal:11434/v1', model: 'llama3.2' },
+  { label: 'TextGen (local)', baseUrl: 'http://host.docker.internal:5000/v1', model: 'default' },
 ]
 
 const LANGUAGES = [
@@ -52,12 +53,12 @@ export default function SettingsModal({ open, onClose, required = false }: Props
   const [form, setForm] = useState<ApiSettings>({ ...settings })
   const [showKey, setShowKey] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [provider, setProvider] = useState<'socle' | 'ollama' | 'deepseek'>(settings.provider ?? 'socle')
+  const [provider, setProvider] = useState<'socle' | 'ollama' | 'deepseek' | 'textgen'>(settings.provider ?? 'socle')
 
   if (!open) return null
 
   function applyPreset(p: typeof PRESETS[number]) {
-    const prov = p.label === 'Socle' ? 'socle' : p.label === 'DeepSeek' ? 'deepseek' : 'ollama'
+    const prov = p.label === 'Socle' ? 'socle' : p.label === 'DeepSeek' ? 'deepseek' : p.label.startsWith('TextGen') ? 'textgen' : 'ollama'
     setProvider(prov)
     setForm((f) => ({ ...f, apiBaseUrl: p.baseUrl, model: p.model, provider: prov }))
   }
@@ -76,6 +77,7 @@ export default function SettingsModal({ open, onClose, required = false }: Props
 
   const socle = provider === 'socle'
   const deepseek = provider === 'deepseek'
+  const textgen = provider === 'textgen'
   const requiresKey = socle || deepseek
   const isValid = !requiresKey || Boolean(form.apiKey.trim())
   const canClose = !required || isValid
@@ -109,9 +111,9 @@ export default function SettingsModal({ open, onClose, required = false }: Props
           {/* Presets */}
           <div>
             <label className="stat-label block mb-2">Provider</label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-4 gap-2">
               {PRESETS.map((p) => {
-                const prov = p.label === 'Socle' ? 'socle' : p.label === 'DeepSeek' ? 'deepseek' : 'ollama'
+                const prov = p.label === 'Socle' ? 'socle' : p.label === 'DeepSeek' ? 'deepseek' : p.label.startsWith('TextGen') ? 'textgen' : 'ollama'
                 return (
                   <button
                     key={p.label}
@@ -186,6 +188,23 @@ export default function SettingsModal({ open, onClose, required = false }: Props
                 <span>
                   Recommended: <span className="text-white font-medium">deepseek-v4-flash</span> or <span className="text-white font-medium">deepseek-chat</span>.
                 </span>
+              </div>
+            ) : textgen ? (
+              <div className="mt-2 space-y-1.5">
+                <div className="flex items-start gap-1.5 text-xs text-slate-400 bg-slate-800/60 border border-pax-border rounded-lg px-3 py-2">
+                  <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-yellow-400" />
+                  <span>
+                    Use <span className="text-white font-medium">oobabooga/text-generation-webui</span> with the OpenAI-compatible API enabled (--api flag).
+                    Set model to the name loaded in TextGen.
+                  </span>
+                </div>
+                <div className="flex items-start gap-1.5 text-xs text-slate-400 bg-slate-800/60 border border-pax-border rounded-lg px-3 py-2">
+                  <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-slate-500" />
+                  <span>
+                    Default URL: <span className="text-white font-mono text-xs">host.docker.internal:5000</span>.
+                    Launch TextGen with <span className="text-white font-mono text-xs">--api --listen</span> flags.
+                  </span>
+                </div>
               </div>
             ) : (
               <div className="mt-2 space-y-1.5">

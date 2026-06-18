@@ -45,6 +45,25 @@ COUNTRY_CENTROIDS: dict[str, list[float]] = {
 }
 
 
+def _build_nation_context(
+    country_data: dict,
+    country_state: dict | None = None,
+) -> str:
+    parts = []
+    nation_brief = country_data.get("nation_brief", "").strip()
+    if nation_brief:
+        parts.append(nation_brief)
+    if country_state:
+        dynamic_brief = country_state.get("dynamic_brief", "").strip()
+        if dynamic_brief:
+            parts.append(dynamic_brief)
+    if not parts:
+        desc = country_data.get("description", "").strip()
+        if desc:
+            parts.append(f"[CONTEXT — {country_data.get('name', 'Unknown')}]\n{desc}")
+    return "\n\n".join(parts)
+
+
 def _poi_coordinates(country_id: str) -> list[float]:
     base = COUNTRY_CENTROIDS.get(country_id, [0.0, 0.0])
     return [
@@ -277,6 +296,7 @@ async def get_country_response(
     diplomatic_history: list[dict],
     config: AiConfig,
     session_id: str = "",
+    country_state: dict | None = None,
 ) -> AsyncGenerator[str, None]:
     relations_score = country.get("relations", {}).get(player_country["id"], 0)
     default_trait = "diplomatique" if config.language.lower() == "french" else "diplomatic"
@@ -286,7 +306,10 @@ async def get_country_response(
     personality_label = "Personnalité & style diplomatique" if config.language.lower() == "french" else "Personality & diplomatic style"
     personality_block = f"\n\n{personality_label} :\n{personality}" if personality else ""
 
-    system = f"""You are the official representative of {country['name']} in a geopolitical simulation set in {world_context}.
+    nation_context = _build_nation_context(country, country_state)
+    nation_prefix = f"{nation_context}\n\n" if nation_context else ""
+
+    system = f"""{nation_prefix}You are the official representative of {country['name']} in a geopolitical simulation set in {world_context}.
 
 Your country's profile:
 - Government: {country.get('government_type', 'unknown')}
@@ -326,6 +349,7 @@ async def get_group_member_response(
     diplomatic_history: list[dict],
     config: AiConfig,
     session_id: str = "",
+    country_state: dict | None = None,
 ) -> AsyncGenerator[str, None]:
     relations_score = country.get("relations", {}).get(player_country["id"], 0)
     default_trait = "diplomatique" if config.language.lower() == "french" else "diplomatic"
@@ -334,7 +358,10 @@ async def get_group_member_response(
     personality = country.get("personality", "").strip()
     personality_block = f"\n\nPersonality & style:\n{personality}" if personality else ""
 
-    system = f"""You are the official representative of {country['name']} in a geopolitical simulation set in {world_context}.
+    nation_context = _build_nation_context(country, country_state)
+    nation_prefix = f"{nation_context}\n\n" if nation_context else ""
+
+    system = f"""{nation_prefix}You are the official representative of {country['name']} in a geopolitical simulation set in {world_context}.
 You are currently participating in a group chat named "{group_name}".
 The members of this group chat are: {', '.join(group_members)}.
 The player controls {player_country['name']}.
@@ -387,7 +414,10 @@ async def get_advisor_response(
         lines = [f"- {e.get('title', '')} ({e.get('type', '')}): {e.get('description', '')}" for e in recent_events[-4:]]
         events_context = "\nRecent domestic events:\n" + "\n".join(lines)
 
-    system = f"""You are the chief political advisor of {player_country['name']} in a geopolitical simulation.
+    nation_context = _build_nation_context(player_country, country_state)
+    nation_prefix = f"{nation_context}\n\n" if nation_context else ""
+
+    system = f"""{nation_prefix}You are the chief political advisor of {player_country['name']} in a geopolitical simulation.
 The current date is {world_context}.
 
 Current state of {player_country['name']}:
@@ -421,6 +451,7 @@ async def process_player_action(
     world_state: dict,
     config: AiConfig,
     recent_diplomacy: list[dict] | None = None,
+    player_country_state: dict | None = None,
 ) -> dict:
     """Returns structured dict including Game Master domestic events and optional map POI."""
     player_id = player_country["id"]
@@ -441,7 +472,10 @@ async def process_player_action(
         if lines:
             diplomacy_context = "\n\nRecent diplomacy:\n" + "\n".join(lines)
 
-    system = f"""You are the geopolitical simulation engine and game master of Phos, a realistic geopolitical simulator.
+    nation_context = _build_nation_context(player_country, player_country_state)
+    nation_prefix = f"{nation_context}\n\n" if nation_context else ""
+
+    system = f"""{nation_prefix}You are the geopolitical simulation engine and game master of Phos, a realistic geopolitical simulator.
 
 Analyze the player's action and respond ONLY with a single valid JSON block, with no surrounding text.
 
@@ -674,6 +708,7 @@ async def generate_turn_events(
     player_country_id: str,
     config: AiConfig,
     recent_player_actions: list[str] | None = None,
+    player_nation_context: str = "",
 ) -> list[dict]:
     reactions_block = ""
     if recent_player_actions:
@@ -685,7 +720,9 @@ Recent player actions ({player_country_id}):
 Generate 1-2 additional events representing REACTIONS from neighboring or affected countries to these actions (type "reaction").
 Also keep 1-2 independent global events."""
 
-    system = f"""You are the world events engine of Phos.
+    nation_prefix = f"{player_nation_context}\n\n" if player_nation_context else ""
+
+    system = f"""{nation_prefix}You are the world events engine of Phos.
 The current date is {_format_date(year, month, config.language)}.
 
 Generate 2-4 credible world events occurring this month.
@@ -762,6 +799,7 @@ async def generate_turn_summary(
     recent_world_events: list[dict],
     player_state: dict,
     config: AiConfig,
+    player_country_state: dict | None = None,
 ) -> AsyncGenerator[str, None]:
     actions_text = "\n".join(
         f"- Turn {a.get('month', '?')}/{a.get('year', year)}: {a.get('action', a.get('consequences', ''))}"
@@ -776,7 +814,10 @@ async def generate_turn_summary(
     stability = player_state.get("stability", 50)
     at_war = player_state.get("at_war_with", [])
 
-    system = f"""You are the official chronicler of Phos, a geopolitical simulation game.
+    nation_context = _build_nation_context(player_country, player_country_state)
+    nation_prefix = f"{nation_context}\n\n" if nation_context else ""
+
+    system = f"""{nation_prefix}You are the official chronicler of Phos, a geopolitical simulation game.
 Write an immersive, journalistic narrative summary of the last game turns for {player_country['name']}.
 The current date is {_format_date(year, month, config.language)}.
 
@@ -878,6 +919,42 @@ def _parse_diplomatic_effect(raw: str) -> dict:
         "agreement_reached": False, "agreement_type": None, "summary": None,
         "relation_delta": 0, "economy_delta": 0.0, "domestic_events": [],
     }
+
+
+async def update_dynamic_brief(
+    country_data: dict,
+    country_state: dict,
+    recent_events: list[str],
+    year: int,
+    month: int,
+    config: AiConfig,
+) -> str:
+    country_name = country_data.get("name", "Unknown")
+    events_text = "\n".join(f"- {e}" for e in recent_events[-6:]) or "No major events."
+
+    system = f"""You are the context updater for Phos, a geopolitical simulation.
+Summarize the recent developments for {country_name} as of {_format_date(year, month, config.language)}.
+
+Current stability: {country_state.get('stability', 50)}/100
+At war with: {', '.join(country_state.get('at_war_with', [])) or 'nobody'}
+Economy modifier: {country_state.get('economy_modifier', 1.0):.2f}x
+
+Recent events:
+{events_text}
+
+Respond ONLY with a brief context block (3-5 bullet points) in this exact format:
+[RECENT DEVELOPMENTS — {country_name}]
+- point 1
+- point 2
+- ...
+
+Write in English. Be factual and concise. Focus on what changed recently."""
+
+    messages = [
+        {"role": "system", "content": system},
+        {"role": "user", "content": "Generate the updated brief."},
+    ]
+    return await chat(messages, config)
 
 
 def _relation_label(score: int, language: str = "English") -> str:

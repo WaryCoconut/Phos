@@ -49,6 +49,7 @@ class Country(BaseModel):
     personality_traits: List[str] = []
     personality: str = ""  # description libre de la personnalité diplomatique
     description: str = ""
+    nation_brief: str = ""
     color: Optional[str] = None  # couleur sur la carte (hex)
     initial_stability: int = 50  # stabilité au démarrage de la partie (0-100)
 

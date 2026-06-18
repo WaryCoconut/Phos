@@ -49,7 +49,8 @@ async def submit_action(
     if not player_country:
         raise HTTPException(status_code=400, detail="Pays du joueur introuvable")
 
-    player_country_data = game_engine.merge_country(player_country, session.country_states.get(session.player_country_id))
+    player_state = session.country_states.get(session.player_country_id, {})
+    player_country_data = game_engine.merge_country(player_country, player_state)
     consequences = await ai_service.process_player_action(
         player_country=player_country_data,
         action=action.content,
@@ -57,6 +58,7 @@ async def submit_action(
         month=session.month,
         world_state=session.country_states,
         config=config,
+        player_country_state=player_state,
     )
 
     result = ActionResult(
@@ -133,6 +135,7 @@ async def simulate(
     scale = unit_days / 30.0  # scale deltas proportionally to unit size
 
     async def event_stream():
+        from app.services.ai_service import _build_nation_context
         # Distribute actions across simulation units — list per unit, all actions preserved
         actions_by_unit: dict[int, list[str]] = {i: [] for i in range(total_units)}
         for i, action in enumerate(pending):
@@ -151,6 +154,9 @@ async def simulate(
             ]
             try:
                 if generate_events:
+                    ps = session.country_states.get(session.player_country_id, {})
+                    pc_data = game_engine.merge_country(player_country, ps)
+                    pnc = _build_nation_context(pc_data, ps)
                     events = await ai_service.generate_turn_events(
                         year=session.year,
                         month=session.month,
@@ -158,6 +164,7 @@ async def simulate(
                         player_country_id=session.player_country_id,
                         config=config,
                         recent_player_actions=recent_actions,
+                        player_nation_context=pnc,
                     )
                 else:
                     events = []
@@ -176,7 +183,8 @@ async def simulate(
             action_results = []
             for action_content in unit_actions:
                 try:
-                    player_country_data = game_engine.merge_country(player_country, session.country_states.get(session.player_country_id))
+                    pcs = session.country_states.get(session.player_country_id, {})
+                    player_country_data = game_engine.merge_country(player_country, pcs)
                     result_data = await ai_service.process_player_action(
                         player_country=player_country_data,
                         action=action_content,
@@ -185,6 +193,7 @@ async def simulate(
                         world_state=session.country_states,
                         config=config,
                         recent_diplomacy=recent_diplomacy,
+                        player_country_state=pcs,
                     )
                     action_results.append({"action": action_content, **result_data})
                 except Exception as e:
@@ -218,6 +227,26 @@ async def simulate(
 
             new_domestic = session.domestic_events[dom_idx:]
             new_pois = session.map_pois[poi_idx:]
+
+            if session.turn % 3 == 0:
+                try:
+                    recent_titles = [e.get("title", "") for e in events] + [de.title for de in new_domestic]
+                    brief_ps = session.country_states.get(session.player_country_id, {})
+                    brief_pc = game_engine.merge_country(player_country, brief_ps)
+                    new_brief = await ai_service.update_dynamic_brief(
+                        country_data=brief_pc,
+                        country_state=brief_ps,
+                        recent_events=recent_titles,
+                        year=session.year,
+                        month=session.month,
+                        config=config,
+                    )
+                    if new_brief.strip():
+                        brief_ps["dynamic_brief"] = new_brief.strip()
+                        session.country_states[session.player_country_id] = brief_ps
+                        game_engine._save_session(session)
+                except Exception:
+                    pass
 
             total_world_events += len(events)
             total_actions_processed += len(action_results)

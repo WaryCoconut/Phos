@@ -5,7 +5,7 @@ export interface ApiSettings {
   apiKey: string
   apiBaseUrl: string
   model: string
-  provider: 'socle' | 'ollama' | 'deepseek'
+  provider: 'socle' | 'ollama' | 'deepseek' | 'textgen'
   language: string
 }
 
@@ -33,7 +33,7 @@ export const useSettingsStore = create<SettingsStore>()(
       reset: () => set({ settings: DEFAULTS }),
       isConfigured: () => {
         const s = get().settings
-        if (s.provider === 'ollama') return Boolean(s.apiBaseUrl.trim())
+        if (s.provider === 'ollama' || s.provider === 'textgen') return Boolean(s.apiBaseUrl.trim())
         return Boolean(s.apiKey.trim())
       },
     }),

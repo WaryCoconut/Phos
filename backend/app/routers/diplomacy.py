@@ -109,6 +109,7 @@ async def send_diplomatic_message(
                         diplomatic_history=group_history,
                         config=config,
                         session_id=session_id,
+                        country_state=session.country_states.get(rep_id),
                     ):
                         full_response += chunk
                         yield f"data: {json.dumps({'chunk': chunk, 'sender_id': rep_id})}\n\n"
@@ -177,6 +178,7 @@ async def send_diplomatic_message(
                     diplomatic_history=history,
                     config=config,
                     session_id=session_id,
+                    country_state=session.country_states.get(req.target_country_id),
                 ):
                     full_response += chunk
                     yield f"data: {json.dumps({'chunk': chunk, 'sender_id': req.target_country_id})}\n\n"

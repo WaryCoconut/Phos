@@ -80,6 +80,7 @@ def create_session(scenario_id: str, player_country_id: str) -> GameSession:
             "at_war_with": [],
             "sanctions_by": [],
             "active_events": [],
+            "dynamic_brief": "",
         }
 
     initial_events = [
